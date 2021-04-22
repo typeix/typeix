@@ -4,11 +4,11 @@ node_js:
   - "12.9.0"
 
 install:
-  - npm install
-  - npm run bootstrap
+  - npm install --save-dev
+  - ./node_modules/.bin/lerna bootstrap
 
 script:
-  - npm run test
+  - ./node_modules/.bin/lerna exec npm test
 
 #jobs:
 #  include:
