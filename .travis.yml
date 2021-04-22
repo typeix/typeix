@@ -10,8 +10,8 @@ install:
 script:
   - npm run test
 
-#jobs:
-#  include:
-#    - stage: Produce Coverage
-#      node_js: "12.9.0"
-#      script: npm run test && node coveralls-merge.js
+jobs:
+  include:
+    - stage: Produce Coverage
+      node_js: "12.9.0"
+      script: npm run test && node coveralls-merge.js && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js

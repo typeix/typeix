@@ -27,9 +27,9 @@
   ],
   "coverageReporters": [
     "json",
-    "lcov",
     "text",
-    "html"
+    "html",
+    ["lcov", {"projectRoot": "./../../"}]
   ],
   "coverageThreshold": {
     "global": {
