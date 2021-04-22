@@ -5,10 +5,10 @@ node_js:
 
 install:
   - npm install
-  - ./node_modules/.bin/lerna bootstrap
+  - npm run bootstrap
 
 script:
-  - ./node_modules/.bin/lerna exec npm test
+  - npm run test
 
 #jobs:
 #  include:

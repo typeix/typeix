@@ -27,8 +27,8 @@ allowing for easy use of the myriad third-party plugins which are available.
 
 ## Philosophy
 <p>
-In 2016 first version of typeix was born and at time inspired by Angular which aims to be modular, extensible to provide an application architecture 
-which allows effortless creation of highly testable, scalable, loosely coupled and easily maintainable applications. 
+In 2016 inspired by Angular first version of typeix was born, which provides an application architecture 
+to allow effortless creation of highly testable, scalable, loosely coupled and easily maintainable applications. 
 
 Typeix has unique features request interceptors, method interceptors, extensive dependency injection with decorators, global error routing, local error routing,
 aws lambda compatibility.
