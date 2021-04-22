@@ -36,6 +36,9 @@
     "@typeix/router": "^7.1.0",
     "@typeix/utils": "^7.1.0"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=12.9.0"
   }

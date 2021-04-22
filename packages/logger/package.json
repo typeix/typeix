@@ -32,6 +32,9 @@
   "devDependencies": {
     "pino-pretty": "^4.7.1"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=12.9.0"
   }

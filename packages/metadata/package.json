@@ -31,6 +31,9 @@
     "@typeix/utils": "^7.1.0",
     "reflect-metadata": "^0.1.13"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=12.0"
   }

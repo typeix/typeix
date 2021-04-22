@@ -26,6 +26,9 @@
     "url": "https://github.com/typeix/typeix/issues"
   },
   "homepage": "https://typeix.com",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=12.0"
   }
