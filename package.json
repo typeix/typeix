@@ -3,9 +3,9 @@
   "version": "7.1.0",
   "description": "modern, fast, powerful node.js web framework",
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap && lerna link",
     "test": "lerna exec npm test",
-    "prepublishOnly": "echo 'You must use lerna to publish repositories'; && exit 1;"
+    "prepublishOnly": "echo 'You must use lerna to publish repositories' && exit 1"
   },
   "repository": {
     "type": "git",
