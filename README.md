@@ -30,37 +30,9 @@ allowing for easy use of the myriad third-party plugins which are available.
 In 2016 first version of typeix was born and at time inspired by Angular which aims to be modular, extensible to provide an application architecture 
 which allows effortless creation of highly testable, scalable, loosely coupled and easily maintainable applications. 
 
-Typeix has unique features request interceptors, method interceptors, extensive dependency injection decorators, global error routing, local error routing,
+Typeix has unique features request interceptors, method interceptors, extensive dependency injection with decorators, global error routing, local error routing,
 aws lambda compatibility.
 
-```ts
-import {Injector, Injectable, Interceptor, Method, createMethodInterceptor} from "@typeix/resty";
-
-@Injectable()
-class LoggerInterceptor implements Interceptor {
-  invoke(method: Method): any {
-    const name = method.args.level.toLowerCase();
-    const result = method.invoke();
-    Reflect.get(console, name).call(console, result);
-  }
-}
-
-export const Logger = (level) => createMethodInterceptor(Logger, LoggerInterceptor, {level});
-
-@Injectable()
-class SomeService{
-    
-  @Logger("log")
-  getName(): string {
-    return {
-        hello: "spring"
-    };
-  }
-}
-
-const service = Injector.createAndResolve(SomeService, []).get(SomeService);
-service.getName();
-```
 </p>
 
 ## Core Packages
