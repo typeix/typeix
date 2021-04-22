@@ -12,7 +12,7 @@
     "node"
   ],
   "roots": [
-    "<rootDir>/src/"
+    "<rootDir>/utils/"
   ],
   "testMatch": [
     "**/*-spec.ts",
@@ -21,14 +21,12 @@
   "collectCoverage": false,
   "coveragePathIgnorePatterns": [
     "<rootDir>/node_modules",
-    "<rootDir>/src/*-spec.ts",
-    "<rootDir>/src/index.ts"
+    "<rootDir>/utils/*-spec.ts",
+    "<rootDir>/packages",
+    "<rootDir>/utils/index.ts"
   ],
   "coverageReporters": [
-    "json",
-    "text",
-    "html",
-    ["lcov", {"projectRoot": "./../../"}]
+    ["lcov", {"projectRoot": "./"}]
   ],
   "coverageThreshold": {
     "global": {

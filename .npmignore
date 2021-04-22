@@ -6,6 +6,9 @@
 /package-lock.json
 /node_modules
 /coverage
+/packages
+/utils
+lerna.json
 .nyc_output
 .gitignore
 .idea

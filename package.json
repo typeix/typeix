@@ -1,17 +1,22 @@
 {
-  "name": "@typeix/typeix",
-  "version": "7.1.2",
-  "description": "modern, fast, powerful node.js web framework",
+  "name": "@typeix/utils",
+  "version": "7.2.4-alpha.0",
+  "description": "typeix helper functions",
   "scripts": {
+    "pretest": "tsc",
+    "test": "jest -c jest-runner.json --coverage",
+    "lint": "eslint utils/**/*.ts",
+    "format": "eslint utils/**/*.ts --fix",
+    "prepublishOnly": "npm test",
+    "coveralls-merge": "npm run test:all && node coveralls-merge.js",
     "bootstrap": "lerna exec npm install",
-    "test": "lerna exec npm test",
+    "test:all": "lerna exec npm test && npm test",
     "publish": "lerna publish --force-publish --access public",
     "publish:beta": "lerna publish --force-publish --dist-tag=beta --access public",
     "publish:next": "lerna publish --force-publish --dist-tag=next --access public",
     "publish:rc": "lerna publish --force-publish --dist-tag=rc --access public",
-    "publish:test": "lerna publish --force-publish --dist-tag=test --loglevel=verbose --ignore=@typeix/typeix"
+    "publish:test": "lerna publish --force-publish --dist-tag=test --loglevel=verbose"
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/typeix/typeix.git"

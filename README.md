@@ -9,7 +9,7 @@ tools for building efficient and scalable applications.
 </p>
 
 # @typeix
-
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 [![Build Status][travis-url]][travis-img]
 [![Coverage Status][coverage-img]][coverage-url]
 ![npm][npm-version-img]

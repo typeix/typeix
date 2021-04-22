@@ -1,10 +1,14 @@
 const fs = require("fs");
 // create reports
-const packages = ["di", "logger", "metadata", "modules", "resty", "router", "utils"]
-  .map(name => "./packages/" + name + "/coverage/lcov.info")
-  .map(file => {
+const packages = ["di", "logger", "metadata", "modules", "resty", "router"]
+  .map(name => "./packages/" + name + "/coverage/lcov.info");
+
+packages.push("./coverage/lcov.info");
+
+exports.module = Promise.all(
+  packages.map(file => {
     return new Promise((resolve, reject) => {
-      fs.readFile(file,  (err, data) => {
+      fs.readFile(file, (err, data) => {
         if (err) {
           reject(err);
         } else {
@@ -12,10 +16,8 @@ const packages = ["di", "logger", "metadata", "modules", "resty", "router", "uti
         }
       })
     })
-  });
-
-
-exports.module = Promise.all(packages).then(data =>
+  })
+).then(data =>
   new Promise(
     resolve =>
       fs.writeFile("./lcov.info", Buffer.concat(data), resolve))
