@@ -1,6 +1,6 @@
 {
   "name": "@typeix/di",
-  "version": "7.2.0-alpha.0",
+  "version": "7.2.1-alpha.0",
   "description": "Typescript dependency injection",
   "main": "build/index.js",
   "scripts": {
@@ -28,8 +28,8 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/metadata": "^7.2.0-alpha.0",
-    "@typeix/utils": "^7.2.0-alpha.0"
+    "@typeix/metadata": "^7.2.1-alpha.0",
+    "@typeix/utils": "^7.2.1-alpha.0"
   },
   "publishConfig": {
     "access": "public"
