@@ -1,0 +1,37 @@
+{
+  "name": "@typeix/metadata",
+  "version": "7.1.0",
+  "description": "@typeix metadata apis::::",
+  "main": "build/index.js",
+  "scripts": {
+    "pretest": "tsc",
+    "test": "jest -c jest-runner.json --coverage",
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
+    "prepublishOnly": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typeix/typeix.git"
+  },
+  "keywords": [
+    "typeix",
+    "dependency",
+    "injection",
+    "di",
+    "typescript"
+  ],
+  "author": "igor.ivanovic@pm.me",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/typeix/typeix/issues"
+  },
+  "homepage": "https://typeix.com",
+  "dependencies": {
+    "@typeix/utils": "^7.1.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "engines": {
+    "node": ">=12.0"
+  }
+}

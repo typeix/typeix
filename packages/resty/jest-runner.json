@@ -1,0 +1,42 @@
+{
+  "verbose": true,
+  "transform": {
+    "^(.+)\\.tsx?$": "ts-jest"
+  },
+  "moduleFileExtensions": [
+    "ts",
+    "tsx",
+    "js",
+    "jsx",
+    "json",
+    "node"
+  ],
+  "roots": [
+    "<rootDir>/src/"
+  ],
+  "testMatch": [
+    "**/*-spec.ts",
+    "*-spec.ts"
+  ],
+  "collectCoverage": false,
+  "coveragePathIgnorePatterns": [
+    "<rootDir>/node_modules",
+    "<rootDir>/src/*-spec.ts",
+    "<rootDir>/src/index.ts",
+    "<rootDir>/src/servers/index.ts"
+  ],
+  "coverageReporters": [
+    "json",
+    "lcov",
+    "text",
+    "html"
+  ],
+  "coverageThreshold": {
+    "global": {
+      "branches": 85,
+      "functions": 90,
+      "lines": 90,
+      "statements": 90
+    }
+  }
+}

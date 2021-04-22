@@ -1,0 +1,38 @@
+{
+  "name": "@typeix/logger",
+  "version": "7.1.0",
+  "description": "Pino Logger wrapper for typescript",
+  "main": "build/index.js",
+  "scripts": {
+    "pretest": "tsc",
+    "test": "jest -c jest-runner.json --coverage",
+    "lint": "eslint src/**/*.ts src/*.ts",
+    "format": "eslint src/**/*.ts src/*.ts --fix",
+    "prepublishOnly": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typeix/typeix.git"
+  },
+  "keywords": [
+    "typeix",
+    "logger",
+    "typescript"
+  ],
+  "author": "igor.ivanovic@pm.me",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/typeix/typeix/issues"
+  },
+  "homepage": "https://typeix.com",
+  "dependencies": {
+    "@typeix/di": "^7.1.0",
+    "pino": "^6.11.3"
+  },
+  "devDependencies": {
+    "pino-pretty": "^4.7.1"
+  },
+  "engines": {
+    "node": ">=12.9.0"
+  }
+}

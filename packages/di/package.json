@@ -1,0 +1,37 @@
+{
+  "name": "@typeix/di",
+  "version": "7.1.0",
+  "description": "Typescript dependency injection",
+  "main": "build/index.js",
+  "scripts": {
+    "pretest": "tsc",
+    "test": "jest -c jest-runner.json --coverage",
+    "lint": "eslint src/**/*.ts src/*.ts",
+    "format": "eslint src/**/*.ts src/*.ts --fix",
+    "prepublishOnly": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typeix/typeix.git"
+  },
+  "keywords": [
+    "typeix",
+    "dependency",
+    "injection",
+    "di",
+    "typescript"
+  ],
+  "author": "igor.ivanovic@pm.me",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/typeix/typeix/issues"
+  },
+  "homepage": "https://typeix.com",
+  "dependencies": {
+    "@typeix/metadata": "^7.1.0",
+    "@typeix/utils": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=12.9.0"
+  }
+}

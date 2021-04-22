@@ -1,0 +1,12 @@
+.idea
+/src/
+/build/*-spec.*
+/jest-runner.json
+/tsconfig.json
+/tslint.json
+/build/server.test.*
+/test
+*.js.map
+*.iml
+/coverage
+.nyc_output
