@@ -1,10 +1,11 @@
 {
-  "name": "@typeix/core",
+  "name": "@typeix/typeix",
   "version": "7.1.0",
   "description": "modern, fast, powerful node.js web framework",
   "scripts": {
-    "bootstrap": "node ./node_modules/.bin/lerna bootstrap",
-    "test": "./node_modules/.bin/lerna exec npm test"
+    "bootstrap": "./node_modules/.bin/lerna bootstrap",
+    "test": "./node_modules/.bin/lerna exec npm test",
+    "prepublishOnly": "echo 'You must use lerna to publish repositories'; && exit 1;"
   },
   "repository": {
     "type": "git",
