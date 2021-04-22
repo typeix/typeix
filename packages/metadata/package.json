@@ -1,6 +1,6 @@
 {
   "name": "@typeix/metadata",
-  "version": "7.2.4-alpha.0",
+  "version": "7.2.5-alpha.0",
   "description": "@typeix metadata apis::::",
   "main": "build/index.js",
   "scripts": {
