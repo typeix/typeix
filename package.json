@@ -17,7 +17,7 @@
     "url": "https://github.com/typeix/typeix/issues"
   },
   "homepage": "https://typeix.com",
-  "dependencies": {
+  "devDependencies": {
     "@sourceallies/coveralls-merge": "^1.0.0",
     "@types/jest": "^26.0.20",
     "@types/node": "^12.19.7",
