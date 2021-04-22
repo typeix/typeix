@@ -4,7 +4,7 @@ node_js:
   - "12.9.0"
 
 install:
-  - npm install --save-dev
+  - npm install
   - ./node_modules/.bin/lerna bootstrap
 
 script:
