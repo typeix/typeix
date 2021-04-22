@@ -1,6 +1,6 @@
 {
   "name": "@typeix/modules",
-  "version": "7.2.6-alpha.0",
+  "version": "7.2.7-alpha.0",
   "description": "missing modularity system for nodejs",
   "main": "build/index.js",
   "scripts": {
@@ -26,8 +26,8 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/di": "^7.2.6-alpha.0",
-    "@typeix/metadata": "^7.2.6-alpha.0",
+    "@typeix/di": "^7.2.7-alpha.0",
+    "@typeix/metadata": "^7.2.7-alpha.0",
     "@typeix/utils": "^7.2.4-alpha.0"
   },
   "publishConfig": {

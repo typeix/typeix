@@ -1,6 +1,6 @@
 {
   "name": "@typeix/resty",
-  "version": "7.2.6-alpha.0",
+  "version": "7.2.7-alpha.0",
   "description": "REST nodejs framework for typescript",
   "main": "build/index.js",
   "scripts": {
@@ -29,11 +29,11 @@
     "@types/aws-lambda": "^8.10.75"
   },
   "dependencies": {
-    "@typeix/di": "^7.2.6-alpha.0",
-    "@typeix/logger": "^7.2.6-alpha.0",
-    "@typeix/metadata": "^7.2.6-alpha.0",
-    "@typeix/modules": "^7.2.6-alpha.0",
-    "@typeix/router": "^7.2.6-alpha.0",
+    "@typeix/di": "^7.2.7-alpha.0",
+    "@typeix/logger": "^7.2.7-alpha.0",
+    "@typeix/metadata": "^7.2.7-alpha.0",
+    "@typeix/modules": "^7.2.7-alpha.0",
+    "@typeix/router": "^7.2.7-alpha.0",
     "@typeix/utils": "^7.2.4-alpha.0"
   },
   "publishConfig": {
