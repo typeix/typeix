@@ -3,7 +3,7 @@
   "version": "7.1.0",
   "description": "modern, fast, powerful node.js web framework",
   "scripts": {
-    "bootstrap": "lerna bootstrap && lerna exec npm install && lerna link",
+    "bootstrap": "lerna exec npm install",
     "test": "lerna exec npm test",
     "prepublishOnly": "echo 'You must use lerna to publish repositories' && exit 1"
   },
