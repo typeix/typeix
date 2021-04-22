@@ -1,9 +1,8 @@
 const fs = require("fs");
 // create reports
-const packages = ["di", "logger", "metadata", "modules", "resty", "router"]
+const packages = ["di", "logger", "metadata", "modules", "resty", "router", "utils"]
   .map(name => "./packages/" + name + "/coverage/lcov.info");
 
-packages.push("./coverage/lcov.info");
 
 exports.module = Promise.all(
   packages.map(file => {
