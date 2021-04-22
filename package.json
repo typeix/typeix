@@ -1,11 +1,16 @@
 {
   "name": "@typeix/typeix",
-  "version": "7.1.0",
+  "version": "7.1.2",
   "description": "modern, fast, powerful node.js web framework",
   "scripts": {
     "bootstrap": "lerna exec npm install",
     "test": "lerna exec npm test",
-    "prepublishOnly": "echo 'You must use lerna to publish repositories' && exit 1"
+    "prepublishOnly": "echo 'You must use lerna to publish repositories' && exit 1",
+    "publish": "npm run test && lerna publish --access public",
+    "publish:beta": "npm run test && lerna publish --dist-tag=beta --access public",
+    "publish:next": "npm run test && lerna publish --dist-tag=next --access public",
+    "publish:rc": "npm run test && lerna publish --dist-tag=rc --access public",
+    "publish:test": "lerna publish --dist-tag=test"
   },
   "repository": {
     "type": "git",
