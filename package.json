@@ -3,6 +3,7 @@
   "version": "7.1.0",
   "description": "modern, fast, powerful node.js web framework",
   "scripts": {
+    "bootstrap": "node ./node_modules/.bin/lerna bootstrap",
     "test": "./node_modules/.bin/lerna exec npm test"
   },
   "repository": {
