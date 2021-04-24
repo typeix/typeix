@@ -1,6 +1,6 @@
 {
   "name": "@typeix/utils",
-  "version": "7.2.7-alpha.0",
+  "version": "7.3.0",
   "description": "typeix helper functions",
   "scripts": {
     "coveralls-merge": "npm run test && node coveralls-merge.js",
