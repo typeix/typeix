@@ -1,6 +1,6 @@
 {
   "name": "@typeix/utils",
-  "version": "7.2.8-alpha.0",
+  "version": "7.2.8-alpha.1",
   "description": "typeix helper functions",
   "main": "build/index.js",
   "scripts": {
@@ -32,5 +32,5 @@
   "engines": {
     "node": ">= 12.10.0"
   },
-  "gitHead": "9a9fbe0f8b32340a7c076c4e23d2d207f64f0a5e"
+  "gitHead": "7ad598eb7bdc53c960060de9ea1ee5e0132690b7"
 }
