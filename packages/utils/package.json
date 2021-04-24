@@ -1,6 +1,6 @@
 {
   "name": "@typeix/utils",
-  "version": "7.2.8-alpha.1",
+  "version": "7.3.0",
   "description": "typeix helper functions",
   "main": "build/index.js",
   "scripts": {
