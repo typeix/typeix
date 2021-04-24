@@ -3,9 +3,9 @@
   "version": "7.2.7-alpha.0",
   "description": "typeix helper functions",
   "scripts": {
-    "coveralls-merge": "npm run test:all && node coveralls-merge.js",
+    "coveralls-merge": "npm run test && node coveralls-merge.js",
     "bootstrap": "lerna exec npm install",
-    "test": "lerna exec npm test && npm test",
+    "test": "lerna exec npm test",
     "publish": "lerna publish --force-publish --loglevel=verbose--loglevel=verbose",
     "publish:beta": "lerna publish --force-publish --dist-tag=beta --loglevel=verbose",
     "publish:next": "lerna publish --force-publish --dist-tag=next --loglevel=verbose",
