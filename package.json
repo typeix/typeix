@@ -6,10 +6,10 @@
     "coveralls-merge": "npm run test:all && node coveralls-merge.js",
     "bootstrap": "lerna exec npm install",
     "test": "lerna exec npm test && npm test",
-    "publish": "lerna publish --force-publish --access public",
-    "publish:beta": "lerna publish --force-publish --dist-tag=beta --access public",
-    "publish:next": "lerna publish --force-publish --dist-tag=next --access public",
-    "publish:rc": "lerna publish --force-publish --dist-tag=rc --access public",
+    "publish": "lerna publish --force-publish --loglevel=verbose--loglevel=verbose",
+    "publish:beta": "lerna publish --force-publish --dist-tag=beta --loglevel=verbose",
+    "publish:next": "lerna publish --force-publish --dist-tag=next --loglevel=verbose",
+    "publish:rc": "lerna publish --force-publish --dist-tag=rc --loglevel=verbose",
     "publish:test": "lerna publish --force-publish --dist-tag=test --loglevel=verbose"
   },
   "repository": {
