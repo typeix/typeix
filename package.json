@@ -1,5 +1,6 @@
 {
-  "name": "@typeix/utils",
+  "name": "typeix-srcs",
+  "private": true,
   "version": "7.3.0",
   "description": "typeix helper functions",
   "scripts": {
