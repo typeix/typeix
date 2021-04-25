@@ -1,7 +1,6 @@
 {
   "name": "@typeix/resty-aws-lambda",
   "version": "7.4.0-alpha.0",
-  "private": true,
   "description": "REST nodejs framework for typescript",
   "main": "build/index.js",
   "scripts": {

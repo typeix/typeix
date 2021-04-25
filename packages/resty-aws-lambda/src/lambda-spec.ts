@@ -1,14 +1,25 @@
-import {Controller, RootModule, LambdaEvent, GET, LambdaContext, Module, OnError} from "../decorators";
-import {Inject, Injectable} from "@typeix/di";
-import {Router, RouterError} from "@typeix/router";
+import {
+  Controller,
+  RootModule,
+  GET,
+  Module,
+  OnError,
+  Inject,
+  Injectable,
+  Router,
+  RouterError,
+  Logger,
+  Produces
+} from "@typeix/resty";
 import {
   APIGatewayProxyEvent,
   APIGatewayEventDefaultAuthorizerContext, APIGatewayEventIdentity,
   APIGatewayEventRequestContextWithAuthorizer, Context
 } from "aws-lambda";
+
 import {isGatewayProxyAuthEvent, lambdaServer, LambdaServerConfig} from "./lambda";
-import {Logger} from "@typeix/logger";
-import {Produces} from "../interceptors";
+import {LambdaContext, LambdaEvent} from "./decorators/lambda";
+
 
 
 describe("fakeHttpServer", () => {

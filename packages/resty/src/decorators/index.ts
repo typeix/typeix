@@ -2,4 +2,3 @@ export {GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH, OnError} f
 export {PathParam} from "./path-param";
 export {Module, RootModule, IModuleMetadata} from "./module";
 export {Controller, IControllerMetadata} from "./controller";
-export {LambdaEvent, LambdaContext} from "./lambda";

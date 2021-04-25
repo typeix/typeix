@@ -30,8 +30,8 @@ allowing for easy use of the myriad third-party plugins which are available.
 In 2016 inspired by Angular first version of typeix was born, which provides an application architecture 
 to allow effortless creation of highly testable, scalable, loosely coupled and easily maintainable applications. 
 
-Typeix has unique features request interceptors, method interceptors, extensive dependency injection with decorators, global error routing, local error routing,
-aws lambda compatibility.
+Typeix has unique features like request interceptors, method interceptors, extensive dependency injection with custom decorators, global and local error routing handlers,
+aws lambda adapter, (gcp & azure will be added).
 
 </p>
 

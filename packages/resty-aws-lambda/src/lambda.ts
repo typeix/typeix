@@ -1,8 +1,15 @@
-import {isObject, isString} from "@typeix/utils";
-import {fakeHttpServer, FakeServerApi, FakeServerResponse} from "../helpers/mocks";
-import {Logger} from "@typeix/logger";
-import {LAMBDA_CONTEXT, LAMBDA_EVENT} from "../decorators/lambda";
-import {RouterError} from "@typeix/router";
+import {LambdaContext, LambdaEvent} from "./decorators/lambda";
+import {
+  Logger,
+  RouterError,
+  isObject,
+  isString,
+  fakeHttpServer,
+  FakeServerApi,
+  FakeServerResponse,
+  getRequest,
+  Injector
+} from "@typeix/resty";
 
 export interface LambdaServerConfig {
   path?: string;
@@ -64,6 +71,8 @@ function filterHeaders(headers: Object, multi = false) {
     }, {});
 }
 
+const LAMBDA_EVENT = "@typeix:LAMBDA_EVENT";
+const LAMBDA_CONTEXT = "@typeix:LAMBDA_CONTEXT";
 /**
  * @since 2.1.0
  * @function
@@ -75,7 +84,28 @@ function filterHeaders(headers: Object, multi = false) {
  * Use httpsServer function to https an Module.
  */
 export function lambdaServer(Class: Function, config: LambdaServerConfig = {}) {
-  let fakeServerApi: FakeServerApi = config?.fakeHttpServer ?? fakeHttpServer(Class, {isLambdaServer: true});
+  let fakeServerApi: FakeServerApi = config?.fakeHttpServer ?? fakeHttpServer(Class, {
+    mockProviders: [
+      {
+        provide: LambdaEvent,
+        useFactory: (injector) => {
+          const request = getRequest(injector);
+          return Reflect.get(request.headers, LAMBDA_EVENT);
+        },
+        providers: [Injector]
+      },
+
+      {
+        provide: LambdaContext,
+        useFactory: (injector) => {
+          const request = getRequest(injector);
+          return Reflect.get(request.headers, LAMBDA_CONTEXT);
+        },
+        providers: [Injector]
+      }
+    ],
+    isMockServer: true
+  });
   let injector = fakeServerApi.getModuleInjector().getInjector(Class);
   let logger: Logger = injector.get(Logger);
   logger.info("Module.info: Lambda Server started");

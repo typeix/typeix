@@ -1,5 +1,8 @@
+import {FakeServerResponse} from "./mocks";
+
 export {
   FakeServerApi,
+  FakeServerResponse,
   fakeHttpServer
 } from "./mocks";
 

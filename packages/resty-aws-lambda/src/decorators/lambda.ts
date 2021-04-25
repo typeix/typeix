@@ -1,6 +1,4 @@
-import {Inject} from "@typeix/di";
-
-export const LAMBDA_EVENT = "@typeix:LAMBDA_EVENT";
+import {Inject} from "@typeix/resty";
 /**
  * Lambda event
  * @decorator
@@ -13,8 +11,6 @@ export const LAMBDA_EVENT = "@typeix:LAMBDA_EVENT";
 export function LambdaEvent() {
   return Inject(LambdaEvent);
 }
-
-export const LAMBDA_CONTEXT = "@typeix:LAMBDA_CONTEXT";
 /**
  * Lambda event
  * @decorator

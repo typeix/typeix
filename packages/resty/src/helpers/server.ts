@@ -5,8 +5,6 @@ import {
   HEAD,
   IControllerMetadata,
   IModuleMetadata,
-  LambdaContext,
-  LambdaEvent,
   OnError,
   OPTIONS,
   PATCH,
@@ -31,8 +29,8 @@ import {IResolvedRoute, IRouteHandler, RouterError} from "@typeix/router";
 import {FakeIncomingMessage, FakeServerResponse} from "./mocks";
 import {ServerConfig} from "../servers/server";
 import {PATH_PARAM} from "../decorators/path-param";
-import {LAMBDA_CONTEXT, LAMBDA_EVENT} from "../decorators/lambda";
 import {REQUEST_INTERCEPTORS} from "../interceptors/request";
+import {isArray} from "../../../utils";
 
 const REST_DECORATORS = [GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH, OnError];
 
@@ -378,17 +376,9 @@ async function applyServerInjectables(handlerInjector: Injector, route: IResolve
       provide: item,
       useValue: response
     }));
-  }
-  // if it's lambda server add context and event to injector
-  if (config?.isLambdaServer) {
-    providers.push({
-      provide: LambdaContext,
-      useValue: Reflect.get(request.headers, LAMBDA_CONTEXT)
-    });
-    providers.push({
-      provide: LambdaEvent,
-      useValue: Reflect.get(request.headers, LAMBDA_EVENT)
-    });
+    if (isArray(config.mockProviders)) {
+      providers = providers.concat(config.mockProviders)
+    }
   }
   return providers;
 }

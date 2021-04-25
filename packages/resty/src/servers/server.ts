@@ -1,22 +1,19 @@
 import {ModuleInjector, Module} from "@typeix/modules";
 import {isArray} from "@typeix/utils";
 import {Router, RouterError} from "@typeix/router";
-import {getClassMetadata } from "@typeix/metadata";
+import {getClassMetadata} from "@typeix/metadata";
 import {Logger} from "@typeix/logger";
 import {RootModuleMetadata} from "../decorators/module";
 import {OnError} from "../decorators";
 import {Server} from "net";
-import {verifyProvider, verifyProviders} from "@typeix/di";
-import {
-  getRouteDefinitions,
-  getRoutePath,
-  createRouteHandler
-} from "../helpers";
+import {IProvider, verifyProvider, verifyProviders} from "@typeix/di";
+import {getRouteDefinitions, getRoutePath, createRouteHandler} from "../helpers";
 
 export interface ServerConfig {
-  isLambdaServer?: boolean;
+  mockProviders?: Array<IProvider>;
   isMockServer?: boolean;
 }
+
 /**
  * @since 1.0.0
  * @function
@@ -49,7 +46,7 @@ export function pipeServer(server: Server, Class: Function, config?: ServerConfi
     logger.info(`Router.add ${path} for controller ${def.controller.provider.provide.name} on method ${method}`);
     Reflect.get(
       router,
-      method === Router.ERROR ? "onError": method.toLowerCase()
+      method === Router.ERROR ? "onError" : method.toLowerCase()
     ).apply(router, [path, createRouteHandler(def, config)]);
   }
   router.pipe(server);
