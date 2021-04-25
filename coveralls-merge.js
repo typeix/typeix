@@ -1,8 +1,8 @@
 const fs = require("fs");
 // create reports
-const packages = ["di", "logger", "metadata", "modules", "resty", "router", "utils"]
+const packages = fs.readdirSync("./packages")
+  .filter(item => item !== "tsconfig.base.json")
   .map(name => "./packages/" + name + "/coverage/lcov.info");
-
 
 exports.module = Promise.all(
   packages.map(file => {
