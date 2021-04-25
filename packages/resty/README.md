@@ -10,7 +10,7 @@ framework for building scalable applications.
 
 # @typeix/resty Typescript framework for Node.js
 
-[![Build Status][travis-url]][travis-img]
+[![Build Status][travis-img]][travis-url]
 [![Coverage Status][coverage-img]][coverage-url]
 ![npm][npm-version-img]
 
@@ -95,8 +95,8 @@ pipeServer(server, ApplicationModule);
 server.listen(9000);
 ```
 
-[travis-url]: https://travis-ci.com/typeix/typeix.svg?branch=master
-[travis-img]: https://travis-ci.com/typeix/typeix
+[travis-url]: https://travis-ci.com/typeix/typeix
+[travis-img]: https://travis-ci.com/typeix/typeix.svg?branch=main
 [npm-version-img]: https://img.shields.io/npm/v/@typeix/resty
-[coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=master
-[coverage-url]: https://coveralls.io/github/typeix/typeix?branch=master
+[coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=main
+[coverage-url]: https://coveralls.io/github/typeix/typeix?branch=main

@@ -9,14 +9,15 @@ tools for building efficient and scalable applications.
 </p>
 
 # @typeix/utils
-[![Build Status][travis-url]][travis-img]
+
+[![Build Status][travis-img]][travis-url]
 [![Coverage Status][coverage-img]][coverage-url]
 ![npm][npm-version-img]
 
 Utility package for typeix mainly helper functions.
 
-[travis-url]: https://travis-ci.com/typeix/typeix.svg?branch=master
-[travis-img]: https://travis-ci.com/typeix/typeix
-[npm-version-img]: https://img.shields.io/npm/v/@typeix/utils
-[coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=master
-[coverage-url]: https://coveralls.io/github/typeix/typeix?branch=master
+[travis-url]: https://travis-ci.com/typeix/typeix
+[travis-img]: https://travis-ci.com/typeix/typeix.svg?branch=main
+[npm-version-img]: https://img.shields.io/npm/v/@typeix/resty
+[coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=main
+[coverage-url]: https://coveralls.io/github/typeix/typeix?branch=main

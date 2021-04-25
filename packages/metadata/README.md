@@ -12,7 +12,7 @@ tools for building efficient and scalable applications.
 # @typeix/metadata
 Metadata API for typescript decorators
 
-[![Build Status][travis-url]][travis-img]
+[![Build Status][travis-img]][travis-url]
 [![Coverage Status][coverage-img]][coverage-url]
 ![npm][npm-version-img]
 
@@ -76,8 +76,8 @@ npm i typescript ts-jest jest eslint @typescript-eslint/parser @typescript-eslin
 ```
 
 
-[travis-url]: https://travis-ci.com/typeix/typeix.svg?branch=master
-[travis-img]: https://travis-ci.com/typeix/typeix
-[npm-version-img]: https://img.shields.io/npm/v/@typeix/metadata
-[coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=master
-[coverage-url]: https://coveralls.io/github/typeix/typeix?branch=master
+[travis-url]: https://travis-ci.com/typeix/typeix
+[travis-img]: https://travis-ci.com/typeix/typeix.svg?branch=main
+[npm-version-img]: https://img.shields.io/npm/v/@typeix/resty
+[coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=main
+[coverage-url]: https://coveralls.io/github/typeix/typeix?branch=main

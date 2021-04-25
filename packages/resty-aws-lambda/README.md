@@ -10,12 +10,12 @@ framework for building scalable applications.
 
 # @typeix/resty Typescript framework for Node.js
 
-[![Build Status][travis-url]][travis-img]
+[![Build Status][travis-img]][travis-url]
 [![Coverage Status][coverage-img]][coverage-url]
 ![npm][npm-version-img]
 
 * [Typeix Official && Documentation](https://typeix.com)
-* `@typeix/resty` is typescript lightweight framework for node js
+* `@typeix/resty-aws-lambda` is lambda adapter for resty server
 * Works with node version >= 12.9.x > latest
 
 # Starters
@@ -30,11 +30,10 @@ framework for building scalable applications.
 ## Example Usage
 ```ts
 import {
-  pipeServer, Controller, Inject, ResolvedRoute, 
+  Controller, Inject, ResolvedRoute, 
   GET, POST, OnError, RootModule, Logger, Router
 } from "@typeix/resty";
-import {IncomingMessage, ServerResponse, createServer} from "http";
-// resty supports http, https, http2
+import {lambdaServer} from "@typeix/resty-aws-lambda";
 
 // define controller
 @Controller({
@@ -89,14 +88,12 @@ class HomeController {
 })
 class ApplicationModule {}
 
-// START SERVER
-const server = createServer();
-pipeServer(server, ApplicationModule);
-server.listen(9000);
+// CREATE SERVER
+export const handler = lambdaServer(ApplicationModule);
 ```
 
-[travis-url]: https://travis-ci.com/typeix/typeix.svg?branch=master
-[travis-img]: https://travis-ci.com/typeix/typeix
+[travis-url]: https://travis-ci.com/typeix/typeix
+[travis-img]: https://travis-ci.com/typeix/typeix.svg?branch=main
 [npm-version-img]: https://img.shields.io/npm/v/@typeix/resty
-[coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=master
-[coverage-url]: https://coveralls.io/github/typeix/typeix?branch=master
+[coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=main
+[coverage-url]: https://coveralls.io/github/typeix/typeix?branch=main

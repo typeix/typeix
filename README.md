@@ -36,13 +36,14 @@ aws lambda adapter, (gcp & azure will be added).
 </p>
 
 ## Core Packages
-* [@typeix/metadata](packages/metadata/README.md)
-* [@typeix/di](packages/di/README.md)
-* [@typeix/modules](packages/modules/README.md)
-* [@typeix/router](packages/router/README.md)
-* [@typeix/resty](packages/resty/README.md)
-* [@typeix/utils](packages/utils/README.md)
-* [@typeix/logger](packages/logger/README.md)
+* [@typeix/metadata](packages/metadata)
+* [@typeix/di](packages/di)
+* [@typeix/modules](packages/modules)
+* [@typeix/router](packages/router)
+* [@typeix/resty](packages/resty)
+* [@typeix/resty-aws-lambda](packages/resty-aws-lambda)  
+* [@typeix/utils](packages/utils)
+* [@typeix/logger](packages/logger)
 
 ## Questions
 For questions and support please use the official Discord channel. 
