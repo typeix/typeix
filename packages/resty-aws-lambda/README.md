@@ -16,16 +16,9 @@ framework for building scalable applications.
 
 * [Typeix Official && Documentation](https://typeix.com)
 * `@typeix/resty-aws-lambda` is lambda adapter for resty server
-* Works with node version >= 12.9.x > latest
 
 # Starters
-* [Resty Starter WebApp][node-resty-starter]
-
-## Features
-* Dependency Injection
-* Modular design
-* Interceptors
-* Routing
+* TBD
 
 ## Example Usage
 ```ts
