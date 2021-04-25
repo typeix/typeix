@@ -1,13 +1,14 @@
 {
-  "name": "@typeix/utils",
+  "name": "@typeix/resty-aws-lambda",
   "version": "7.4.0-alpha.0",
-  "description": "typeix helper functions",
+  "private": true,
+  "description": "REST nodejs framework for typescript",
   "main": "build/index.js",
   "scripts": {
     "pretest": "tsc",
     "test": "jest -c jest-runner.json --coverage",
-    "lint": "eslint src/**/*.ts",
-    "format": "eslint src/**/*.ts --fix",
+    "lint": "eslint src/**/*.ts src/*.ts",
+    "format": "eslint src/**/*.ts src/*.ts --fix",
     "prepublishOnly": "npm test"
   },
   "repository": {
@@ -16,8 +17,7 @@
   },
   "keywords": [
     "typeix",
-    "helper",
-    "functions",
+    "modules",
     "typescript"
   ],
   "author": "igor.ivanovic@pm.me",
@@ -26,6 +26,12 @@
     "url": "https://github.com/typeix/typeix/issues"
   },
   "homepage": "https://typeix.com",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.75"
+  },
+  "dependencies": {
+    "@typeix/resty": "^7.4.0-alpha.0"
+  },
   "publishConfig": {
     "access": "public"
   },

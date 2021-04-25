@@ -1,0 +1,15 @@
+{
+  "extends": "./../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./build",
+    "baseUrl": "./"
+  },
+  "include": [
+    "src/**/*",
+    "src/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compileOnSave": true
+}
