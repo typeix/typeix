@@ -11,7 +11,7 @@ import {
   isDate,
   isSymbol,
   isRegExp,
-  isObject, isTruthy, isFalsy, isClass, isEqual, inArray
+  isObject, isTruthy, isFalsy, isClass, isEqual, inArray, doCall, doConstruct
 } from "./utils";
 
 describe("utils test", () => {
@@ -26,7 +26,8 @@ describe("utils test", () => {
     expect(isSymbol(null)).toBeFalsy();
     expect(isSymbol("")).toBeFalsy();
     expect(isSymbol(undefined)).toBeFalsy();
-    expect(isSymbol((() => {}))).toBeFalsy();
+    expect(isSymbol((() => {
+    }))).toBeFalsy();
     expect(isSymbol({})).toBeFalsy();
     expect(isSymbol([])).toBeFalsy();
     expect(isSymbol(1)).toBeFalsy();
@@ -303,13 +304,13 @@ describe("utils test", () => {
     expect(isEqual(Symbol("a"), Symbol("a"))).toBeFalsy();
     expect(isEqual(Symbol("a"), Symbol("b"))).toBeFalsy();
     expect(isEqual(a, a)).toBeTruthy();
-    expect(isEqual([ {} ], [ {} ])).toBeTruthy();
-    expect(isEqual([ {a: 1} ], [ {a: 1} ])).toBeTruthy();
-    expect(isEqual([ {a: 1, b: [ {c: 1} ]} ], [ {a: 1, b: [ {c: 1} ]} ])).toBeTruthy();
+    expect(isEqual([{}], [{}])).toBeTruthy();
+    expect(isEqual([{a: 1}], [{a: 1}])).toBeTruthy();
+    expect(isEqual([{a: 1, b: [{c: 1}]}], [{a: 1, b: [{c: 1}]}])).toBeTruthy();
     expect(isEqual([], {})).toBeFalsy();
     expect(isEqual({}, {})).toBeTruthy();
     expect(isEqual([], [])).toBeTruthy();
-    expect(isEqual([ {a: 1, b: [ {c: 1} ]} ], [ {a: 1, b: [ {c: 2} ]} ])).toBeFalsy();
+    expect(isEqual([{a: 1, b: [{c: 1}]}], [{a: 1, b: [{c: 2}]}])).toBeFalsy();
 
     let d = [a, 1, {}, 3, 4];
     d.push(d);
@@ -351,5 +352,36 @@ describe("utils test", () => {
     expect(inArray(data, 3)).toBeTruthy();
     expect(inArray(data, String)).toBeTruthy();
     expect(inArray(data, 4)).toBeFalsy();
-  })
+  });
+
+  test('doCall', () => {
+    const data = [];
+    const handler = function () {
+      return data;
+    }
+    for (let i = 0; i < 10; i++) {
+      expect(doCall(handler, {}, data)).toBe(data);
+      data.push(i);
+    }
+  });
+
+  test('doConstruct', () => {
+    const data = [];
+
+    class A {
+      private readonly result: any;
+      constructor(...args: any[]) {
+        this.result = args;
+      }
+
+      getData() {
+        return this.result;
+      };
+    }
+
+    for (let i = 0; i < 10; i++) {
+      expect(doConstruct(A, data).getData()).toEqual(data);
+      data.push(i);
+    }
+  });
 });
