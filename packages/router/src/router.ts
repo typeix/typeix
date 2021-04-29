@@ -98,7 +98,7 @@ export class Router {
    * @param injector
    */
   setParentInjector(injector: Injector) {
-    this.injector.setParent(injector);
+    injector.addChild(this.injector);
   }
 
   /**
@@ -213,18 +213,16 @@ export class Router {
         }
         return await this.requestHandler(request, response, injector, RouterError.from(e, 500));
       }
-      let result = Buffer.from(
-        JSON.stringify({
-          message: error.getMessage(),
-          stack: error.stack.split("\n"),
-          request: {
-            method: request.method,
-            url: request.url,
-            headers: request.headers
-          },
-          statusCode: response.statusCode
-        }, null, " ")
-      );
+      let result = JSON.stringify({
+        message: error.getMessage(),
+        stack: error.stack.split("\n"),
+        request: {
+          method: request.method,
+          url: request.url,
+          headers: request.headers
+        },
+        statusCode: response.statusCode
+      });
       if (!response.writableEnded) {
         response.end(result);
       }

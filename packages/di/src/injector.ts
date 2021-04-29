@@ -47,9 +47,6 @@ export class Injector {
    * @param {Array<any>} keys
    */
   constructor(private _parent?: Injector, keys: Array<any> = []) {
-    if (isArray(keys) && keys.indexOf(Injector) === -1) {
-      keys.push(Injector);
-    }
     this._providers = new ProviderList(keys);
     this.set(Injector, this);
   }
@@ -166,10 +163,7 @@ export class Injector {
   destroy(): void {
     this.detach();
     this._providers.clear();
-    if (isDefined(this._children)) {
-      this._children.forEach(injector => injector.destroy());
-      this._children = undefined;
-    }
+    this._children = [];
   }
 
   /**
@@ -357,7 +351,7 @@ export class Injector {
       const token = isUndefined(item.args.token) ? item.designType : item.args.token;
       const isMutable = item.args.isMutable;
       const propertyKey = item.propertyKey;
-      const value = item.decorator === Inject ? this.get(token, provider) : this.createAndResolve(token, []);
+      const value = item.decorator === CreateProvider && !this.has(token) ? this.createAndResolve(token, []) : this.get(token, provider);
       Reflect.defineProperty(instance, propertyKey, {
         value,
         writable: isMutable
