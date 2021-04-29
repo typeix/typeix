@@ -24,7 +24,8 @@
     "<rootDir>/src/*-spec.ts",
     "<rootDir>/src/index.ts",
     "<rootDir>/src/servers/index.ts",
-    "<rootDir>/src/interceptors/index.ts"
+    "<rootDir>/src/interceptors/index.ts",
+    "<rootDir>/src/helpers/index.ts"
   ],
   "coverageReporters": [
     "json",
