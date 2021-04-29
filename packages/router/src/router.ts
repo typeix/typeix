@@ -7,6 +7,7 @@ import {IncomingMessage, ServerResponse} from "http";
 import {Http2ServerResponse, Http2ServerRequest} from "http2";
 import {Server} from "net";
 import {URLSearchParams} from "url";
+
 /**
  * Proxy Protocol Headers
  */
@@ -24,6 +25,7 @@ const protoMS = "x-forwarded-protocol";
  * GROUP 9 (fragment)
  */
 const URL_RE = /^(([^:\/\s]+):\/?\/?([^\/\s@]*@)?([^\/@:]*)?:?(\d+)?)?(\/[^?]*)?(\?([^#]*))?(#[\s\S]*)?$/;
+
 /**
  * @since 1.0.0
  * @class
@@ -71,7 +73,7 @@ export class Router {
       const port = matches[5];
       const host = matches[4];
       const authority = matches[3];
-      const protocol =  matches[2];
+      const protocol = matches[2];
       const origin = matches[1];
       return {
         pathname,
@@ -90,6 +92,7 @@ export class Router {
       pathname: path
     };
   }
+
   /**
    * Attach parent injector to current injector
    * @param injector
@@ -192,12 +195,10 @@ export class Router {
         injector.set(ResolvedRoute, route);
       }
       let result = await route.handler(injector, route);
-      if (!response.writableEnded && isDefined(result)) {
-        if (!Buffer.isBuffer(result)) {
-          response.end(Buffer.from(isObject(result) ? JSON.stringify(result) : result));
-        } else {
-          response.end(result);
-        }
+      if (!response.writableEnded && Buffer.isBuffer(result)) {
+        response.end(result);
+      } else if (!response.writableEnded && isDefined(result)) {
+        response.end(isObject(result) ? JSON.stringify(result) : result);
       } else if (!response.writableEnded) {
         response.end();
       }

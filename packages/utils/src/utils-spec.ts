@@ -11,7 +11,7 @@ import {
   isDate,
   isSymbol,
   isRegExp,
-  isObject, isTruthy, isFalsy, isClass, isEqual, inArray, doCall, doConstruct
+  isObject, isTruthy, isFalsy, isClass, isEqual, inArray
 } from "./utils";
 
 describe("utils test", () => {
@@ -352,36 +352,5 @@ describe("utils test", () => {
     expect(inArray(data, 3)).toBeTruthy();
     expect(inArray(data, String)).toBeTruthy();
     expect(inArray(data, 4)).toBeFalsy();
-  });
-
-  test('doCall', () => {
-    const data = [];
-    const handler = function () {
-      return data;
-    }
-    for (let i = 0; i < 10; i++) {
-      expect(doCall(handler, {}, data)).toBe(data);
-      data.push(i);
-    }
-  });
-
-  test('doConstruct', () => {
-    const data = [];
-
-    class A {
-      private readonly result: any;
-      constructor(...args: any[]) {
-        this.result = args;
-      }
-
-      getData() {
-        return this.result;
-      };
-    }
-
-    for (let i = 0; i < 10; i++) {
-      expect(doConstruct(A, data).getData()).toEqual(data);
-      data.push(i);
-    }
   });
 });
