@@ -1,4 +1,4 @@
-import {getMethodDecorator, getMethodParams} from "../helpers";
+import {getMethodDecorator, getMethodParams} from "../helpers/index";
 import {
   CONNECT,
   Controller,
@@ -12,13 +12,13 @@ import {
   POST,
   PUT,
   RootModule,
-  TRACE
+  TRACE,
 } from "../decorators";
 import {getClassMetadata, IMetadata} from "@typeix/metadata";
 import {InterceptedRequest, RequestInterceptor} from "../interfaces";
 import {Injectable, Injector, verifyProvider} from "@typeix/di";
 import {IncomingMessage, ServerResponse} from "http";
-import {IRouteHandler, Router, RouterError, RouteRule} from "@typeix/router";
+import {IRouteHandler, Router, RouterError} from "@typeix/router";
 import {Server, Socket} from "net";
 import {pipeServer} from "./server";
 import {RootModuleMetadata} from "../decorators/module";
@@ -81,6 +81,7 @@ describe("server", () => {
         return "HELLO_WORLD";
       }
     }
+
     let handler: IRouteHandler = createRoute(
       {
         name: "indexAction",
@@ -99,7 +100,8 @@ describe("server", () => {
     let result = await handler(injector, {
       params: {},
       headers: {},
-      handler: () => {},
+      handler: () => {
+      },
       path: "/",
       url: Router.parseURI("/", {}),
       method: "GET"
@@ -109,7 +111,8 @@ describe("server", () => {
     result = await handler(injector, {
       params: {},
       headers: {},
-      handler: () => {},
+      handler: () => {
+      },
       path: "/",
       url: Router.parseURI("/", {}),
       method: "GET"
@@ -149,6 +152,7 @@ describe("server", () => {
         return "HELLO_WORLD";
       }
     }
+
     let handler: IRouteHandler = createRoute(
       {
         name: "indexAction",
@@ -167,7 +171,8 @@ describe("server", () => {
     let result = await handler(injector, {
       params: {},
       headers: {},
-      handler: () => {},
+      handler: () => {
+      },
       path: "/",
       url: Router.parseURI("/", {}),
       method: "GET"
@@ -178,7 +183,8 @@ describe("server", () => {
       await handler(injector, {
         params: {},
         headers: {},
-        handler: () => {},
+        handler: () => {
+        },
         path: "/",
         url: Router.parseURI("/", {}),
         method: "GET"
@@ -221,6 +227,7 @@ describe("server", () => {
         return "HELLO_WORLD";
       }
     }
+
     let handler: IRouteHandler = createRoute(
       {
         name: "indexAction",
@@ -239,7 +246,8 @@ describe("server", () => {
     let result = await handler(injector, {
       params: {},
       headers: {},
-      handler: () => {},
+      handler: () => {
+      },
       path: "/",
       url: Router.parseURI("/", {}),
       method: "GET"
@@ -249,7 +257,8 @@ describe("server", () => {
     result = await handler(injector, {
       params: {},
       headers: {},
-      handler: () => {},
+      handler: () => {
+      },
       path: "/",
       url: Router.parseURI("/", {}),
       method: "GET"
@@ -261,7 +270,9 @@ describe("server", () => {
 
   it("should pipe server", () => {
     @Module({providers: []})
-    class BModule {}
+    class BModule {
+    }
+
     let server = new Server();
     expect(() => {
       pipeServer(server, BModule);
@@ -274,7 +285,9 @@ describe("server", () => {
       providers: [Logger],
       shared_providers: [verifyProvider(Router)]
     })
-    class BModule {}
+    class BModule {
+    }
+
     let server = new Server();
     pipeServer(server, BModule);
     let metadata: RootModuleMetadata = getClassMetadata(AModule, BModule).args;
@@ -295,10 +308,55 @@ describe("server", () => {
       controllers: [],
       providers: [Logger]
     })
-    class RooAModule {}
+    class RooAModule {
+    }
+
     let server = new Server();
     pipeServer(server, RooAModule);
     let metadata: RootModuleMetadata = getClassMetadata(AModule, RooAModule).args;
     expect(metadata.shared_providers).toEqual([verifyProvider(Router)]);
   });
+
+  it("should create route handler", async () => {
+    @Controller({
+      path: "/",
+      interceptors: []
+    })
+    class CustomHandler {
+      @GET()
+      indexAction() {
+        return "HELLO_WORLD";
+      }
+    }
+    const handler = createRoute(
+      {
+        name: "indexAction",
+        decorator: GET
+      },
+      CustomHandler,
+      null,
+      {
+        mockProviders: [],
+        isMockServer: true
+      }
+    )
+
+
+    const injector = new Injector();
+    const request = new IncomingMessage(new Socket());
+    request.url = "/";
+    request.method = "GET";
+    request.headers = {};
+    injector.set(ServerResponse, new ServerResponse(request))
+    injector.set(IncomingMessage, request);
+    const result = await handler(injector, {
+      params: {},
+      headers: {},
+      url: Router.parseURI("/", {}),
+      method: "GET",
+      handler,
+      path: "/"
+    });
+    expect(result).toBe("HELLO_WORLD");
+  })
 });

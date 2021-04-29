@@ -4,7 +4,7 @@ import {
   Controller,
   DELETE,
   GET,
-  HEAD,
+  HEAD, Module,
   OnError,
   OPTIONS,
   PATCH,
@@ -18,7 +18,7 @@ import {Inject} from "@typeix/di";
 import {Logger} from "@typeix/logger";
 import {IResolvedRoute, ResolvedRoute} from "@typeix/router";
 import {IncomingMessage, ServerResponse} from "http";
-import {addRequestInterceptor, BodyAsBufferInterceptor} from "../interceptors/request";
+import {addRequestInterceptor, BodyAsBufferInterceptor} from "../interceptors";
 
 
 describe("fakeHttpServer", () => {
@@ -85,6 +85,11 @@ describe("fakeHttpServer", () => {
         this.response.writeHead(307);
       }
     }
+
+    @Module({
+      providers: []
+    })
+    class ImportModule {}
 
     @RootModule({
       shared_providers: [],

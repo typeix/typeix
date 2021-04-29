@@ -4,7 +4,7 @@
   "description": "REST nodejs framework for typescript",
   "main": "build/index.js",
   "scripts": {
-    "pretest": "tsc",
+    "pretest": "tsc --project tsconfig.json",
     "test": "jest -c jest-runner.json --coverage",
     "lint": "eslint src/**/*.ts src/*.ts",
     "format": "eslint src/**/*.ts src/*.ts --fix",

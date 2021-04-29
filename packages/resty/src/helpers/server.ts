@@ -13,7 +13,7 @@ import {
   TRACE
 } from "../decorators";
 import {Injector, IProvider, shiftLeft, verifyProvider, verifyProviders} from "@typeix/di";
-import {inArray, isDefined, isTruthy, isUndefined} from "@typeix/utils";
+import {inArray, isDefined, isFalsy, isTruthy, isUndefined} from "@typeix/utils";
 import {Module, ModuleInjector} from "@typeix/modules";
 import {getClassMetadata, IMetadata} from "@typeix/metadata";
 import {
@@ -112,7 +112,7 @@ export function createRouteDefinition(
     );
   }
   return {
-    module: isUndefined(module) ? null : {
+    module: isFalsy(module) ? null : {
       provider: verifyProvider(module),
       metadata: getClassMetadata(Module, verifyProvider(module).provide)?.args
     },
