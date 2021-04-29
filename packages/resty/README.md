@@ -18,27 +18,40 @@ framework for building scalable applications.
 * `@typeix/resty` is typescript lightweight framework for node js
 * Works with node version >= 12.9.x > latest
 
-# Starters
-* [Resty Starter WebApp][node-resty-starter]
+# Resty
+Fast, unopinionated, minimalist REST framework for building efficient and scalable applications.
+It uses modern TypeScript and combines elements of OOP, Functional Programming and Reactive Programming.
 
-## Features
+Resty has unique features:
+
 * Dependency Injection
-* Modular design
-* Interceptors
-* Routing
+* Method Interceptors
+* Modular Application Design
+* Request Interceptors
+* Routing (Dynamic & Static)
+* AWS Lambda Adapter
+* Supports MVC Structure
 
-## Example Usage
+
+Fast start with [application starter kit](https://github.com/typeix/resty-webapp-starter).
+
+Documentation will be updated and each decorator and interface will be explained in separate section.
+
+## Usage
+In example below you can find basic application server starter:
 ```ts
 import {
-  pipeServer, Controller, Inject, ResolvedRoute, 
-  GET, POST, OnError, RootModule, Logger, Router
+  pipeServer, Controller, Inject, ResolvedRoute,
+  GET, POST, OnError, RootModule, Logger, Router,
+  addRequestInterceptor, BodyAsBufferInterceptor
 } from "@typeix/resty";
 import {IncomingMessage, ServerResponse, createServer} from "http";
 // resty supports http, https, http2
 
-// define controller
 @Controller({
-  path: "/"
+  path: "/",
+  interceptors: [], // controller request interceptors executed in order
+  providers: []  // providers created on each request
 })
 class HomeController {
 
@@ -57,10 +70,12 @@ class HomeController {
   }
 
   @POST()
-  actionAjax(@RequestBody() body: Buffer) {
+  @addRequestInterceptor(BodyAsBufferInterceptor)
+  actionAjax(body: Buffer) {
     return JSON.stringify(body.toString());
   }
 
+  // will match all routes on this controller
   @OnError("*")
   errorCase() {
     return "FIRE ERROR CASE";
@@ -76,23 +91,23 @@ class HomeController {
 
 // DEFINE MODULE 
 @RootModule({
-  imports: [], // here you can import other modules
+  imports: [], // import other modules, created at application bootstrap
   shared_providers: [
     {
       provide: Logger,
-      useFactory: () => new Logger(Logger.defaultConfig("info"))
+      useFactory: () => new Logger({ options: {level: "debug"}})
     },
     Router
   ],
-  providers: [],
-  controllers: [HomeController]
+  providers: [], // providers created at application bootstrap
+  controllers: [HomeController] // define controllers
 })
 class ApplicationModule {}
 
 // START SERVER
 const server = createServer();
 pipeServer(server, ApplicationModule);
-server.listen(9000);
+server.listen(4000);
 ```
 
 [travis-url]: https://travis-ci.com/typeix/typeix
