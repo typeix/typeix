@@ -18,7 +18,9 @@ The Typeix CLI is a command-line interface tool that helps you to initialize, de
 your Typeix applications.
 
 # Installation
-$ npm install -g @typeix/schematics
+```shell
+npm install -g @typeix/schematics
+```
 
 # Usage
 Learn more in the official documentation.
