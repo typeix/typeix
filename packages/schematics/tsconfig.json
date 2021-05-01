@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2019",
+    "typeRoots": ["node_modules/@types"],
+    "outDir": "dist",
+    "experimentalDecorators": true,
+    "declaration": true,
+    "removeComments": true,
+    "sourceMap": false,
+    "skipLibCheck": true
+  },
+  "include": ["src/utils", "src/lib", "src/index.ts"],
+  "exclude": ["node_modules", "src/**/*.test.ts", "src/**/files/**"]
+}
