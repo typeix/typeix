@@ -6,10 +6,10 @@
  * found in the LICENSE file at https://github.com/nestjs/schematics/blob/master/LICENSE
  */
 
-import { Path } from '@angular-devkit/core';
-import { capitalize, classify } from '@angular-devkit/core/src/utils/strings';
-import { ModuleImportDeclarator } from './module-import.declarator';
-import { ModuleMetadataDeclarator } from './module-metadata.declarator';
+import { Path } from "@angular-devkit/core";
+import { capitalize, classify } from "@angular-devkit/core/src/utils/strings";
+import { ModuleImportDeclarator } from "./module-import.declarator";
+import { ModuleMetadataDeclarator } from "./module-metadata.declarator";
 
 export interface DeclarationOptions {
   metadata: string;
@@ -28,7 +28,7 @@ export interface DeclarationOptions {
 export class ModuleDeclarator {
   constructor(
     private imports: ModuleImportDeclarator = new ModuleImportDeclarator(),
-    private metadata: ModuleMetadataDeclarator = new ModuleMetadataDeclarator(),
+    private metadata: ModuleMetadataDeclarator = new ModuleMetadataDeclarator()
   ) {}
 
   public declare(content: string, options: DeclarationOptions): string {

@@ -11,11 +11,11 @@ import {
   SchematicContext,
   template,
   Tree,
-  url,
+  url
 } from "@angular-devkit/schematics";
 import {
   DeclarationOptions,
-  ModuleDeclarator,
+  ModuleDeclarator
 } from "../../utils";
 import { ModuleFinder } from "../../utils";
 import { Location, NameParser } from "../../utils";
@@ -33,8 +33,8 @@ export function main(options: ControllerOptions): Rule {
       chain([
         mergeSourceRoot(options),
         mergeWith(generate(options)),
-        addDeclarationToModule(options),
-      ]),
+        addDeclarationToModule(options)
+      ])
     )(tree, context);
   };
 }
@@ -62,9 +62,9 @@ function generate(options: ControllerOptions) {
       options.spec ? noop() : filter(path => !path.endsWith(".spec.ts")),
       template({
         ...strings,
-        ...options,
+        ...options
       }),
-      move(options.path),
+      move(options.path)
     ])(context);
 }
 
@@ -75,7 +75,7 @@ function addDeclarationToModule(options: ControllerOptions): Rule {
     }
     options.module = new ModuleFinder(tree).find({
       name: options.name,
-      path: options.path as Path,
+      path: options.path as Path
     });
     if (!options.module) {
       return tree;
@@ -84,7 +84,7 @@ function addDeclarationToModule(options: ControllerOptions): Rule {
     const declarator: ModuleDeclarator = new ModuleDeclarator();
     tree.overwrite(
       options.module,
-      declarator.declare(content, options as DeclarationOptions),
+      declarator.declare(content, options as DeclarationOptions)
     );
     return tree;
   };

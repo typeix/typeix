@@ -6,14 +6,14 @@ import {
   Rule,
   Source,
   template,
-  url,
+  url
 } from "@angular-devkit/schematics";
 import { basename, parse } from "path";
 import {
   DEFAULT_AUTHOR,
   DEFAULT_DESCRIPTION,
   DEFAULT_LANGUAGE,
-  DEFAULT_VERSION,
+  DEFAULT_VERSION
 } from "../defaults";
 import { ApplicationOptions } from "./application.schema";
 
@@ -63,8 +63,8 @@ function generate(options: ApplicationOptions, path: string): Source {
   return apply(url(join("./files" as Path, options.language)), [
     template({
       ...strings,
-      ...options,
+      ...options
     }),
-    move(path),
+    move(path)
   ]);
 }

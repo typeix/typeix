@@ -10,5 +10,5 @@ export const DEFAULT_DIR_ENTRY_APP = "main";
 export const TEST_ENV = "test";
 export const PROJECT_TYPE = {
   LIBRARY: "library",
-  APPLICATION: "application",
+  APPLICATION: "application"
 };

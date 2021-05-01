@@ -8,8 +8,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { JsonValue } from '@angular-devkit/core';
-import { Tree } from '@angular-devkit/schematics';
+import { JsonValue } from "@angular-devkit/core";
+import { Tree } from "@angular-devkit/schematics";
 import {
   Node,
   ParseError,
@@ -18,8 +18,8 @@ import {
   getNodeValue,
   modify,
   parseTree,
-  printParseErrorCode,
-} from 'jsonc-parser';
+  printParseErrorCode
+} from "jsonc-parser";
 
 export type InsertionIndex = (properties: string[]) => number;
 export type JSONPath = (string | number)[];
@@ -44,7 +44,7 @@ export class JSONFile {
 
     const errors: ParseError[] = [];
     this._jsonAst = parseTree(this.content, errors, {
-      allowTrailingComma: true,
+      allowTrailingComma: true
     });
     if (errors.length) {
       const { error, offset } = errors[0];
@@ -52,8 +52,8 @@ export class JSONFile {
         `Failed to parse "${
           this.path
         }" as JSON AST Object. ${printParseErrorCode(
-          error,
-        )} at location: ${offset}.`,
+          error
+        )} at location: ${offset}.`
       );
     }
 
@@ -78,7 +78,7 @@ export class JSONFile {
   modify(
     jsonPath: JSONPath,
     value: JsonValue | undefined,
-    insertInOrder?: InsertionIndex | false,
+    insertInOrder?: InsertionIndex | false
   ): void {
     let getInsertionIndex: InsertionIndex | undefined;
     if (insertInOrder === undefined) {
@@ -93,8 +93,8 @@ export class JSONFile {
       getInsertionIndex,
       formattingOptions: {
         insertSpaces: true,
-        tabSize: 2,
-      },
+        tabSize: 2
+      }
     });
 
     this.content = applyEdits(this.content, edits);

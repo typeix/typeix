@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://github.com/nestjs/schematics/blob/master/LICENSE
  */
 
-import { basename, dirname, normalize, Path } from '@angular-devkit/core';
+import { basename, dirname, normalize, Path } from "@angular-devkit/core";
 
 export interface ParseOptions {
   name: string;
@@ -22,13 +22,13 @@ export class NameParser {
   public parse(options: ParseOptions): Location {
     const nameWithoutPath: string = basename(options.name as Path);
     const namePath: string = dirname(
-      (options.path === undefined ? '' : options.path)
-        .concat('/')
-        .concat(options.name) as Path,
+      (options.path === undefined ? "" : options.path)
+        .concat("/")
+        .concat(options.name) as Path
     );
     return {
       name: nameWithoutPath,
-      path: normalize('/'.concat(namePath)),
+      path: normalize("/".concat(namePath))
     };
   }
 }

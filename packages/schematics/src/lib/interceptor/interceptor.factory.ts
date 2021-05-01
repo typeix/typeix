@@ -11,7 +11,7 @@ import {
   SchematicsException,
   Source,
   template,
-  url,
+  url
 } from "@angular-devkit/schematics";
 import { Location, NameParser } from "../../utils";
 import { mergeSourceRoot } from "../../utils";
@@ -49,8 +49,8 @@ function generate(options: InterceptorOptions): Source {
       options.spec ? noop() : filter(path => !path.endsWith(".spec.ts")),
       template({
         ...strings,
-        ...options,
+        ...options
       }),
-      move(options.path),
+      move(options.path)
     ])(context);
 }

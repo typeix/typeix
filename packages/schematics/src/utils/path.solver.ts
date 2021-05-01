@@ -6,18 +6,18 @@
  * found in the LICENSE file at https://github.com/nestjs/schematics/blob/master/LICENSE
  */
 
-import { basename, dirname, Path, relative } from '@angular-devkit/core';
+import { basename, dirname, Path, relative } from "@angular-devkit/core";
 
 export class PathSolver {
   public relative(from: Path, to: Path): string {
-    const placeholder = '/placeholder';
+    const placeholder = "/placeholder";
     const relativeDir = relative(
       dirname((placeholder + from) as Path),
-      dirname((placeholder + to) as Path),
+      dirname((placeholder + to) as Path)
     );
-    return (relativeDir.startsWith('.')
+    return (relativeDir.startsWith(".")
       ? relativeDir
-      : './' + relativeDir
-    ).concat(relativeDir.length === 0 ? basename(to) : '/' + basename(to));
+      : "./" + relativeDir
+    ).concat(relativeDir.length === 0 ? basename(to) : "/" + basename(to));
   }
 }
