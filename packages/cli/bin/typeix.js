@@ -17,16 +17,26 @@ program
   .usage("<command> [options]")
   .helpOption("-h, --help", "Output usage information.");
 
-if (fs.existsSync(path.join(process.cwd(), ...npm_segments, ...segments))) {
-  const pkg = require(path.posix.join(process.cwd(), ...npm_segments, ...segments));
-  pkg.setup(program);
+if (packageExists([...npm_segments, ...segments])) {
+  loadPackage(program, [...npm_segments, ...segments])
+} else if (packageExists(["..",  ...segments])) {
+  loadPackage(program, ["..",  ...segments])
 } else {
-  const pkg = require(path.posix.join(process.cwd(), ...segments));
-  pkg.setup(program);
+  loadPackage(program, [...segments])
 }
 
 program.parse(process.argv);
 
 if (!process.argv.slice(2).length) {
   program.outputHelp();
+}
+
+function packageExists(segments) {
+  const pathToLoad = path.normalize(path.join(process.cwd(), ...segments));
+  return fs.existsSync(pathToLoad);
+}
+
+function loadPackage(commander, segments) {
+  const pathToLoad = path.posix.join(process.cwd(), ...segments);
+  require(path.normalize(pathToLoad)).setup(commander);
 }

@@ -3,11 +3,10 @@ import {Injectable} from "@typeix/di";
 import * as schematics from "./schematics.json";
 import {isBoolean, isFalsy, isString, isTruthy} from "@typeix/utils";
 import {strings} from "@angular-devkit/core";
+import * as chalk from "chalk";
+import * as Table from "cli-table3";
+import {Schematic} from "../interfaces";
 
-interface Schematic {
-  name: string;
-  value: boolean | string;
-}
 
 @Injectable()
 export class SchematicRunner extends AbstractRunner {
@@ -64,7 +63,13 @@ export class SchematicRunner extends AbstractRunner {
     return "";
   }
 
-
+  /**
+   * Execute
+   * @param collection
+   * @param name
+   * @param options
+   * @param extraFlags
+   */
   public async execute(collection: string, name: string, options: Array<Schematic>, extraFlags?: string): Promise<Buffer> {
     const optionStr = options.reduce((line, item) =>
       line.concat(` ${SchematicRunner.getOption(item.name, item.value)}`), ""
@@ -74,4 +79,34 @@ export class SchematicRunner extends AbstractRunner {
     return await this.run(command);
   }
 
+  /**
+   * Get description
+   */
+  public getDescription(): string {
+    const leftMargin = "        ";
+    const table: any = new Table( {
+      head: ["name", "alias", "description"],
+      chars: {
+        "left": leftMargin.concat("│"),
+        "top-left": leftMargin.concat("┌"),
+        "bottom-left": leftMargin.concat("└"),
+        "mid": "",
+        "left-mid": "",
+        "mid-mid": "",
+        "right-mid": ""
+      }
+    });
+    for (const schematic of schematics) {
+      table.push([
+        chalk.green(schematic.name),
+        chalk.cyan(schematic.alias),
+        schematic.description
+      ]);
+    }
+    return (
+      "Generate a Typeix element.\n" +
+      "  Available schematics:\n" +
+      table.toString()
+    );
+  }
 }

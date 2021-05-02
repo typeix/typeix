@@ -25,6 +25,7 @@ export const MESSAGES = {
   PACKAGE_MANAGER_INSTALLATION_FAILED: `${EMOJIS.SCREAM}  Packages installation failed:`,
   // tslint:disable-next-line:max-line-length
   INFORMATION_PACKAGE_MANAGER_FAILED: `${EMOJIS.SMIRK}  cannot read your project package.json file, are you inside your project directory?`,
+  INFORMATION_CLI_MANAGER_FAILED: `${EMOJIS.SMIRK}  cannot read your project "Typeix CLI" file, are you inside your project directory?`,
   LIBRARY_INSTALLATION_FAILED_BAD_PACKAGE: (name: string) =>
     `Unable to install package ${name}. Please check package name.`
 };
