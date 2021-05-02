@@ -18,6 +18,7 @@ export class AddCommand implements IAfterConstruct {
   afterConstruct(): void {
     this.cli.commander()
       .command("add <package>")
+      .alias("a")
       .allowUnknownOption()
       .description("Adds package to your project.")
       .option(

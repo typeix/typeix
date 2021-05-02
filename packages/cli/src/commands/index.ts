@@ -29,13 +29,13 @@ export function setup(program: CommanderStatic): Injector {
   ]);
   verifyProviders(
     [
-      AddCommand,
-      BuildCommand,
-      GenerateCommand,
-      InfoCommand,
       NewCommand,
+      AddCommand,
+      UpdateCommand,
       StartCommand,
-      UpdateCommand
+      BuildCommand,
+      InfoCommand,
+      GenerateCommand
     ]
   ).forEach(provider => injector.createAndResolve(provider, providers));
   return injector;

@@ -13,7 +13,6 @@ export class InfoCommand implements IAfterConstruct {
   afterConstruct() {
     this.cli.commander()
       .command("info")
-      .alias("i")
       .description("Display Typeix project details.")
       .action(() => this.handler());
   }
