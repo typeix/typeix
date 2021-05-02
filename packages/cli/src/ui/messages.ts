@@ -14,9 +14,6 @@ export const MESSAGES = {
   RUNNER_EXECUTION_ERROR: (command: string) => `\nFailed to execute command: ${command}`,
   PACKAGE_MANAGER_QUESTION: `Which package manager would you ${EMOJIS.HEART}  to use?`,
   PACKAGE_MANAGER_INSTALLATION_IN_PROGRESS: `Installation in progress... ${EMOJIS.COFFEE}`,
-  PACKAGE_MANAGER_UPDATE_IN_PROGRESS: `Installation in progress... ${EMOJIS.COFFEE}`,
-  PACKAGE_MANAGER_UPGRADE_IN_PROGRESS: `Installation in progress... ${EMOJIS.COFFEE}`,
-  PACKAGE_MANAGER_PRODUCTION_INSTALLATION_IN_PROGRESS: `Package installation in progress... ${EMOJIS.COFFEE}`,
   GIT_INITIALIZATION_ERROR: "Git repository has not been initialized",
   PACKAGE_MANAGER_INSTALLATION_SUCCEED: (name: string) =>
     name !== "."
