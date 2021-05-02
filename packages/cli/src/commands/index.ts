@@ -1,4 +1,4 @@
-import {Injector, verifyProvider, verifyProviders} from "@typeix/di";
+import {Injector, verifyProviders} from "@typeix/di";
 import {CommanderStatic} from "commander";
 import {CliTools} from "./cli-tools";
 import {InfoCommand} from "./info.command";
@@ -7,6 +7,11 @@ import {SchematicRunner} from "./runners/schematic.runner";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
 import {GitRunner} from "./runners/git.runner";
+import {AddCommand} from "./add.command";
+import {BuildCommand} from "./build.command";
+import {GenerateCommand} from "./generate.command";
+import {StartCommand} from "./start.command";
+import {UpdateCommand} from "./update.command";
 
 
 export function setup(program: CommanderStatic): Injector {
@@ -14,13 +19,24 @@ export function setup(program: CommanderStatic): Injector {
     {
       provide: "program",
       useValue: program
-    },
+    }
+  ]);
+  const providers = verifyProviders([
     GitRunner,
     SchematicRunner,
     NpmRunner,
     YarnRunner
   ]);
-  injector.createAndResolve(verifyProvider(InfoCommand), []);
-  injector.createAndResolve(verifyProvider(NewCommand), []);
+  verifyProviders(
+    [
+      AddCommand,
+      BuildCommand,
+      GenerateCommand,
+      InfoCommand,
+      NewCommand,
+      StartCommand,
+      UpdateCommand
+    ]
+  ).forEach(provider => injector.createAndResolve(provider, providers));
   return injector;
 }

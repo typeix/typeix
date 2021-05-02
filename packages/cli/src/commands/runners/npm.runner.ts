@@ -7,27 +7,33 @@ export class NpmRunner extends AbstractPackageRunner {
     super("npm", args);
   }
 
-  public async install(directory: string,  args = "--silent"): Promise<boolean> {
+  public async install(directory: string,  args = ""): Promise<Buffer> {
     return await super.pkgInstall("install " + args, directory);
   }
 
-  public async add(dependencies: Array<string>, args = "--save", tag?: string): Promise<boolean> {
-    return await super.pkgProgress("install " + args, dependencies, tag);
+  public async add(dependencies: string, args = "--save"): Promise<Buffer> {
+    return await super.pkgProgress("install " + args, dependencies);
   }
 
-  public async update(dependencies: Array<string>, args = "--save", tag?: string): Promise<boolean> {
-    return await super.pkgProgress("update " + args, dependencies, tag);
+  public async update(dependencies: string, args = "--save"): Promise<Buffer> {
+    return await super.pkgProgress("update " + args, dependencies);
   }
 
-  public async delete(dependencies: Array<string>, args = "--save", tag?: string): Promise<boolean> {
-    return await super.pkgProgress("uninstall " + args, dependencies, tag);
+  public async delete(dependencies: string, args = "--save"): Promise<Buffer> {
+    return await super.pkgProgress("uninstall " + args, dependencies);
+  }
+
+  public async upgrade(dependencies: string, args = ""): Promise<Buffer> {
+    const deletedResult = await this.delete(dependencies, args);
+    const installedResult = await this.add(dependencies, args);
+    return Buffer.concat([deletedResult, installedResult]);
   }
 
   public async list(isDevelopment: false): Promise<Array<Dependency>> {
     return await super.pkgList(isDevelopment);
   }
 
-  public async version(): Promise<string> {
+  public async version(): Promise<Buffer> {
     return await super.pkgVersion();
   }
 }

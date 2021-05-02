@@ -8,7 +8,7 @@ export abstract class AbstractRunner {
 
   protected constructor(protected binary: string, protected args: string[] = []) {}
 
-  public async run(command: string, collect = false, cwd: string = process.cwd()): Promise<null | string> {
+  public async run(command: string, collect = false, cwd: string = process.cwd()): Promise<Buffer> {
     const args: string[] = [command];
     const options: SpawnOptions = {
       cwd,
@@ -16,26 +16,26 @@ export abstract class AbstractRunner {
       shell: true
     };
     const child: ChildProcess = spawn(
-      this.binary,
+      `${this.binary}`,
       [...this.args, ...args],
       options
     );
-    return new Promise<null | string>((resolve, reject) => {
+    return new Promise<Buffer>((resolve, reject) => {
+      const data = [], error = [];
       if (collect) {
-        child.stdout!.on("data", (data) =>
-          resolve(data.toString().replace(/\r\n|\n/, ""))
-        );
+        child.stdout.on("data", chunk => data.push(chunk));
+        child.stderr.on("data", chunk => error.push(chunk));
       }
-      child.on("close", (code) => {
+      child.on("close", code => {
         if (code === 0) {
-          resolve(null);
+          resolve(Buffer.concat(data));
         } else {
           console.error(
             chalk.red(
               MESSAGES.RUNNER_EXECUTION_ERROR(`${this.binary} ${command}`)
             )
           );
-          reject();
+          reject(Buffer.concat(error));
         }
       });
     });

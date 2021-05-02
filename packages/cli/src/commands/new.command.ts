@@ -3,20 +3,14 @@ import * as inquirer from "inquirer";
 import {Answers, Question} from "inquirer";
 import {CliTools} from "./cli-tools";
 import {MESSAGES} from "../ui";
-import {isDefined, isEqual, isFalsy} from "@typeix/utils";
+import {isDefined, isEqual, isFalsy, isUndefined} from "@typeix/utils";
 import {SchematicRunner} from "./runners/schematic.runner";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
 import {dasherize} from "@angular-devkit/core/src/utils/strings";
 import * as chalk from "chalk";
 import {GitRunner} from "./runners/git.runner";
-
-
-interface Option {
-  name: string;
-  value: boolean | string;
-  options?: any;
-}
+import {Option} from "./interfaces";
 
 @Injectable()
 export class NewCommand implements IAfterConstruct {
@@ -91,10 +85,7 @@ export class NewCommand implements IAfterConstruct {
           value: command.collection || "@typeix/schematics"
         });
 
-        const inputs = [];
-        inputs.push({name: "name", value: name});
-
-        return await this.handle(inputs, options);
+        return await this.handle([{name: "name", value: name}], options);
       });
   }
 
@@ -107,14 +98,12 @@ export class NewCommand implements IAfterConstruct {
   private async handle(inputs: Array<Option>, options: Array<Option>): Promise<any> {
     const directoryOption = options.find(option => option.name === "directory");
     const isDryRunEnabled = <boolean>options.find(option => option.name === "dry-run")?.value;
-    const applicationName = inputs.find(input => input.name === "name")!;
+    const applicationName = inputs.find(input => input.name === "name");
 
     await this.checkInputs(inputs, applicationName);
-    await this.createApplicationFiles(inputs, options).catch(e => {
-      console.error(e);
+    await this.createApplicationFiles(inputs, options).catch(() => {
       process.exit(1);
     });
-
     const shouldSkipInstall = options.some(option => option.name === "skip-install" && option.value === true);
     const shouldSkipGit = options.some(option => option.name === "skip-git" && option.value === true);
     const projectDirectory = directoryOption?.value ?? dasherize(<string>applicationName.value);
@@ -159,12 +148,15 @@ export class NewCommand implements IAfterConstruct {
           )
         ];
         const prompt = inquirer.createPromptModule();
-        inputPackageManager = await prompt(questions);
+        inputPackageManager = Reflect.get(
+          await prompt(questions),
+          "package-manager"
+        );
       }
       const pkgManager: YarnRunner | NpmRunner = Reflect.get(this, inputPackageManager);
-      await pkgManager.install(installDirectory);
+      this.cli.print(await pkgManager.install(installDirectory));
     } catch (error) {
-      console.error(chalk.red(error.message));
+      this.cli.print(error, true);
     }
   }
 
@@ -176,14 +168,8 @@ export class NewCommand implements IAfterConstruct {
    */
   private async createApplicationFiles(inputs: Array<Option>, options: Array<Option>): Promise<void> {
     const collectionName = <string>options.find(item => item.name === "collection" && isDefined(item.value))!.value;
-    const schematicOptions = inputs.concat(options).reduce(
-      (items: Array<any>, option: Option) => {
-        if (!isEqual(option.name, "skip-install") && isEqual(option.value, "package-manager")) {
-          items.push({name: option.name, value: option.value});
-        }
-        return items;
-      },
-      []
+    const schematicOptions = inputs.concat(options).filter(item =>
+      !isEqual(item.name, "skip-install") && !isEqual(item.value, "package-manager")
     );
     await this.schematic.execute(collectionName, "application", schematicOptions);
     console.info();
@@ -199,15 +185,15 @@ export class NewCommand implements IAfterConstruct {
     console.info(MESSAGES.PROJECT_INFORMATION_START);
     console.info();
     const prompt: inquirer.PromptModule = inquirer.createPromptModule();
-    if (!nameInput!.value) {
+    if (!nameInput?.value) {
       const message = "What name would you like to use for the new project?";
       const questions = [
         this.cli.createInput("name", message, "typeix-app")
       ];
-      const answers: Answers = await prompt(questions as ReadonlyArray<Question>);
+      const answers: Answers = await prompt(questions);
       inputs.forEach(
         item => {
-          if (isDefined(item.value)) {
+          if (isUndefined(item.value)) {
             item.value = Reflect.get(answers, item.name);
           }
         }

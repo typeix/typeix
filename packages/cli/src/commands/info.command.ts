@@ -14,7 +14,7 @@ export class InfoCommand implements IAfterConstruct {
     this.cli.commander()
       .command("info")
       .alias("i")
-      .description("Display Nest project details.")
+      .description("Display Typeix project details.")
       .action(() => this.handler());
   }
 

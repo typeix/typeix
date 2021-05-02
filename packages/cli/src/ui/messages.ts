@@ -22,7 +22,7 @@ export const MESSAGES = {
   GET_STARTED_INFORMATION: `${EMOJIS.POINT_RIGHT}  Get started with the following commands:`,
   CHANGE_DIR_COMMAND: (name: string) => `$ cd ${name}`,
   START_COMMAND: (name: string) => `$ ${name} run start`,
-  PACKAGE_MANAGER_INSTALLATION_FAILED: `${EMOJIS.SCREAM}  Packages installation failed, see above`,
+  PACKAGE_MANAGER_INSTALLATION_FAILED: `${EMOJIS.SCREAM}  Packages installation failed:`,
   // tslint:disable-next-line:max-line-length
   INFORMATION_PACKAGE_MANAGER_FAILED: `${EMOJIS.SMIRK}  cannot read your project package.json file, are you inside your project directory?`,
   LIBRARY_INSTALLATION_FAILED_BAD_PACKAGE: (name: string) =>
@@ -46,7 +46,7 @@ export const CLI_ERRORS = {
       "Could not find TypeScript configuration file in path: " +
       path + "! " +
       "Please, ensure that you are running this command " +
-      "in the appropriate directory (inside Nest workspace)."
+      "in the appropriate directory (inside Typeix workspace)."
     ].join(""),
   INVALID_COMMAND: `\n${PREFIXES.ERROR} Invalid command: ${chalk.red("%s")}`
 

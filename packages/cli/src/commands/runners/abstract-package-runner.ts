@@ -6,7 +6,6 @@ import {MESSAGES} from "../../ui";
 import {join} from "path";
 import {dasherize} from "@angular-devkit/core/src/utils/strings";
 import * as chalk from "chalk";
-import {isDefined} from "@typeix/utils";
 
 const frames = ["▹▹▹▹▹", "▸▹▹▹▹", "▹▸▹▹▹", "▹▹▸▹▹", "▹▹▹▸▹", "▹▹▹▹▸"];
 const interval = 120;
@@ -21,7 +20,7 @@ export abstract class AbstractPackageRunner extends AbstractRunner {
 
   @Inject() cli: CliTools;
 
-  protected async pkgInstall(command: string, directory: string): Promise<boolean> {
+  protected async pkgInstall(command: string, directory: string): Promise<Buffer> {
     const spinner = ora({
       spinner: {
         interval,
@@ -31,7 +30,7 @@ export abstract class AbstractPackageRunner extends AbstractRunner {
     });
     spinner.start();
     try {
-      await this.run(
+      const result = await this.run(
         command,
         true,
         join(process.cwd(), dasherize(directory))
@@ -44,15 +43,15 @@ export abstract class AbstractPackageRunner extends AbstractRunner {
       console.info(chalk.gray(MESSAGES.CHANGE_DIR_COMMAND(directory)));
       console.info(chalk.gray(MESSAGES.START_COMMAND(this.binary)));
       console.info();
-      return true;
-    } catch {
+      return result;
+    } catch (e) {
       spinner.fail();
       console.error(chalk.red(MESSAGES.PACKAGE_MANAGER_INSTALLATION_FAILED));
-      return false;
+      return Promise.reject(e);
     }
   }
 
-  protected async pkgProgress(command: string, dependencies: Array<string>, tag?: string): Promise<boolean> {
+  protected async pkgProgress(command: string, dependencies: string): Promise<Buffer> {
     const spinner = ora({
       spinner: {
         interval,
@@ -62,13 +61,12 @@ export abstract class AbstractPackageRunner extends AbstractRunner {
     });
     spinner.start();
     try {
-      const args: string = isDefined(tag) ? dependencies.map(dependency => `${dependency}@${tag}`).join(" ") : dependencies.join(" ");
-      await this.run(`${command} ${args}`, true);
+      const result = await this.run(`${command} ${dependencies}`, true);
       spinner.succeed();
-      return true;
-    } catch {
+      return result;
+    } catch (e) {
       spinner.fail();
-      return false;
+      return Promise.reject(e);
     }
   }
 
@@ -82,7 +80,7 @@ export abstract class AbstractPackageRunner extends AbstractRunner {
     return dependencies;
   }
 
-  protected async pkgVersion(): Promise<string> {
+  protected async pkgVersion(): Promise<Buffer> {
     return await this.run("--version", true);
   }
 }

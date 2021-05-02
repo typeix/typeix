@@ -1,7 +1,7 @@
 import {AbstractRunner} from "./abstract-runner";
 import {Injectable} from "@typeix/di";
 import * as schematics from "./schematics.json";
-import {isBoolean, isFalsy, isString} from "@typeix/utils";
+import {isBoolean, isFalsy, isString, isTruthy} from "@typeix/utils";
 import {strings} from "@angular-devkit/core";
 
 interface Schematic {
@@ -58,12 +58,14 @@ export class SchematicRunner extends AbstractRunner {
     } else if (isBoolean(value)) {
       const str = strings.dasherize(name);
       return value ? `--${str}` : `--no-${str}`;
+    } else if (isTruthy(value)) {
+      return `--${strings.dasherize(name)}=${value}`;
     }
-    return `--${strings.dasherize(name)}=${value}`;
+    return "";
   }
 
 
-  public async execute(collection: string, name: string, options: Array<Schematic>, extraFlags?: string): Promise<string> {
+  public async execute(collection: string, name: string, options: Array<Schematic>, extraFlags?: string): Promise<Buffer> {
     const optionStr = options.reduce((line, item) =>
       line.concat(` ${SchematicRunner.getOption(item.name, item.value)}`), ""
     );

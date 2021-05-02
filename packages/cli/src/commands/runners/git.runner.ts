@@ -5,8 +5,6 @@ import * as chalk from "chalk";
 import {MESSAGES} from "../../ui";
 import {promisify} from "util";
 import * as fs from "fs";
-const defaultGitIgnore = require("./gitignore.txt");
-
 
 @Injectable()
 export class GitRunner extends AbstractRunner {
@@ -22,7 +20,7 @@ export class GitRunner extends AbstractRunner {
   }
 
   async createGitIgnoreFile(dir: string, content?: string) {
-    const fileContent = content ?? defaultGitIgnore;
+    const fileContent = content ?? fs.readFileSync(join(process.cwd(), "gitignore.txt"));
     const filePath = join(process.cwd(), dir, ".gitignore");
     return promisify(fs.writeFile)(filePath, fileContent);
   }
