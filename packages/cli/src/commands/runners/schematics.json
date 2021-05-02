@@ -1,0 +1,37 @@
+[
+  {
+    "name": "application",
+    "alias": "application",
+    "description": "Generate a new application workspace"
+  },
+  {
+    "name": "controller",
+    "alias": "ctl",
+    "description": "Generate a controller declaration"
+  },
+  {
+    "name": "interceptor",
+    "alias": "int",
+    "description": "Generate an interceptor declaration"
+  },
+  {
+    "name": "module",
+    "alias": "mdl",
+    "description": "Generate a module declaration"
+  },
+  {
+    "name": "provider",
+    "alias": "prv",
+    "description": "Generate a provider declaration"
+  },
+  {
+    "name": "service",
+    "alias": "srv",
+    "description": "Generate a service declaration"
+  },
+  {
+    "name": "sub-app",
+    "alias": "sapp",
+    "description": "Generate a new application within a monorepo"
+  }
+]

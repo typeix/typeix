@@ -1,4 +1,4 @@
-import {AfterConstruct, Inject, Injectable} from "@typeix/di";
+import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
 import * as chalk from "chalk";
 import {BANNER} from "../ui";
 import osName = require("os-name");
@@ -6,12 +6,11 @@ import {platform, release} from "os";
 import {CliTools} from "./cli-tools";
 
 @Injectable()
-export class InfoCommand {
+export class InfoCommand implements IAfterConstruct {
 
   @Inject() cli: CliTools;
 
-  @AfterConstruct()
-  onProgramInit() {
+  afterConstruct() {
     this.cli.commander()
       .command("info")
       .alias("i")

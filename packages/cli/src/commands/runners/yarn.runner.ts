@@ -1,15 +1,15 @@
-import {AbstractRunner, Dependency} from "./abstract-runner";
 import {Injectable} from "@typeix/di";
+import {AbstractPackageRunner, Dependency} from "./abstract-package-runner";
 
 
 @Injectable()
-export class YarnRunner extends AbstractRunner {
+export class YarnRunner extends AbstractPackageRunner {
   constructor(args: string[] = []) {
     super("yarn", args);
   }
 
-  public async install(directory: string, packageManager: string, args = "--silent"): Promise<boolean> {
-    return await super.pkgInstall("install " + args, directory, packageManager);
+  public async install(directory: string,  args = "--silent"): Promise<boolean> {
+    return await super.pkgInstall("install " + args, directory);
   }
 
   public async add(dependencies: Array<string>, args = "", tag?: string): Promise<boolean> {

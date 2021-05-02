@@ -25,7 +25,7 @@ export class CliTools {
   }
 
   async getProjectPackage(): Promise<any> {
-    return new Promise<{[key: string]: string}>((resolve, reject) => {
+    return new Promise<{ [key: string]: string }>((resolve, reject) => {
       readFile(
         join(process.cwd(), "package.json"),
         (error: NodeJS.ErrnoException | null, buffer: Buffer) => {
@@ -37,5 +37,23 @@ export class CliTools {
         }
       );
     });
+  }
+
+  createInput(name: string, message: string, defaultAnswer: string) {
+    return {
+      type: "input",
+      name,
+      message,
+      default: defaultAnswer
+    };
+  }
+
+  createSelect(name: string, message: string, choices: string[]) {
+    return {
+      type: "list",
+      name,
+      message,
+      choices
+    };
   }
 }
