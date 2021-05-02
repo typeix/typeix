@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "./build",
+    "baseUrl": "./",
+    "lib": [
+      "es2019"
+    ],
+    "module": "commonjs",
+    "target": "es6",
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "strict": true
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
