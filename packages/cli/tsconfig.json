@@ -2,20 +2,22 @@
   "compilerOptions": {
     "declaration": true,
     "outDir": "./build",
-    "baseUrl": "./",
-    "lib": [
-      "es2019"
-    ],
+    "baseUrl": "./src",
     "module": "commonjs",
-    "target": "es6",
-    "skipLibCheck": true,
-    "sourceMap": false,
-    "strict": true
+    "target": "es2019",
+    "diagnostics": false,
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "noImplicitAny": false
   },
   "include": [
     "src"
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "compileOnSave": true
 }
