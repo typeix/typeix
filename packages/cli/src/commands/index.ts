@@ -12,6 +12,7 @@ import {BuildCommand} from "./build.command";
 import {GenerateCommand} from "./generate.command";
 import {StartCommand} from "./start.command";
 import {UpdateCommand} from "./update.command";
+import {RemoveCommand} from "./remove.command";
 
 
 export function setup(program: CommanderStatic): Injector {
@@ -32,6 +33,7 @@ export function setup(program: CommanderStatic): Injector {
       NewCommand,
       AddCommand,
       UpdateCommand,
+      RemoveCommand,
       StartCommand,
       BuildCommand,
       InfoCommand,
