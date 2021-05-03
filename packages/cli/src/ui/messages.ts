@@ -2,6 +2,14 @@ import * as chalk from "chalk";
 import { EMOJIS } from "./emojis";
 
 /**
+ * Prefixes
+ */
+export const PREFIXES = {
+  ERROR: chalk.bgRgb(210, 0, 75).bold.rgb(0, 0, 0)(" Error "),
+  INFO: chalk.bgRgb(60, 190, 100).bold.rgb(0, 0, 0)(" Info ")
+};
+
+/**
  * General info messages
  */
 export const MESSAGES = {
@@ -27,20 +35,8 @@ export const MESSAGES = {
   INFORMATION_PACKAGE_MANAGER_FAILED: `${EMOJIS.SMIRK}  cannot read your project package.json file, are you inside your project directory?`,
   INFORMATION_CLI_MANAGER_FAILED: `${EMOJIS.SMIRK}  cannot read your project "Typeix CLI" file, are you inside your project directory?`,
   LIBRARY_INSTALLATION_FAILED_BAD_PACKAGE: (name: string) =>
-    `Unable to install package ${name}. Please check package name.`
-};
-/**
- * Prefixes
- */
-export const PREFIXES = {
-  ERROR: chalk.bgRgb(210, 0, 75).bold.rgb(0, 0, 0)(" Error "),
-  INFO: chalk.bgRgb(60, 190, 100).bold.rgb(0, 0, 0)(" Info ")
-};
-/**
- * Cli errors
- */
-export const CLI_ERRORS = {
-  MISSING_TYPESCRIPT: (path: string) =>
+    `Unable to install package ${name}. Please check package name.`,
+  MISSING_TYPESCRIPT_PATH: (path: string) =>
     [
       "Could not find TypeScript configuration file in path: " +
       path + "! " +

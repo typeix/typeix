@@ -79,18 +79,17 @@ export class GenerateCommand implements IAfterConstruct {
 
   /**
    * Handle
-   * @param inputs
    * @param options
    * @private
    */
-  private async handle(inputs: Array<Option>): Promise<any> {
+  private async handle(options: Array<Option>): Promise<any> {
     const configuration = await this.cli.getConfiguration();
-    const collectionOption = <string>this.cli.getOptionValue(inputs, "collection");
-    const schematic = <string>this.cli.getOptionValue(inputs, "schematic");
-    const appName = <string>this.cli.getOptionValue(inputs, "project");
-    const spec = this.cli.getOption(inputs, "spec");
+    const collectionOption = <string>this.cli.getOptionValue(options, "collection");
+    const schematic = <string>this.cli.getOptionValue(options, "schematic");
+    const appName = <string>this.cli.getOptionValue(options, "project");
+    const spec = this.cli.getOption(options, "spec");
 
-    const schematicOptions: Array<Schematic> = this.cli.filterOptions(inputs, ["schematic", "spec"])
+    const schematicOptions: Array<Schematic> = this.cli.filterOptions(options, ["schematic", "spec"])
       .concat([
         {
           name: "language",

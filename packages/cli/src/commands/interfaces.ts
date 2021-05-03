@@ -1,3 +1,5 @@
+import {Program, BuilderProgram, CustomTransformerFactory} from "typescript";
+
 export interface Option {
   name: string;
   value: boolean | string;
@@ -9,12 +11,24 @@ export interface Schematic {
   value: boolean | string;
 }
 
+export interface PluginExtension {
+  before: (program: Program | BuilderProgram) => CustomTransformerFactory;
+  after: (program:  Program | BuilderProgram) => CustomTransformerFactory;
+}
+
+export interface PluginOption {
+  name: string;
+  options?: {
+    [key: string]: any;
+  };
+}
+
 interface CompilerOptions {
   tsConfigPath?: string;
   webpack?: boolean;
   webpackConfigPath?: string;
-  plugins?: string[];
-  assets?: string[];
+  plugins?: Array<PluginOption>;
+  assets?: Array<string>;
   deleteOutDir?: boolean;
 }
 

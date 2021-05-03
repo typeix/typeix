@@ -1,13 +1,16 @@
 import {AfterConstruct, Inject, Injectable} from "@typeix/di";
-import {isDefined, isUndefined} from "@typeix/utils";
-import {CLI_ERRORS, MESSAGES} from "../ui";
-import {readdir, readFile} from "fs";
+import {isArray, isDefined, isFunction, isString, isUndefined} from "@typeix/utils";
+import {MESSAGES} from "../ui";
+import {existsSync, readdir, readFile} from "fs";
 import {join} from "path";
 import * as chalk from "chalk";
 import * as inquirer from "inquirer";
+import * as ts from "typescript";
 import {Question} from "inquirer";
 import {CommanderStatic} from "commander";
-import {Option, TypeixCliConfig} from "./interfaces";
+import {Option, PluginExtension, PluginOption, TypeixCliConfig} from "./interfaces";
+import {normalize} from "@angular-devkit/core";
+import {BuilderProgram} from "typescript";
 
 
 const CLI_DEFAULT: TypeixCliConfig = {
@@ -35,7 +38,7 @@ export class CliTools {
   @AfterConstruct()
   onProgramInit() {
     this.commanderStatic.on("command:*", () => {
-      console.error(CLI_ERRORS.INVALID_COMMAND, this.commanderStatic.args.join(" "));
+      console.error(MESSAGES.INVALID_COMMAND, this.commanderStatic.args.join(" "));
       console.log(MESSAGES.AVAILABLE_COMMANDS);
       process.exit(1);
     });
@@ -57,6 +60,107 @@ export class CliTools {
       return files.includes("yarn.lock") ? "yarn" : "npm";
     } catch {
       return "npm";
+    }
+  }
+
+  /**
+   * Compile Typescript
+   * @param name
+   */
+  async compileTypescript(name) {
+    const compiler = await this.loadTypescriptWithConfig(name);
+    const tse = compiler.tse;
+    const createProgram = tse.createIncrementalProgram ?? tse.createProgram;
+    const {options, fileNames, projectReferences} = compiler.tsConfig;
+    const program = createProgram({
+      rootNames: fileNames,
+      projectReferences: projectReferences,
+      options
+    });
+    const before: Array<ts.CustomTransformerFactory> = [];
+    const after: Array<ts.CustomTransformerFactory> = [];
+    const plugins = compiler?.cliConfig?.compilerOptions?.plugins;
+    if (isArray(plugins)) {
+      for (const item of plugins) {
+        const bProgram = (<ts.BuilderProgram>program);
+        const dir = [".", "node_modules"];
+        const plugin = await this.loadBinary<PluginExtension>((<PluginOption>item).name, dir.concat());
+        const currentProgram = isFunction(bProgram.getProgram) ? bProgram.getProgram() : program;
+        before.push(plugin.before(currentProgram));
+        after.push(plugin.after(currentProgram));
+      }
+    }
+    const result = program.emit(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      {
+        before,
+        after,
+        afterDeclarations: []
+      }
+    );
+    const diagnostics = tse.getPreEmitDiagnostics(<ts.Program>program).concat(result.diagnostics);
+
+    if (diagnostics.length > 0) {
+      console.error(
+        tse.formatDiagnosticsWithColorAndContext(diagnostics, {
+          getCanonicalFileName: path => path,
+          getCurrentDirectory: tse.sys.getCurrentDirectory,
+          getNewLine: () => tse.sys.newLine
+        })
+      );
+      console.info(`Found ${diagnostics.length} error(s).` + tse.sys.newLine);
+      process.exit(1);
+    }
+  }
+
+  /**
+   * Load typescript with config
+   * @param
+   */
+  async loadTypescriptWithConfig(name): Promise<{ tse: typeof ts; tsConfig: ts.ParsedCommandLine; cliConfig: TypeixCliConfig }> {
+    const configPath = join(process.cwd(), name);
+    if (!existsSync(configPath)) {
+      throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(name));
+    }
+    const tsExec = await this.loadTypescript();
+    const tsConfig = tsExec.getParsedCommandLineOfConfigFile(
+      configPath,
+      undefined,
+      <ts.ParseConfigFileHost><unknown>tsExec.sys
+    );
+    const cliConfig = await this.getConfiguration();
+    return {
+      tse: tsExec,
+      tsConfig,
+      cliConfig
+    };
+  }
+
+  /**
+   * Loads typescript binary
+   */
+  async loadTypescript(): Promise<typeof ts> {
+    return await this.loadBinary("typescript");
+  }
+
+  /**
+   * Load binary
+   * @param packageName
+   * @param dir
+   */
+  async loadBinary<T>(packageName, dir = [".", "node_modules"]): Promise<T> {
+    try {
+      const tsBinaryPath = require.resolve(packageName, {
+        paths: [normalize(join(process.cwd(), ...dir))]
+      });
+      return require(tsBinaryPath);
+    } catch {
+      throw new Error(
+        `${packageName} could not be found! Please, install "${packageName}" package.`
+      );
     }
   }
 
@@ -158,6 +262,7 @@ export class CliTools {
   compareOptionValue(options: Array<Option>, key: string, compareVal: string | boolean) {
     return this.getOptionValue(options, key) === compareVal;
   }
+
   /**
    * Returns commander option value
    * @param options
@@ -210,7 +315,7 @@ export class CliTools {
    * Prompt question
    * @param questions
    */
-  async doPrompt(questions: Array<Question>): Promise<any>{
+  async doPrompt(questions: Array<Question>): Promise<any> {
     const prompt = inquirer.createPromptModule();
     return await prompt(questions);
   }
