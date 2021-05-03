@@ -65,11 +65,12 @@ export class StartCommand implements IAfterConstruct {
             !!command.watch &&
             !isWebpackEnabled
         });
-        await this.handle([{name: "app", value: app}], options);
+        options.push({name: "app", value: app});
+        await this.handle(options);
       });
   }
 
-  private async handle(inputs: Array<Option>, options: Array<Option>): Promise<any> {
-    console.log(inputs, options);
+  private async handle(options: Array<Option>): Promise<any> {
+    console.log(options);
   }
 }

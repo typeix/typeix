@@ -44,7 +44,6 @@ export class BuildCommand implements IAfterConstruct {
           name: "webpackPath",
           value: command.webpackPath
         });
-
         await this.handle([{name: "app", value: app}], options);
       });
   }

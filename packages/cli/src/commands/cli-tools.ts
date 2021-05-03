@@ -4,8 +4,11 @@ import {CLI_ERRORS, MESSAGES} from "../ui";
 import {readdir, readFile} from "fs";
 import {join} from "path";
 import * as chalk from "chalk";
+import * as inquirer from "inquirer";
+import {Question} from "inquirer";
 import {CommanderStatic} from "commander";
 import {Option, TypeixCliConfig} from "./interfaces";
+
 
 const CLI_DEFAULT: TypeixCliConfig = {
   language: "ts",
@@ -201,6 +204,15 @@ export class CliTools {
       message,
       choices
     };
+  }
+
+  /**
+   * Prompt question
+   * @param questions
+   */
+  async doPrompt(questions: Array<Question>): Promise<any>{
+    const prompt = inquirer.createPromptModule();
+    return await prompt(questions);
   }
 
   /**

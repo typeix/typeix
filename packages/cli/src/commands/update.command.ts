@@ -29,7 +29,7 @@ export class UpdateCommand implements IAfterConstruct {
         options.push({name: "force", value: !!command.force});
         options.push({name: "tag", value: command.tag});
         options.push({name: "package", value: packageName});
-        await this.handle( options);
+        await this.handle(options);
       });
   }
 

@@ -7,8 +7,6 @@ import {Option, Schematic, TypeixCliConfig} from "./interfaces";
 import {SchematicRunner} from "./runners/schematic.runner";
 import {MESSAGES} from "../ui";
 import {isBoolean, isDefined, isObject, isUndefined} from "@typeix/utils";
-import {Question} from "inquirer";
-import * as inquirer from "inquirer";
 import * as chalk from "chalk";
 
 @Injectable()
@@ -124,16 +122,13 @@ export class GenerateCommand implements IAfterConstruct {
       }
       projects.unshift(projectName);
 
-      const questions: Array<Question> = [
+      const answers = await this.cli.doPrompt([
         this.cli.createSelect(
           "appName",
           MESSAGES.PROJECT_SELECTION_QUESTION,
           projects
         )
-      ];
-
-      const prompt = inquirer.createPromptModule();
-      const answers = await prompt(questions);
+      ]);
 
       const project: string = answers.appName.replace(label, "");
       if (project !== configuration.sourceRoot) {

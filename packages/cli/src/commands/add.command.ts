@@ -28,8 +28,9 @@ export class AddCommand implements IAfterConstruct {
       .action(async (packageName: string, command: any) => {
         const options: Array<Option> = [];
         options.push({name: "dry-run", value: !!command.dryRun});
+        options.push({name: "package", value: packageName});
         try {
-          await this.handle([{name: "package", value: packageName}], options);
+          await this.handle(options);
         } catch (err) {
           process.exit(0);
         }
@@ -38,12 +39,11 @@ export class AddCommand implements IAfterConstruct {
 
   /**
    * Handler
-   * @param inputs
    * @param options
    * @private
    */
-  private async handle(inputs: Array<Option>, options: Array<Option>): Promise<any> {
-    const libraryName = <string>this.cli.getOptionValue(inputs, "package");
+  private async handle(options: Array<Option>): Promise<any> {
+    const libraryName = <string>this.cli.getOptionValue(options, "package");
     const isDryRunEnabled = <boolean>this.cli.getOptionValue(options, "dry-run");
     if (!libraryName) {
       throw new Error("No library found in command input");

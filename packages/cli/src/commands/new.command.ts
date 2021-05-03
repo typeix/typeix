@@ -1,9 +1,8 @@
 import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
-import * as inquirer from "inquirer";
-import {Answers, Question} from "inquirer";
+import {Answers} from "inquirer";
 import {CliTools} from "./cli-tools";
 import {MESSAGES} from "../ui";
-import {isDefined, isEqual, isFalsy, isUndefined} from "@typeix/utils";
+import {isEqual, isFalsy, isUndefined} from "@typeix/utils";
 import {SchematicRunner} from "./runners/schematic.runner";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
@@ -137,7 +136,7 @@ export class NewCommand implements IAfterConstruct {
     }
     try {
       if (isFalsy(inputPackageManager)) {
-        const questions: Array<Question> = [
+        const answers = await this.cli.doPrompt([
           this.cli.createSelect(
             "package-manager",
             MESSAGES.PACKAGE_MANAGER_QUESTION,
@@ -146,12 +145,8 @@ export class NewCommand implements IAfterConstruct {
               "yarn"
             ]
           )
-        ];
-        const prompt = inquirer.createPromptModule();
-        inputPackageManager = Reflect.get(
-          await prompt(questions),
-          "package-manager"
-        );
+        ]);
+        inputPackageManager = Reflect.get(answers, "package-manager");
       }
       const pkgManager: YarnRunner | NpmRunner = Reflect.get(this, inputPackageManager);
       this.cli.print(await pkgManager.install(installDirectory));
@@ -183,13 +178,12 @@ export class NewCommand implements IAfterConstruct {
   private async checkInputs(options: Array<Option>, nameInput: Option): Promise<void> {
     console.info(MESSAGES.PROJECT_INFORMATION_START);
     console.info();
-    const prompt: inquirer.PromptModule = inquirer.createPromptModule();
     if (!nameInput?.value) {
       const message = "What name would you like to use for the new project?";
       const questions = [
         this.cli.createInput("name", message, "typeix-app")
       ];
-      const answers: Answers = await prompt(questions);
+      const answers: Answers = await this.cli.doPrompt(questions);
       options.forEach(
         item => {
           if (isUndefined(item.value) && item.name === "name") {
