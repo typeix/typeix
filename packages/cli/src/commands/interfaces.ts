@@ -1,4 +1,5 @@
-import {Program, BuilderProgram, CustomTransformerFactory} from "typescript";
+import * as ts from "typescript";
+
 
 export interface Option {
   name: string;
@@ -11,9 +12,15 @@ export interface Schematic {
   value: boolean | string;
 }
 
+export interface TpxConfiguration {
+  tse: typeof ts;
+  tsConfig: ts.ParsedCommandLine;
+  cliConfig: TypeixCliConfig;
+}
+
 export interface PluginExtension {
-  before: (program: Program | BuilderProgram) => CustomTransformerFactory;
-  after: (program:  Program | BuilderProgram) => CustomTransformerFactory;
+  before: (program: ts.Program | ts.BuilderProgram) => ts.CustomTransformerFactory;
+  after: (program:  ts.Program | ts.BuilderProgram) => ts.CustomTransformerFactory;
 }
 
 export interface PluginOption {

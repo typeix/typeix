@@ -8,7 +8,7 @@ import * as inquirer from "inquirer";
 import * as ts from "typescript";
 import {Question} from "inquirer";
 import {CommanderStatic} from "commander";
-import {Option, PluginExtension, PluginOption, TypeixCliConfig} from "./interfaces";
+import {Option, PluginExtension, PluginOption, TpxConfiguration, TypeixCliConfig} from "./interfaces";
 import {normalize} from "@angular-devkit/core";
 import {BuilderProgram} from "typescript";
 
@@ -64,11 +64,12 @@ export class CliTools {
   }
 
   /**
-   * Compile Typescript
-   * @param name
+   * Compile project
+   * @param tsConfigFile
+   * @param tpxConfigDir
    */
-  async compileTypescript(name) {
-    const compiler = await this.loadTypescriptWithConfig(name);
+  async compileTypescript(tsConfigFile: string, tpxConfigDir = "") {
+    const compiler = await this.loadTypescriptWithConfig(tsConfigFile, tpxConfigDir);
     const tse = compiler.tse;
     const createProgram = tse.createIncrementalProgram ?? tse.createProgram;
     const {options, fileNames, projectReferences} = compiler.tsConfig;
@@ -117,13 +118,14 @@ export class CliTools {
   }
 
   /**
-   * Load typescript with config
-   * @param
+   * Configuration dir
+   * @param configFile
+   * @param tpxConfigDir
    */
-  async loadTypescriptWithConfig(name): Promise<{ tse: typeof ts; tsConfig: ts.ParsedCommandLine; cliConfig: TypeixCliConfig }> {
-    const configPath = join(process.cwd(), name);
+  async loadTypescriptWithConfig(configFile: string, tpxConfigDir = ""): Promise<TpxConfiguration> {
+    const configPath = join(process.cwd(), configFile);
     if (!existsSync(configPath)) {
-      throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(name));
+      throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(configFile));
     }
     const tsExec = await this.loadTypescript();
     const tsConfig = tsExec.getParsedCommandLineOfConfigFile(
@@ -131,7 +133,7 @@ export class CliTools {
       undefined,
       <ts.ParseConfigFileHost><unknown>tsExec.sys
     );
-    const cliConfig = await this.getConfiguration();
+    const cliConfig = await this.getConfiguration(tpxConfigDir);
     return {
       tse: tsExec,
       tsConfig,
@@ -165,16 +167,17 @@ export class CliTools {
   }
 
   /**
-   * Returns configuration file
+   * Get typeix configuration file
+   * @param dir
    */
-  async getConfiguration(): Promise<TypeixCliConfig> {
+  async getConfiguration(dir = ""): Promise<TypeixCliConfig> {
     const configFiles = [
       ".typeixcli.json",
       ".typeix-cli.json",
       "typeix-cli.json",
       "typeix.json"
     ];
-    const files = await this.readDir("");
+    const files = await this.readDir(dir);
     const configFile = files.find(item => configFiles.includes(item));
     if (isUndefined(configFile)) {
       throw new Error(MESSAGES.INFORMATION_CLI_MANAGER_FAILED);

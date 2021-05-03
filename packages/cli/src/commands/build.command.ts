@@ -44,11 +44,20 @@ export class BuildCommand implements IAfterConstruct {
           name: "webpackPath",
           value: command.webpackPath
         });
-        await this.handle([{name: "app", value: app}], options);
+        options.push({name: "app", value: app});
+        await this.handle(options);
       });
   }
 
-  private async handle(inputs: Array<Option>, options: Array<Option>): Promise<any> {
-    console.log(inputs, options);
+  private async handle(options: Array<Option>): Promise<any> {
+    try {
+      const tpxConfigFile = <string>this.cli.getOptionValue(options, "config") ?? ".";
+      const tsConfigFile = <string>this.cli.getOptionValue(options, "path") ?? ".";
+      // const watchMode = this.cli.getOptionValue(options, "watch");
+      // const watchAssets = this.cli.getOptionValue(options, "watchAssets");
+      await this.cli.compileTypescript(tsConfigFile, tpxConfigFile);
+    } catch (e) {
+      this.cli.print(e, true);
+    }
   }
 }
