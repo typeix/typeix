@@ -28,14 +28,15 @@ export class UpdateCommand implements IAfterConstruct {
         const options: Array<Option> = [];
         options.push({name: "force", value: !!command.force});
         options.push({name: "tag", value: command.tag});
-        await this.handle([{name: "package", value: packageName}], options);
+        options.push({name: "package", value: packageName});
+        await this.handle( options);
       });
   }
 
-  private async handle(inputs: Array<Option>, options: Array<Option>): Promise<any> {
-    const libraryName = <string>inputs.find(item => item.name === "package")?.value;
-    const isDryRunEnabled = <boolean>options.find(item => item.name === "dry-run")?.value;
-    const isForced = <boolean>options.find(item => item.name === "force")?.value;
+  private async handle(options: Array<Option>): Promise<any> {
+    const libraryName = <string>this.cli.getOptionValue(options, "package");
+    const isDryRunEnabled = <boolean>this.cli.getOptionValue(options, "dry-run");
+    const isForced = <boolean>this.cli.getOptionValue(options, "force");
     if (!libraryName) {
       throw new Error("No library found in command input");
     }

@@ -7,7 +7,7 @@ import {Option, Schematic, TypeixCliConfig} from "./interfaces";
 import {SchematicRunner} from "./runners/schematic.runner";
 import {MESSAGES} from "../ui";
 import {isBoolean, isDefined, isObject, isUndefined} from "@typeix/utils";
-import {Answers, Question} from "inquirer";
+import {Question} from "inquirer";
 import * as inquirer from "inquirer";
 import * as chalk from "chalk";
 

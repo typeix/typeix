@@ -84,29 +84,29 @@ export class NewCommand implements IAfterConstruct {
           name: "collection",
           value: command.collection || "@typeix/schematics"
         });
-
-        return await this.handle([{name: "name", value: name}], options);
+        options.push({
+          name: "name",
+          value: name
+        });
+        return await this.handle(options);
       });
   }
 
   /**
    * Handle new application
-   * @param inputs
    * @param options
    * @private
    */
-  private async handle(inputs: Array<Option>, options: Array<Option>): Promise<any> {
-    const directoryOption = options.find(option => option.name === "directory");
-    const isDryRunEnabled = <boolean>options.find(option => option.name === "dry-run")?.value;
-    const applicationName = inputs.find(input => input.name === "name");
+  private async handle(options: Array<Option>): Promise<any> {
+    const isDryRunEnabled = <boolean>this.cli.getOptionValue(options, "dry-run");
+    const directoryOption = this.cli.getOption(options, "directory");
+    const applicationOption = this.cli.getOption(options, "name");
 
-    await this.checkInputs(inputs, applicationName);
-    await this.createApplicationFiles(inputs, options).catch(() => {
-      process.exit(1);
-    });
-    const shouldSkipInstall = options.some(option => option.name === "skip-install" && option.value === true);
-    const shouldSkipGit = options.some(option => option.name === "skip-git" && option.value === true);
-    const projectDirectory = directoryOption?.value ?? dasherize(<string>applicationName.value);
+    await this.checkInputs(options, applicationOption);
+    await this.createApplicationFiles(options).catch(() => process.exit(1));
+    const shouldSkipInstall = this.cli.compareOptionValue(options, "skip-install", true);
+    const shouldSkipGit = this.cli.compareOptionValue(options, "skip-git", true);
+    const projectDirectory = directoryOption?.value ?? dasherize(<string>applicationOption.value);
 
     if (!shouldSkipInstall) {
       await this.installPackages(options, isDryRunEnabled, <string>projectDirectory);
@@ -128,7 +128,7 @@ export class NewCommand implements IAfterConstruct {
    * @private
    */
   private async installPackages(options: Array<Option>, dryRunMode: boolean, installDirectory: string) {
-    let inputPackageManager = <string>options.find(option => option.name === "package-manager")?.value;
+    let inputPackageManager = <string>this.cli.getOptionValue(options, "package-manager");
     if (dryRunMode) {
       console.info();
       console.info(chalk.green(MESSAGES.DRY_RUN_MODE));
@@ -162,13 +162,12 @@ export class NewCommand implements IAfterConstruct {
 
   /**
    * Create application files
-   * @param inputs
    * @param options
    * @private
    */
-  private async createApplicationFiles(inputs: Array<Option>, options: Array<Option>): Promise<void> {
-    const collectionName = <string>options.find(item => item.name === "collection" && isDefined(item.value))!.value;
-    const schematicOptions = inputs.concat(options).filter(item =>
+  private async createApplicationFiles( options: Array<Option>): Promise<void> {
+    const collectionName = <string>this.cli.getOptionValue(options, "collection");
+    const schematicOptions = options.filter(item =>
       !isEqual(item.name, "skip-install") && !isEqual(item.value, "package-manager")
     );
     await this.schematic.execute(collectionName, "application", schematicOptions);
@@ -176,12 +175,12 @@ export class NewCommand implements IAfterConstruct {
   }
 
   /**
-   * Check cli inputs
-   * @param inputs
+   * Check cli options
+   * @param options
    * @param nameInput
    * @private
    */
-  private async checkInputs(inputs: Array<Option>, nameInput: Option): Promise<void> {
+  private async checkInputs(options: Array<Option>, nameInput: Option): Promise<void> {
     console.info(MESSAGES.PROJECT_INFORMATION_START);
     console.info();
     const prompt: inquirer.PromptModule = inquirer.createPromptModule();
@@ -191,9 +190,9 @@ export class NewCommand implements IAfterConstruct {
         this.cli.createInput("name", message, "typeix-app")
       ];
       const answers: Answers = await prompt(questions);
-      inputs.forEach(
+      options.forEach(
         item => {
-          if (isUndefined(item.value)) {
+          if (isUndefined(item.value) && item.name === "name") {
             item.value = Reflect.get(answers, item.name);
           }
         }

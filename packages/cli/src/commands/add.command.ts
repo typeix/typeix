@@ -43,8 +43,8 @@ export class AddCommand implements IAfterConstruct {
    * @private
    */
   private async handle(inputs: Array<Option>, options: Array<Option>): Promise<any> {
-    const libraryName = <string>inputs.find(item => item.name === "package")?.value;
-    const isDryRunEnabled = <boolean>options.find(option => option.name === "dry-run")?.value;
+    const libraryName = <string>this.cli.getOptionValue(inputs, "package");
+    const isDryRunEnabled = <boolean>this.cli.getOptionValue(options, "dry-run");
     if (!libraryName) {
       throw new Error("No library found in command input");
     }

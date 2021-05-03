@@ -142,8 +142,18 @@ export class CliTools {
    * @param options
    * @param exclude
    */
-  filterOptions(options: Array<Option>, exclude: Array<string>): Array<Option>{
+  filterOptions(options: Array<Option>, exclude: Array<string>): Array<Option> {
     return options.filter(item => isDefined(item.value) && !exclude.includes(item.name));
+  }
+
+  /**
+   * Compare option value
+   * @param options
+   * @param key
+   * @param compareVal
+   */
+  compareOptionValue(options: Array<Option>, key: string, compareVal: string | boolean) {
+    return this.getOptionValue(options, key) === compareVal;
   }
   /**
    * Returns commander option value

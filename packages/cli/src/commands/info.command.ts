@@ -14,19 +14,17 @@ export class InfoCommand implements IAfterConstruct {
     this.cli.commander()
       .command("info")
       .description("Display Typeix project details.")
-      .action(() => this.handler());
-  }
-
-  private handler() {
-    const pkg = require("../../package.json");
-    // banner
-    console.info(chalk.red(BANNER), "\n");
-    // os
-    console.info(chalk.green("[System Information]"));
-    console.info("OS Version     :", chalk.blue(osName(platform(), release())));
-    console.info("NodeJS Version :", chalk.blue(process.version), "\n");
-    // version
-    console.info(chalk.green("[Typeix CLI]"));
-    console.info("Typeix CLI Version :", chalk.blue(pkg.version), "\n");
+      .action(() => {
+        const pkg = require("../../package.json");
+        // banner
+        console.info(chalk.red(BANNER), "\n");
+        // os
+        console.info(chalk.green("[System Information]"));
+        console.info("OS Version     :", chalk.blue(osName(platform(), release())));
+        console.info("NodeJS Version :", chalk.blue(process.version), "\n");
+        // version
+        console.info(chalk.green("[Typeix CLI]"));
+        console.info("Typeix CLI Version :", chalk.blue(pkg.version), "\n");
+      });
   }
 }

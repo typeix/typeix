@@ -15,7 +15,7 @@ export class RemoveCommand implements IAfterConstruct {
 
   afterConstruct(): void {
     this.cli.commander()
-      .command("update <package>")
+      .command("remove <package>")
       .alias("r")
       .description("Removes package in your project.")
       .option(
@@ -25,13 +25,14 @@ export class RemoveCommand implements IAfterConstruct {
       .action(async (packageName: string, command: any) => {
         const options: Array<Option> = [];
         options.push({name: "dry-run", value: !!command.dryRun});
-        await this.handle([{name: "package", value: packageName}], options);
+        options.push({name: "package", value: packageName});
+        await this.handle(options);
       });
   }
 
-  private async handle(inputs: Array<Option>, options: Array<Option>): Promise<any> {
-    const libraryName = <string>inputs.find(item => item.name === "package")?.value;
-    const isDryRunEnabled = <boolean>options.find(item => item.name === "dry-run")?.value;
+  private async handle(options: Array<Option>): Promise<any> {
+    const libraryName = <string>this.cli.getOptionValue(options, "package");
+    const isDryRunEnabled = <boolean>this.cli.getOptionValue(options, "dry-run");
     if (!libraryName) {
       throw new Error("No library found in command input");
     }
