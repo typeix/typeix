@@ -3,7 +3,7 @@ import {CliTools} from "./cli-tools";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
 import {GitRunner} from "./runners/git.runner";
-import {Option, Schematic, TypeixCliConfig} from "./interfaces";
+import {Option, Schematic, TpxCliConfig} from "./interfaces";
 import {SchematicRunner} from "./runners/schematic.runner";
 import {MESSAGES} from "../ui";
 import {isBoolean, isDefined, isObject, isUndefined} from "@typeix/utils";
@@ -166,7 +166,7 @@ export class GenerateCommand implements IAfterConstruct {
    * @param specPassedAsInput
    * @private
    */
-  private isSpec(configuration: TypeixCliConfig, schematic: string, specValue: boolean, specPassedAsInput?: boolean): boolean {
+  private isSpec(configuration: TpxCliConfig, schematic: string, specValue: boolean, specPassedAsInput?: boolean): boolean {
     const spec = configuration?.generateOptions?.spec;
     if (specPassedAsInput || isUndefined(specPassedAsInput)) {
       return specValue;
@@ -185,7 +185,7 @@ export class GenerateCommand implements IAfterConstruct {
    * @param appName
    * @private
    */
-  private shouldCreateMultiRepo(configuration: TypeixCliConfig, schematic: string, appName: string): boolean {
+  private shouldCreateMultiRepo(configuration: TpxCliConfig, schematic: string, appName: string): boolean {
     return !["app", "sub-app"].includes(schematic) &&
       isDefined(configuration) &&
       isObject(configuration?.projects) &&

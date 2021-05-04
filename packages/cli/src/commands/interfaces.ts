@@ -1,6 +1,3 @@
-import * as ts from "typescript";
-
-
 export interface Option {
   name: string;
   value: boolean | string;
@@ -10,19 +7,6 @@ export interface Option {
 export interface Schematic {
   name: string;
   value: boolean | string;
-}
-
-export interface TpxConfiguration {
-  tse: typeof ts;
-  tsConfig: ts.ParsedCommandLine;
-  cliConfig: TypeixCliConfig;
-}
-
-declare type TpxTransformerFactory = ts.TransformerFactory<ts.SourceFile> | ts.CustomTransformerFactory;
-
-export interface PluginExtension {
-  before: (program: ts.Program | ts.BuilderProgram, options?: { [key: string]: any }) => TpxTransformerFactory;
-  after: (program: ts.Program | ts.BuilderProgram, options?: { [key: string]: any }) => TpxTransformerFactory;
 }
 
 export interface PluginOption {
@@ -54,7 +38,7 @@ export interface Project {
   compilerOptions?: CompilerOptions;
 }
 
-export interface TypeixCliConfig {
+export interface TpxCliConfig {
   [key: string]: any;
 
   language?: string;

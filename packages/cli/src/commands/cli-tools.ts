@@ -1,33 +1,17 @@
 import {AfterConstruct, Inject, Injectable} from "@typeix/di";
-import {isArray, isDefined, isFunction,  isUndefined} from "@typeix/utils";
+import {isArray, isDefined, isFunction, isUndefined} from "@typeix/utils";
 import {MESSAGES} from "../ui";
 import {existsSync, readdir, readFile} from "fs";
 import {join} from "path";
 import {Question} from "inquirer";
 import {CommanderStatic} from "commander";
-import {Option, PluginExtension, TpxConfiguration, TypeixCliConfig} from "./interfaces";
+import {Option, TpxCliConfig} from "./interfaces";
 import {normalize} from "@angular-devkit/core";
-import {CustomTransformerFactory,  SourceFile, TransformerFactory} from "typescript";
+import {CustomTransformerFactory, SourceFile, TransformerFactory} from "typescript";
 import * as chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as ts from "typescript";
-
-const CLI_DEFAULT: TypeixCliConfig = {
-  language: "ts",
-  sourceRoot: "src",
-  collection: "@typeix/schematics",
-  entryFile: "main",
-  projects: {},
-  monorepo: false,
-  compilerOptions: {
-    tsConfigPath: "tsconfig.build.json",
-    webpack: false,
-    webpackConfigPath: "webpack.config.js",
-    plugins: [],
-    assets: []
-  },
-  generateOptions: {}
-};
+import {PluginExtension, TpxConfiguration, CLI_CONFIG} from "./configs";
 
 @Injectable()
 export class CliTools {
@@ -83,7 +67,7 @@ export class CliTools {
     if (isArray(plugins)) {
       for (const item of plugins) {
         const bProgram = (<ts.BuilderProgram>program);
-        const pkgName = isDefined(item.path) ? normalize(join(process.cwd(), tpxConfigPath,  item.path)) : item.name;
+        const pkgName = isDefined(item.path) ? normalize(join(process.cwd(), tpxConfigPath, item.path)) : item.name;
         const plugin = await this.loadBinary<PluginExtension>(pkgName);
         const currentProgram = isFunction(bProgram.getProgram) ? bProgram.getProgram() : program;
         if (isFunction(plugin.before)) {
@@ -178,7 +162,7 @@ export class CliTools {
    * Get typeix configuration file
    * @param dir
    */
-  async getConfiguration(dir = ""): Promise<TypeixCliConfig> {
+  async getConfiguration(dir = ""): Promise<TpxCliConfig> {
     const configFiles = [
       ".typeixcli.json",
       ".typeix-cli.json",
@@ -191,19 +175,19 @@ export class CliTools {
       throw new Error(MESSAGES.INFORMATION_CLI_MANAGER_FAILED);
     }
     const file = await this.readFile([dir, configFile]);
-    const data = <TypeixCliConfig>JSON.parse(file.toString());
+    const data = <TpxCliConfig>JSON.parse(file.toString());
     if (data.compilerOptions) {
       return {
-        ...CLI_DEFAULT,
+        ...CLI_CONFIG,
         ...data,
         compilerOptions: {
-          ...CLI_DEFAULT.compilerOptions,
+          ...CLI_CONFIG.compilerOptions,
           ...data.compilerOptions
         }
       };
     }
     return {
-      ...CLI_DEFAULT,
+      ...CLI_CONFIG,
       ...data
     };
   }
