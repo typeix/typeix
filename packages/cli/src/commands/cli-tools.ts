@@ -18,11 +18,13 @@ import {
   LoadedCompilerPlugins,
   TpxReport
 } from "./configs";
+import {EventEmitter} from "events";
 
 @Injectable()
 export class CliTools {
 
   @Inject("program") private commanderStatic: CommanderStatic;
+  @Inject() private eventEmitter: EventEmitter;
 
   @AfterConstruct()
   onProgramInit() {
@@ -58,7 +60,12 @@ export class CliTools {
    */
   async compileTypescript(tpxCompilerOptions: TpxCompilerOptions) {
     const {tsConfigPath, tpxConfigPath, compilerOptions, watchMode} = tpxCompilerOptions;
-    const {tse, tsConfig, cliConfig, configPath} = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath, compilerOptions);
+    const {
+      tse,
+      tsConfig,
+      cliConfig,
+      configPath
+    } = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath, compilerOptions);
     const {options, fileNames, projectReferences} = tsConfig;
     const createProgram: any = tse.createIncrementalProgram ?? tse.createProgram;
     let program = createProgram.call(tse, {
@@ -75,18 +82,7 @@ export class CliTools {
         },
         tse.sys,
         tse.createEmitAndSemanticDiagnosticsBuilderProgram,
-        (diagnostic: ts.Diagnostic) => {
-          this.printTypescriptReport(
-            {
-              errors: [diagnostic],
-              errorCount: 1,
-              format: tse.formatDiagnosticsWithColorAndContext,
-              newLine: tse.sys.newLine,
-              currentDir: tse.sys.getCurrentDirectory()
-            },
-            false
-          );
-        },
+        null,
         (diagnostic: ts.Diagnostic, newLine: string, tsOptions: ts.CompilerOptions, errorCount?: number) => {
           this.printTypescriptReport(
             {
@@ -98,6 +94,9 @@ export class CliTools {
             },
             false
           );
+          if (errorCount === 0) {
+            this.eventEmitter.emit("spawn");
+          }
         }
       );
       program = tse.createWatchProgram(host).getProgram();
@@ -126,6 +125,9 @@ export class CliTools {
         }
       );
       process.exit(1);
+    }
+    if (!watchMode) {
+      this.eventEmitter.emit("spawn");
     }
   }
 

@@ -13,6 +13,8 @@ import {GenerateCommand} from "./generate.command";
 import {StartCommand} from "./start.command";
 import {UpdateCommand} from "./update.command";
 import {RemoveCommand} from "./remove.command";
+import {EventEmitter} from "events";
+import {TscRunner} from "./runners/tsc.runner";
 
 
 export function setup(program: CommanderStatic): Injector {
@@ -20,13 +22,15 @@ export function setup(program: CommanderStatic): Injector {
     {
       provide: "program",
       useValue: program
-    }
+    },
+    EventEmitter
   ]);
   const providers = verifyProviders([
     GitRunner,
     SchematicRunner,
     NpmRunner,
-    YarnRunner
+    YarnRunner,
+    TscRunner
   ]);
   verifyProviders(
     [
