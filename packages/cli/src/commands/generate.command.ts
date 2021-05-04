@@ -45,7 +45,7 @@ export class GenerateCommand implements IAfterConstruct {
         "Schematics collection to use."
       )
       .action(async (schematic: string, name: string, path: string, command: any) => {
-        const options: Option[] = [];
+        const options: Array<Option> = [];
         options.push({name: "dry-run", value: !!command.dryRun});
         options.push({name: "flat", value: command.flat});
         options.push({

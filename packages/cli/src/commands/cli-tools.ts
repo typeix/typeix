@@ -7,11 +7,17 @@ import {Question} from "inquirer";
 import {CommanderStatic} from "commander";
 import {Option, TpxCliConfig} from "./interfaces";
 import {normalize} from "@angular-devkit/core";
-import {CustomTransformerFactory, SourceFile, TransformerFactory} from "typescript";
 import * as chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as ts from "typescript";
-import {PluginExtension, TpxConfiguration, CLI_CONFIG} from "./configs";
+import {
+  CompilerPluginExtension,
+  TpxConfiguration,
+  CLI_CONFIG,
+  TpxCompilerOptions,
+  LoadedCompilerPlugins,
+  TpxReport
+} from "./configs";
 
 @Injectable()
 export class CliTools {
@@ -47,61 +53,115 @@ export class CliTools {
   }
 
   /**
-   * Compile project
-   * @param tsConfigPath
-   * @param tpxConfigPath
+   * Compile Typescript
+   * @param tpxCompilerOptions
    */
-  async compileTypescript(tsConfigPath: string, tpxConfigPath = "") {
-    const compiler = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath);
-    const tse = compiler.tse;
-    const createProgram = tse.createIncrementalProgram ?? tse.createProgram;
-    const {options, fileNames, projectReferences} = compiler.tsConfig;
-    const program = createProgram.call(tse, {
+  async compileTypescript(tpxCompilerOptions: TpxCompilerOptions) {
+    const {tsConfigPath, tpxConfigPath, compilerOptions, watchMode} = tpxCompilerOptions;
+    const {tse, tsConfig, cliConfig, configPath} = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath);
+    const {options, fileNames, projectReferences} = tsConfig;
+    const createProgram: any = tse.createIncrementalProgram ?? tse.createProgram;
+    let program = createProgram.call(tse, {
       rootNames: fileNames,
-      projectReferences: projectReferences,
+      projectReferences,
       options
     });
-    const before: Array<TransformerFactory<SourceFile> | CustomTransformerFactory> = [];
-    const after: Array<TransformerFactory<SourceFile> | CustomTransformerFactory> = [];
-    const plugins = compiler?.cliConfig?.compilerOptions?.plugins;
-    if (isArray(plugins)) {
-      for (const item of plugins) {
-        const bProgram = (<ts.BuilderProgram>program);
-        const pkgName = isDefined(item.path) ? normalize(join(process.cwd(), tpxConfigPath, item.path)) : item.name;
-        const plugin = await this.loadBinary<PluginExtension>(pkgName);
-        const currentProgram = isFunction(bProgram.getProgram) ? bProgram.getProgram() : program;
-        if (isFunction(plugin.before)) {
-          before.push(plugin.before(currentProgram, item.options));
+    if (watchMode) {
+      const host = tse.createWatchCompilerHost(
+        configPath,
+        compilerOptions,
+        tse.sys,
+        tse.createEmitAndSemanticDiagnosticsBuilderProgram,
+        (diagnostic: ts.Diagnostic) => {
+          this.printTypescriptReport(
+            {
+              errors: [diagnostic],
+              errorCount: 1,
+              format: tse.formatDiagnosticsWithColorAndContext,
+              newLine: tse.sys.newLine,
+              currentDir: tse.sys.getCurrentDirectory()
+            },
+            false
+          );
         }
-        if (isFunction(plugin.after)) {
-          after.push(plugin.after(currentProgram, item.options));
-        }
-      }
+      );
+      program = tse.createWatchProgram(host).getProgram();
     }
-    const result = program.emit(
-      undefined,
-      undefined,
-      undefined,
-      undefined,
+    const {before, after} = await this.loadCompilerPlugins(cliConfig, tpxConfigPath, program);
+    const result: ts.EmitResult = program.emit(
+      undefined, // targetSourceFile
+      undefined, // writeFile
+      undefined, // cancellationToken
+      false,
       {
         before,
         after,
         afterDeclarations: []
       }
     );
-    const diagnostics = tse.getPreEmitDiagnostics(<ts.Program>program).concat(result.diagnostics);
-
-    if (diagnostics.length > 0) {
-      console.error(
-        tse.formatDiagnosticsWithColorAndContext(diagnostics, {
-          getCanonicalFileName: path => path,
-          getCurrentDirectory: tse.sys.getCurrentDirectory,
-          getNewLine: () => tse.sys.newLine
-        })
+    const errors = tse.getPreEmitDiagnostics(program).concat(result.diagnostics);
+    if (errors.length > 0 && !watchMode) {
+      this.printTypescriptReport(
+        {
+          errors,
+          errorCount: errors.length,
+          format: tse.formatDiagnosticsWithColorAndContext,
+          newLine: tse.sys.newLine,
+          currentDir: tse.sys.getCurrentDirectory()
+        }
       );
-      console.info(`Found ${diagnostics.length} error(s).` + tse.sys.newLine);
       process.exit(1);
     }
+  }
+
+  /**
+   * Print typescript compiling report
+   * @param report
+   * @param printInfo
+   */
+  printTypescriptReport(report: TpxReport, printInfo = true) {
+    console.error(
+      report.format(report.errors, {
+        getCanonicalFileName: path => path,
+        getCurrentDirectory: () => report.currentDir,
+        getNewLine: () => report.newLine
+      })
+    );
+    if (printInfo) {
+      console.info(`Found ${report.errorCount} error(s).` + report.newLine);
+    }
+  }
+
+  /**
+   * Load compiler Plugins
+   * @param cliConfig
+   * @param tpxConfigPath
+   * @param program
+   */
+  async loadCompilerPlugins(
+    cliConfig: TpxCliConfig,
+    tpxConfigPath: string,
+    program: ts.Program
+  ): Promise<LoadedCompilerPlugins> {
+    const before: Array<ts.TransformerFactory<ts.SourceFile> | ts.CustomTransformerFactory> = [];
+    const after: Array<ts.TransformerFactory<ts.SourceFile> | ts.CustomTransformerFactory> = [];
+    const plugins = cliConfig?.compilerOptions?.plugins;
+    if (isArray(plugins)) {
+      for (const item of plugins) {
+        const pkgName = isDefined(item.path) ? normalize(join(process.cwd(), tpxConfigPath, item.path)) : item.name;
+        const plugin = await this.loadBinary<CompilerPluginExtension>(pkgName);
+        if (isFunction(plugin.before)) {
+          before.push(plugin.before(program, item.options));
+        }
+        if (isFunction(plugin.after)) {
+          after.push(plugin.after(program, item.options));
+        }
+      }
+    }
+    return {
+      before,
+      after
+    };
   }
 
   /**
@@ -125,7 +185,8 @@ export class CliTools {
       return {
         tse,
         tsConfig,
-        cliConfig
+        cliConfig,
+        configPath
       };
     } catch (e) {
       this.print(e.stack, true);
