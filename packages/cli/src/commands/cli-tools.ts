@@ -86,6 +86,18 @@ export class CliTools {
             },
             false
           );
+        },
+        (diagnostic: ts.Diagnostic, newLine: string, tsOptions: ts.CompilerOptions, errorCount?: number) => {
+          this.printTypescriptReport(
+            {
+              errors: [diagnostic],
+              errorCount,
+              format: tse.formatDiagnosticsWithColorAndContext,
+              newLine,
+              currentDir: tse.sys.getCurrentDirectory()
+            },
+            false
+          );
         }
       );
       program = tse.createWatchProgram(host).getProgram();
