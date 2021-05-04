@@ -1,17 +1,16 @@
 import {AfterConstruct, Inject, Injectable} from "@typeix/di";
-import {isArray, isDefined, isFunction, isString, isUndefined} from "@typeix/utils";
+import {isArray, isDefined, isFunction,  isUndefined} from "@typeix/utils";
 import {MESSAGES} from "../ui";
 import {existsSync, readdir, readFile} from "fs";
 import {join} from "path";
+import {Question} from "inquirer";
+import {CommanderStatic} from "commander";
+import {Option, PluginExtension, TpxConfiguration, TypeixCliConfig} from "./interfaces";
+import {normalize} from "@angular-devkit/core";
+import {CustomTransformerFactory,  SourceFile, TransformerFactory} from "typescript";
 import * as chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as ts from "typescript";
-import {Question} from "inquirer";
-import {CommanderStatic} from "commander";
-import {Option, PluginExtension, PluginOption, TpxConfiguration, TypeixCliConfig} from "./interfaces";
-import {normalize} from "@angular-devkit/core";
-import {BuilderProgram} from "typescript";
-
 
 const CLI_DEFAULT: TypeixCliConfig = {
   language: "ts",
@@ -65,30 +64,34 @@ export class CliTools {
 
   /**
    * Compile project
-   * @param tsConfigFile
-   * @param tpxConfigDir
+   * @param tsConfigPath
+   * @param tpxConfigPath
    */
-  async compileTypescript(tsConfigFile: string, tpxConfigDir = "") {
-    const compiler = await this.loadTypescriptWithConfig(tsConfigFile, tpxConfigDir);
+  async compileTypescript(tsConfigPath: string, tpxConfigPath = "") {
+    const compiler = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath);
     const tse = compiler.tse;
     const createProgram = tse.createIncrementalProgram ?? tse.createProgram;
     const {options, fileNames, projectReferences} = compiler.tsConfig;
-    const program = createProgram({
+    const program = createProgram.call(tse, {
       rootNames: fileNames,
       projectReferences: projectReferences,
       options
     });
-    const before: Array<ts.CustomTransformerFactory> = [];
-    const after: Array<ts.CustomTransformerFactory> = [];
+    const before: Array<TransformerFactory<SourceFile> | CustomTransformerFactory> = [];
+    const after: Array<TransformerFactory<SourceFile> | CustomTransformerFactory> = [];
     const plugins = compiler?.cliConfig?.compilerOptions?.plugins;
     if (isArray(plugins)) {
       for (const item of plugins) {
         const bProgram = (<ts.BuilderProgram>program);
-        const dir = [".", "node_modules"];
-        const plugin = await this.loadBinary<PluginExtension>((<PluginOption>item).name, dir.concat());
+        const pkgName = isDefined(item.path) ? normalize(join(process.cwd(), tpxConfigPath,  item.path)) : item.name;
+        const plugin = await this.loadBinary<PluginExtension>(pkgName);
         const currentProgram = isFunction(bProgram.getProgram) ? bProgram.getProgram() : program;
-        before.push(plugin.before(currentProgram));
-        after.push(plugin.after(currentProgram));
+        if (isFunction(plugin.before)) {
+          before.push(plugin.before(currentProgram, item.options));
+        }
+        if (isFunction(plugin.after)) {
+          after.push(plugin.after(currentProgram, item.options));
+        }
       }
     }
     const result = program.emit(
@@ -119,26 +122,31 @@ export class CliTools {
 
   /**
    * Configuration dir
-   * @param configFile
-   * @param tpxConfigDir
+   * @param tsConfigPath
+   * @param tpxConfigPath
    */
-  async loadTypescriptWithConfig(configFile: string, tpxConfigDir = ""): Promise<TpxConfiguration> {
-    const configPath = join(process.cwd(), configFile);
+  async loadTypescriptWithConfig(tsConfigPath: string, tpxConfigPath = ""): Promise<TpxConfiguration> {
+    const configPath = join(process.cwd(), tsConfigPath);
     if (!existsSync(configPath)) {
-      throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(configFile));
+      throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(tsConfigPath));
     }
-    const tsExec = await this.loadTypescript();
-    const tsConfig = tsExec.getParsedCommandLineOfConfigFile(
-      configPath,
-      undefined,
-      <ts.ParseConfigFileHost><unknown>tsExec.sys
-    );
-    const cliConfig = await this.getConfiguration(tpxConfigDir);
-    return {
-      tse: tsExec,
-      tsConfig,
-      cliConfig
-    };
+    const tse = await this.loadTypescript();
+    const cliConfig = await this.getConfiguration(tpxConfigPath);
+    try {
+      const tsConfig = tse.getParsedCommandLineOfConfigFile(
+        configPath,
+        {},
+        <ts.ParseConfigFileHost><unknown>tse.sys
+      );
+      return {
+        tse,
+        tsConfig,
+        cliConfig
+      };
+    } catch (e) {
+      this.print(e.stack, true);
+      throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(tsConfigPath));
+    }
   }
 
   /**
@@ -153,12 +161,12 @@ export class CliTools {
    * @param packageName
    * @param dir
    */
-  async loadBinary<T>(packageName, dir = [".", "node_modules"]): Promise<T> {
+  async loadBinary<T>(packageName, dir = ["node_modules"]): Promise<T> {
     try {
-      const tsBinaryPath = require.resolve(packageName, {
+      const binPath = require.resolve(packageName, {
         paths: [normalize(join(process.cwd(), ...dir))]
       });
-      return require(tsBinaryPath);
+      return require(binPath);
     } catch {
       throw new Error(
         `${packageName} could not be found! Please, install "${packageName}" package.`
@@ -182,7 +190,7 @@ export class CliTools {
     if (isUndefined(configFile)) {
       throw new Error(MESSAGES.INFORMATION_CLI_MANAGER_FAILED);
     }
-    const file = await this.readFile(configFile);
+    const file = await this.readFile([dir, configFile]);
     const data = <TypeixCliConfig>JSON.parse(file.toString());
     if (data.compilerOptions) {
       return {
@@ -204,10 +212,13 @@ export class CliTools {
    * Read dir
    * @param dir
    */
-  async readDir(dir: string): Promise<Array<string>> {
+  async readDir(dir: string | Array<string>): Promise<Array<string>> {
+    if (isArray(dir)) {
+      dir = join(...dir);
+    }
     return new Promise((resolve, reject) => {
       readdir(
-        join(process.cwd(), dir),
+        normalize(join(process.cwd(), <string>dir)),
         (error, files) => {
           if (error) {
             this.print(error, true);
@@ -224,10 +235,13 @@ export class CliTools {
    * Read file
    * @param file
    */
-  async readFile(file: string): Promise<Buffer> {
+  async readFile(file: string | Array<string>): Promise<Buffer> {
+    if (isArray(file)) {
+      file = join(...file);
+    }
     return new Promise((resolve, reject) => {
       readFile(
-        join(process.cwd(), file),
+        normalize(join(process.cwd(), <string>file)),
         (error: NodeJS.ErrnoException, buffer: Buffer) => {
           if (isDefined(error)) {
             reject(error);

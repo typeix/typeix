@@ -4,6 +4,7 @@ import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
 import {GitRunner} from "./runners/git.runner";
 import {Option} from "./interfaces";
+import {join} from "path";
 
 @Injectable()
 export class BuildCommand implements IAfterConstruct {
@@ -51,11 +52,11 @@ export class BuildCommand implements IAfterConstruct {
 
   private async handle(options: Array<Option>): Promise<any> {
     try {
-      const tpxConfigFile = <string>this.cli.getOptionValue(options, "config") ?? ".";
-      const tsConfigFile = <string>this.cli.getOptionValue(options, "path") ?? ".";
+      const tpxConfigPath = <string>this.cli.getOptionValue(options, "config") ?? ".";
+      const tsConfigPath = <string>this.cli.getOptionValue(options, "path") ?? ".";
       // const watchMode = this.cli.getOptionValue(options, "watch");
       // const watchAssets = this.cli.getOptionValue(options, "watchAssets");
-      await this.cli.compileTypescript(tsConfigFile, tpxConfigFile);
+      await this.cli.compileTypescript(join(tsConfigPath, "tsconfig.build.json"), tpxConfigPath);
     } catch (e) {
       this.cli.print(e, true);
     }

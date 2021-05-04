@@ -39,7 +39,7 @@ export const MESSAGES = {
   MISSING_TYPESCRIPT_PATH: (path: string) =>
     [
       "Could not find TypeScript configuration file in path: " +
-      path + "! " +
+      path + "\n" +
       "Please, ensure that you are running this command " +
       "in the appropriate directory (inside Typeix workspace)."
     ].join(""),

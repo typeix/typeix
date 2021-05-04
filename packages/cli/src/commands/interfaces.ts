@@ -18,13 +18,16 @@ export interface TpxConfiguration {
   cliConfig: TypeixCliConfig;
 }
 
+declare type TpxTransformerFactory = ts.TransformerFactory<ts.SourceFile> | ts.CustomTransformerFactory;
+
 export interface PluginExtension {
-  before: (program: ts.Program | ts.BuilderProgram) => ts.CustomTransformerFactory;
-  after: (program:  ts.Program | ts.BuilderProgram) => ts.CustomTransformerFactory;
+  before: (program: ts.Program | ts.BuilderProgram, options?: { [key: string]: any }) => TpxTransformerFactory;
+  after: (program: ts.Program | ts.BuilderProgram, options?: { [key: string]: any }) => TpxTransformerFactory;
 }
 
 export interface PluginOption {
   name: string;
+  path?: string;
   options?: {
     [key: string]: any;
   };
@@ -53,6 +56,7 @@ export interface Project {
 
 export interface TypeixCliConfig {
   [key: string]: any;
+
   language?: string;
   collection?: string;
   sourceRoot?: string;
