@@ -58,7 +58,7 @@ export class CliTools {
    */
   async compileTypescript(tpxCompilerOptions: TpxCompilerOptions) {
     const {tsConfigPath, tpxConfigPath, compilerOptions, watchMode} = tpxCompilerOptions;
-    const {tse, tsConfig, cliConfig, configPath} = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath);
+    const {tse, tsConfig, cliConfig, configPath} = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath, compilerOptions);
     const {options, fileNames, projectReferences} = tsConfig;
     const createProgram: any = tse.createIncrementalProgram ?? tse.createProgram;
     let program = createProgram.call(tse, {
@@ -69,7 +69,10 @@ export class CliTools {
     if (watchMode) {
       const host = tse.createWatchCompilerHost(
         configPath,
-        compilerOptions,
+        {
+          ...tsConfig.options,
+          ...compilerOptions
+        },
         tse.sys,
         tse.createEmitAndSemanticDiagnosticsBuilderProgram,
         (diagnostic: ts.Diagnostic) => {
@@ -168,8 +171,9 @@ export class CliTools {
    * Configuration dir
    * @param tsConfigPath
    * @param tpxConfigPath
+   * @param options
    */
-  async loadTypescriptWithConfig(tsConfigPath: string, tpxConfigPath = ""): Promise<TpxConfiguration> {
+  async loadTypescriptWithConfig(tsConfigPath: string, tpxConfigPath = "", options: ts.CompilerOptions): Promise<TpxConfiguration> {
     const configPath = join(process.cwd(), tsConfigPath);
     if (!existsSync(configPath)) {
       throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(tsConfigPath));
@@ -179,7 +183,9 @@ export class CliTools {
     try {
       const tsConfig = tse.getParsedCommandLineOfConfigFile(
         configPath,
-        {},
+        {
+          ...options
+        },
         <ts.ParseConfigFileHost><unknown>tse.sys
       );
       return {
