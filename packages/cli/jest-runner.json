@@ -21,8 +21,7 @@
   "collectCoverage": false,
   "coveragePathIgnorePatterns": [
     "<rootDir>/node_modules",
-    "<rootDir>/src/*-spec.ts",
-    "<rootDir>/src/index.ts"
+    "<rootDir>/src/*-spec.ts"
   ],
   "coverageReporters": [
     "json",
