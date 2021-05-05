@@ -26,19 +26,23 @@ export class BuildCommand implements IAfterConstruct {
       .option("--webpack", "Use webpack for compilation.", false)
       .option("--webpackPath [path]", "Path to webpack configuration.")
       .option("--preserveWatchOutput", "Preserve watch output", false)
-      .option("--tsc", "Use tsc for compilation.", false)
       .option("--file [filePtah]", "Application start file", "dist/bootstrap.js")
       .description("Build Typeix application.")
-      .action(async (app: string, command: any) => {
-        const isWebpackEnabled = command.tsc ? false : command.webpack;
+      .action(async (command: any) => {
         const options: Array<Option> = [];
-        options.push({name: "webpack", value: isWebpackEnabled});
+        options.push({name: "webpack", value: !!command.webpack});
         options.push({name: "watch", value: !!command.watch});
         options.push({name: "watchAssets", value: !!command.watchAssets});
-        options.push({name: "path", value: command.path});
         options.push({name: "webpackPath", value: command.webpackPath});
-        options.push({name: "preserveWatchOutput", value: !!command.preserveWatchOutput});
-        options.push({name: "file", value: command.file});
+        options.push({name: "path", value: command.path ?? "tsconfig.build.json"});
+        options.push({name: "file", value: command.file ?? "dist/bootstrap.js"});
+        options.push({
+          name: "preserveWatchOutput",
+          value:
+            !!command.preserveWatchOutput &&
+            !!command.watch &&
+            !command.webpack
+        });
         try {
           await this.handle(options);
         } catch (e) {
@@ -50,16 +54,17 @@ export class BuildCommand implements IAfterConstruct {
   /**
    * Application start
    * @param options
+   * @param abs
    * @protected
    */
-  protected getBinFile(options: Array<Option>) {
+  protected getBinFile(options: Array<Option>, abs = true) {
     const config = this.getConfigDirs(options);
     const fileName = <string>this.cli.getOptionValue(options, "file");
     const dirs = [fileName];
     if (!isAbsolute(config.tsConfigPath)) {
       dirs.unshift(dirname(config.tsConfigPath));
     }
-    return normalize(join(process.cwd(), ...dirs));
+    return abs ? normalize(join(process.cwd(), ...dirs)) : normalize(join(...dirs));
   }
 
   /**
@@ -98,8 +103,8 @@ export class BuildCommand implements IAfterConstruct {
    */
   protected async handle(options: Array<Option>): Promise<any> {
     const config = this.getConfigDirs(options);
-    const entryFile = this.getBinFile(options);
     const useWebpackCompiler = <boolean>this.cli.getOptionValue(options, "webpack");
+    const entryFile = this.getBinFile(options, !useWebpackCompiler);
     const watchMode = <boolean>this.cli.getOptionValue(options, "watch");
     const preserveWatchOutput = <boolean>this.cli.getOptionValue(options, "preserveWatchOutput");
     const compilerConfig = {
@@ -111,7 +116,11 @@ export class BuildCommand implements IAfterConstruct {
       }
     };
     if (useWebpackCompiler) {
-      return await this.cli.useWebpackCompiler(compilerConfig);
+      const webPackConfig = <string>this.cli.getOptionValue(options, "webpackPath");
+      return await this.cli.useWebpackCompiler({
+        ...compilerConfig,
+        entryFile
+      }, webPackConfig);
     } else {
       return await this.cli.compileTypescript(compilerConfig);
     }

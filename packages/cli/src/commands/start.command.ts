@@ -28,23 +28,22 @@ export class StartCommand extends BuildCommand implements IAfterConstruct {
       .option("--file [filePtah]", "Application start file", "dist/bootstrap.js")
       .description("Run Typeix application.")
       .action(async (command: any) => {
-        const isWebpackEnabled = command.tsc ? false : command.webpack;
         const options: Array<Option> = [];
         options.push({name: "config", value: command.config});
-        options.push({name: "webpack", value: isWebpackEnabled});
+        options.push({name: "webpack", value: !!command.webpack});
         options.push({name: "debug", value: command.debug});
         options.push({name: "watch", value: !!command.watch});
         options.push({name: "watchAssets", value: !!command.watchAssets});
-        options.push({name: "path", value: command.path});
         options.push({name: "webpackPath", value: command.webpackPath});
-        options.push({name: "exec", value: command.exec});
-        options.push({name: "file", value: command.file});
+        options.push({name: "exec", value: command.exec ?? "node"});
+        options.push({name: "path", value: command.path ?? "tsconfig.build.json"});
+        options.push({name: "file", value: command.file ?? "dist/bootstrap.js"});
         options.push({
           name: "preserveWatchOutput",
           value:
             !!command.preserveWatchOutput &&
             !!command.watch &&
-            !isWebpackEnabled
+            !command.webpack
         });
         await this.handle(options);
       });

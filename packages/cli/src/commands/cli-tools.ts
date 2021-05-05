@@ -59,20 +59,21 @@ export class CliTools {
   }
 
   /**
-   * Webpackconfig
+   * Use webpack compiler
    * @param tpxCompilerOptions
+   * @param cfgPath
    */
-  async useWebpackCompiler(tpxCompilerOptions: TpxCompilerOptions) {
+  async useWebpackCompiler(tpxCompilerOptions: TpxCompilerOptions, cfgPath?: string) {
     const {tsConfigPath, tpxConfigPath, compilerOptions} = tpxCompilerOptions;
     const {cliConfig} = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath, compilerOptions);
-    const config: webpack.Configuration = {
-      entry: tpxCompilerOptions.entryFile,
+    const config: webpack.Configuration = cfgPath ? await this.loadBinary(normalize(join(process.cwd(), cfgPath))) : {
+      entry: tpxCompilerOptions.entryFile.replace(/(.*)(dist\/)(.*).js/, "$1src/$3.ts"),
       devtool: tpxCompilerOptions?.isDebugEnabled ? "inline-source-map" : false,
       target: "node",
       output: {
-        filename: tpxCompilerOptions.entryFile
+        filename: tpxCompilerOptions.entryFile.replace("dist/", "")
       },
-      externalsPresets: {node: true},
+      externalsPresets: { node: true },
       externals: [nodeExternals()],
       module: {
         rules: [
