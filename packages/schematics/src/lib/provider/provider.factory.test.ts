@@ -122,15 +122,27 @@ describe("Provider Factory", () => {
     tree = await runner.runSchematicAsync("provider", options, tree).toPromise();
     expect(tree.readContent(normalize("/src/app.module.ts"))).toEqual(
       [
-        "import {Module} from \"@typeix/resty\";\n" +
+        "import {Logger, RootModule} from \"@typeix/resty\";\n" +
         "import {AppController} from \"./app.controller\";\n" +
         "import {AppService} from \"./app.service\";\n" +
         "import { Foo } from './foo';\n" +
         "\n" +
-        "@Module({\n" +
+        "@RootModule({\n" +
         "  imports: [],\n" +
         "  controllers: [AppController],\n" +
         "  providers: [AppService, Foo],\n" +
+        "  shared_providers: [\n" +
+        "    {\n" +
+        "      provide: Logger,\n" +
+        "      useFactory: () => {\n" +
+        "        return new Logger({\n" +
+        "          options: {\n" +
+        "            level: \"info\"\n" +
+        "          }\n" +
+        "        });\n" +
+        "      }\n" +
+        "    }\n" +
+        "  ]\n" +
         "})\n" +
         "export class AppModule {\n" +
         "}\n"
