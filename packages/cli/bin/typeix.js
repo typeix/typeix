@@ -33,11 +33,11 @@ if (!process.argv.slice(2).length) {
 }
 
 function packageExists(segments) {
-  const pathToLoad = path.normalize(path.join(process.cwd(), ...segments));
+  const pathToLoad = path.normalize(path.join(module.path, ...segments));
   return fs.existsSync(pathToLoad);
 }
 
 function loadPackage(commander, segments) {
-  const pathToLoad = path.posix.join(process.cwd(), ...segments);
+  const pathToLoad = path.posix.join(module.path, ...segments);
   require(path.normalize(pathToLoad)).setup(commander);
 }
