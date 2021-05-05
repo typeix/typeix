@@ -13,41 +13,40 @@ import {BuildCommand} from "./build.command";
 import {InfoCommand} from "./info.command";
 import {GenerateCommand} from "./generate.command";
 
+export let programMock = {
+  option: () => {
+    // none for now
+    return programMock;
+  },
+  command: () => {
+    // none for now
+    return programMock;
+  },
+  action: () => {
+    // none for now
+    return programMock;
+  },
+  description: () => {
+    // none for now
+    return programMock;
+  },
+  on: () => {
+    // none for now
+    return programMock;
+  },
+  alias: () => {
+    // none for now
+    return programMock;
+  },
+  allowUnknownOption: () => programMock
+};
+
 describe("Should create instances", () => {
-  let program;
-  beforeEach(() => {
-    program = {
-      option: () => {
-        // none for now
-        return program;
-      },
-      command: () => {
-        // none for now
-        return program;
-      },
-      action: () => {
-        // none for now
-        return program;
-      },
-      description: () => {
-        // none for now
-        return program;
-      },
-      on: () => {
-        // none for now
-        return program;
-      },
-      alias: () => {
-        // none for now
-        return program;
-      },
-      allowUnknownOption: () => program
-    };
-  });
+
 
   test("load setup", async () => {
 
-    const injector = setup((program as any) as CommanderStatic);
+    const injector = setup((programMock as any) as CommanderStatic);
 
     expect(injector.has(GitRunner)).toBeTruthy();
     expect(injector.has(SchematicRunner)).toBeTruthy();
