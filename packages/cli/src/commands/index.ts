@@ -14,7 +14,6 @@ import {StartCommand} from "./start.command";
 import {UpdateCommand} from "./update.command";
 import {RemoveCommand} from "./remove.command";
 import {EventEmitter} from "events";
-import {TscRunner} from "./runners/tsc.runner";
 
 
 export function setup(program: CommanderStatic): Injector {
@@ -29,8 +28,7 @@ export function setup(program: CommanderStatic): Injector {
     GitRunner,
     SchematicRunner,
     NpmRunner,
-    YarnRunner,
-    TscRunner
+    YarnRunner
   ]);
   verifyProviders(
     [

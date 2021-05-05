@@ -3,8 +3,6 @@ import {Option} from "./interfaces";
 import {EventEmitter} from "events";
 import {BuildCommand} from "./build.command";
 import {isDefined, isNumber} from "@typeix/utils";
-import {join, normalize, isAbsolute, dirname} from "path";
-import {watch} from "fs";
 import {ChildProcess, spawn} from "child_process";
 import * as killProcess from "tree-kill";
 
@@ -27,8 +25,7 @@ export class StartCommand extends BuildCommand implements IAfterConstruct {
       .option("--preserveWatchOutput", "Preserve watch output", false)
       .option("-d, --debug [hostport] ", "Run in debug mode (with --inspect flag).")
       .option("-e, --exec [binary]", "Node Binary", "node")
-      .option("--file [file]", "Application start file", "dist/bootstrap.js")
-      .option("--tsc", "Use tsc for compilation.", false)
+      .option("--file [filePtah]", "Application start file", "dist/bootstrap.js")
       .description("Run Typeix application.")
       .action(async (command: any) => {
         const isWebpackEnabled = command.tsc ? false : command.webpack;
@@ -42,7 +39,6 @@ export class StartCommand extends BuildCommand implements IAfterConstruct {
         options.push({name: "webpackPath", value: command.webpackPath});
         options.push({name: "exec", value: command.exec});
         options.push({name: "file", value: command.file});
-        options.push({name: "tsc", value: !!command.tsc});
         options.push({
           name: "preserveWatchOutput",
           value:
@@ -91,34 +87,13 @@ export class StartCommand extends BuildCommand implements IAfterConstruct {
         });
       });
     }
-    const config = this.getConfigDirs(options);
     const exec = this.cli.getOptionValue(options, "exec");
-    const fileName = <string>this.cli.getOptionValue(options, "file");
-    const dirs = [fileName];
-    if (!isAbsolute(config.tsConfigPath)) {
-      dirs.unshift(dirname(config.tsConfigPath));
-    }
-    const filePath = normalize(join(process.cwd(), ...dirs));
-    const processArgs = [];
+    const filePath = this.getBinFile(options);
+    const processArgs = [...this.cli.getRemainingFlags().split(/\s/)];
     return spawn(`${exec} ${filePath}`, processArgs, {
       stdio: "inherit",
       shell: true
     });
-  }
-
-  /**
-   * Get out dir
-   * @param options
-   * @private
-   */
-  private async getOutDir(options: Array<Option>): Promise<string> {
-    const tsConfigPath = <string>this.cli.getOptionValue(options, "path") ?? ".";
-    const tsConfigFileName = /^(.*)\.json$/.test(tsConfigPath) ? "" : "tsconfig.json";
-    const tsConfigFile = normalize(join(tsConfigPath, tsConfigFileName));
-    const tsConfigBuffer = await this.cli.readFile(tsConfigFile);
-    const tsConfig = JSON.parse(tsConfigBuffer.toString());
-    const outDir = tsConfig?.compilerOptions?.outDir;
-    return normalize(join(process.cwd(), !!outDir ? outDir : "dist"));
   }
 
 }

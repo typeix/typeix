@@ -1,4 +1,5 @@
 import * as ts from "typescript";
+
 import {TpxCliConfig} from "./interfaces";
 import {CustomTransformerFactory, SourceFile, TransformerFactory} from "typescript";
 
@@ -22,6 +23,8 @@ export interface TpxCompilerOptions {
   tpxConfigPath: string;
   watchMode: boolean;
   compilerOptions: ts.CompilerOptions;
+  entryFile: string;
+  isDebugEnabled?: boolean;
 }
 
 declare type TpxTransformerFactory = ts.TransformerFactory<ts.SourceFile> | ts.CustomTransformerFactory;

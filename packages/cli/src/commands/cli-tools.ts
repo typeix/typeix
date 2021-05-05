@@ -19,6 +19,10 @@ import {
   TpxReport
 } from "./configs";
 import {EventEmitter} from "events";
+const nodeExternals = require("webpack-node-externals");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+import * as webpack from "webpack";
 
 @Injectable()
 export class CliTools {
@@ -51,6 +55,73 @@ export class CliTools {
       return files.includes("yarn.lock") ? "yarn" : "npm";
     } catch {
       return "npm";
+    }
+  }
+
+  /**
+   * Webpackconfig
+   * @param tpxCompilerOptions
+   */
+  async useWebpackCompiler(tpxCompilerOptions: TpxCompilerOptions) {
+    const {tsConfigPath, tpxConfigPath, compilerOptions} = tpxCompilerOptions;
+    const {cliConfig} = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath, compilerOptions);
+    const config: webpack.Configuration = {
+      entry: tpxCompilerOptions.entryFile,
+      devtool: tpxCompilerOptions?.isDebugEnabled ? "inline-source-map" : false,
+      target: "node",
+      output: {
+        filename: tpxCompilerOptions.entryFile
+      },
+      externalsPresets: {node: true},
+      externals: [nodeExternals()],
+      module: {
+        rules: [
+          {
+            test: /.tsx?$/,
+            use: [
+              {
+                loader: "ts-loader",
+                options: {
+                  transpileOnly: !cliConfig?.compilerOptions?.plugins,
+                  configFile: tsConfigPath,
+                  getCustomTransformers: async (program: any) =>
+                    await this.loadCompilerPlugins(cliConfig, tpxConfigPath, program)
+                }
+              }
+            ],
+            exclude: /node_modules/
+          }
+        ]
+      },
+      resolve: {
+        extensions: [".tsx", ".ts", ".js"],
+        plugins: [
+          new TsconfigPathsPlugin({
+            configFile: tsConfigPath
+          })
+        ]
+      },
+      mode: "none",
+      optimization: {
+        nodeEnv: false
+      },
+      node: {
+        __filename: false,
+        __dirname: false
+      },
+      plugins: [
+        new ForkTsCheckerWebpackPlugin({
+          typescript: {
+            configFile: tsConfigPath
+          }
+        })
+      ]
+    };
+    const compiler = webpack(config);
+    if (tpxCompilerOptions.watchMode || config.watch) {
+      compiler.watch(config.watchOptions || {}, () => this.eventEmitter.emit("spawn"));
+    } else {
+      compiler.run(() => this.eventEmitter.emit("spawn"));
     }
   }
 
