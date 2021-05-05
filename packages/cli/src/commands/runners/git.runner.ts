@@ -1,6 +1,6 @@
 import {AbstractRunner} from "./abstract-runner";
 import {Injectable} from "@typeix/di";
-import {join} from "path";
+import {join, normalize} from "path";
 import * as chalk from "chalk";
 import {MESSAGES} from "../../ui";
 import {promisify} from "util";
@@ -20,7 +20,8 @@ export class GitRunner extends AbstractRunner {
   }
 
   async createGitIgnoreFile(dir: string, content?: string) {
-    const fileContent = content ?? fs.readFileSync(join(process.cwd(), "gitignore.txt"));
+    const gitIgnorePath = normalize(join(module.path, "..", "..", "..", "gitignore.txt"));
+    const fileContent = content ?? fs.readFileSync(gitIgnorePath);
     const filePath = join(process.cwd(), dir, ".gitignore");
     return promisify(fs.writeFile)(filePath, fileContent);
   }
