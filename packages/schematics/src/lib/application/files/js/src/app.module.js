@@ -12,6 +12,7 @@ import {Logger, RootModule} from "@typeix/resty/build";
       useFactory: () => {
         return new Logger({
           options: {
+            prettyPrint: true,
             level: "info"
           }
         });

@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "format": "prettier --write \"**/*.js\"",
-    "start": "babel-node index.js",
+    "start": "babel-node src/bootstrap.js",
     "start:dev": "nodemon",
     "test": "jest",
     "test:cov": "jest --coverage",

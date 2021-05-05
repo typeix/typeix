@@ -12,6 +12,7 @@ import {AppService} from "./app.service";
       useFactory: () => {
         return new Logger({
           options: {
+            prettyPrint: true,
             level: "info"
           }
         });
