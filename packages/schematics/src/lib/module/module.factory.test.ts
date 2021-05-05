@@ -210,6 +210,7 @@ describe("Module Factory", () => {
         "      useFactory: () => {\n" +
         "        return new Logger({\n" +
         "          options: {\n" +
+        "            prettyPrint: true,\n" +
         "            level: \"info\"\n" +
         "          }\n" +
         "        });\n" +
