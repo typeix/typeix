@@ -4,6 +4,7 @@ import {BANNER} from "../ui";
 import osName = require("os-name");
 import {platform, release} from "os";
 import {CliTools} from "./cli-tools";
+import {join, normalize} from "path";
 
 @Injectable()
 export class InfoCommand implements IAfterConstruct {
@@ -15,7 +16,7 @@ export class InfoCommand implements IAfterConstruct {
       .command("info")
       .description("Display Typeix project details.")
       .action(() => {
-        const pkg = require("../../package.json");
+        const pkg = require(normalize(join("..", "..", "package.json")));
         // banner
         console.info(chalk.red(BANNER), "\n");
         // os

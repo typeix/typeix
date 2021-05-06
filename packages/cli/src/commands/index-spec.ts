@@ -13,7 +13,7 @@ import {BuildCommand} from "./build.command";
 import {InfoCommand} from "./info.command";
 import {GenerateCommand} from "./generate.command";
 
-export let programMock = {
+let programMock = {
   option: () => {
     // none for now
     return programMock;
