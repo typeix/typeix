@@ -7,9 +7,6 @@ import {Question} from "inquirer";
 import {CommanderStatic} from "commander";
 import {Option, TpxCliConfig} from "./interfaces";
 import {normalize} from "@angular-devkit/core";
-import * as chalk from "chalk";
-import * as inquirer from "inquirer";
-import * as ts from "typescript";
 import {
   CompilerPluginExtension,
   TpxConfiguration,
@@ -23,6 +20,9 @@ const nodeExternals = require("webpack-node-externals");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 import * as webpack from "webpack";
+import * as chalk from "chalk";
+import * as inquirer from "inquirer";
+import * as ts from "typescript";
 
 @Injectable()
 export class CliTools {
@@ -66,12 +66,13 @@ export class CliTools {
   async useWebpackCompiler(tpxCompilerOptions: TpxCompilerOptions, cfgPath?: string) {
     const {tsConfigPath, tpxConfigPath, compilerOptions} = tpxCompilerOptions;
     const {cliConfig} = await this.loadTypescriptWithConfig(tsConfigPath, tpxConfigPath, compilerOptions);
+    const entryFile = tpxCompilerOptions.entryFile ?? cliConfig.entryFile;
     const config: webpack.Configuration = cfgPath ? await this.loadBinary(normalize(join(process.cwd(), cfgPath))) : {
-      entry: tpxCompilerOptions.entryFile.replace(/(.*)(dist\/)(.*).js/, "$1src/$3.ts"),
+      entry: entryFile.replace(`(.*)(${cliConfig.distRoot}\\/)(.*).js`, `$1${cliConfig.sourceRoot}/$3.ts`),
       devtool: tpxCompilerOptions?.isDebugEnabled ? "inline-source-map" : false,
       target: "node",
       output: {
-        filename: tpxCompilerOptions.entryFile.replace("dist/", "")
+        filename: entryFile.replace(cliConfig.distRoot + "/", "")
       },
       externalsPresets: { node: true },
       externals: [nodeExternals()],
@@ -83,6 +84,7 @@ export class CliTools {
               {
                 loader: "ts-loader",
                 options: {
+                  compiler: cliConfig.compiler,
                   transpileOnly: !cliConfig?.compilerOptions?.plugins,
                   configFile: tsConfigPath,
                   getCustomTransformers: async (program: any) =>
@@ -264,8 +266,8 @@ export class CliTools {
     if (!existsSync(configPath)) {
       throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(tsConfigPath));
     }
-    const tse = await this.loadTypescript();
     const cliConfig = await this.getConfiguration(tpxConfigPath);
+    const tse: typeof ts = await this.loadBinary(cliConfig.compiler);
     try {
       const tsConfig = tse.getParsedCommandLineOfConfigFile(
         configPath,
@@ -284,13 +286,6 @@ export class CliTools {
       this.print(e.stack, true);
       throw new Error(MESSAGES.MISSING_TYPESCRIPT_PATH(tsConfigPath));
     }
-  }
-
-  /**
-   * Loads typescript binary
-   */
-  async loadTypescript(): Promise<typeof ts> {
-    return await this.loadBinary("typescript");
   }
 
   /**

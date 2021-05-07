@@ -40,10 +40,11 @@ export interface Project {
 
 export interface TpxCliConfig {
   [key: string]: any;
-
   language?: string;
+  compiler?: string;
   collection?: string;
   sourceRoot?: string;
+  distRoot?: string;
   entryFile?: string;
   monorepo?: boolean;
   compilerOptions?: CompilerOptions;

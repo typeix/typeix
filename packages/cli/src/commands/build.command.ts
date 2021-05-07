@@ -34,8 +34,8 @@ export class BuildCommand implements IAfterConstruct {
         options.push({name: "watch", value: !!command.watch});
         options.push({name: "watchAssets", value: !!command.watchAssets});
         options.push({name: "webpackPath", value: command.webpackPath});
-        options.push({name: "path", value: command.path ?? "tsconfig.build.json"});
-        options.push({name: "file", value: command.file ?? "dist/bootstrap.js"});
+        options.push({name: "path", value: command.path});
+        options.push({name: "file", value: command.file});
         options.push({
           name: "preserveWatchOutput",
           value:

@@ -42,8 +42,10 @@ export interface LoadedCompilerPlugins {
 export const CLI_CONFIG: TpxCliConfig = {
   language: "ts",
   sourceRoot: "src",
+  distRoot: "dist",
   collection: "@typeix/schematics",
-  entryFile: "main",
+  entryFile: "dist/bootstrap.js",
+  compiler: "ttypescript",
   projects: {},
   monorepo: false,
   compilerOptions: {
