@@ -1,6 +1,6 @@
 {
   "name": "@typeix/cli",
-  "version": "7.5.4",
+  "version": "7.5.5",
   "description": "Cli tools for Typeix",
   "main": "index.js",
   "publishConfig": {
