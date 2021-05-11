@@ -1,6 +1,6 @@
 {
   "name": "@typeix/metadata",
-  "version": "7.4.1",
+  "version": "8.0.0-alpha.0",
   "description": "@typeix metadata apis::::",
   "main": "build/index.js",
   "scripts": {
@@ -28,7 +28,7 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/utils": "^7.4.1",
+    "@typeix/utils": "^8.0.0-alpha.0",
     "reflect-metadata": "^0.1.13"
   },
   "publishConfig": {
