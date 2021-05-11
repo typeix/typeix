@@ -12,8 +12,8 @@ import {
   PUT,
   TRACE
 } from "../decorators";
-import {Injector, IProvider, shiftLeft, verifyProvider, verifyProviders} from "@typeix/di";
-import {inArray, isDefined, isFalsy, isTruthy, isUndefined} from "@typeix/utils";
+import {Injector, IProvider, shiftLeft, SyncInjector, verifyProvider, verifyProviders} from "@typeix/di";
+import {inArray, isArray, isDefined, isFalsy, isTruthy, isUndefined} from "@typeix/utils";
 import {Module, ModuleInjector} from "@typeix/modules";
 import {getClassMetadata, IMetadata} from "@typeix/metadata";
 import {
@@ -30,7 +30,6 @@ import {FakeIncomingMessage, FakeServerResponse} from "./mocks";
 import {ServerConfig} from "../servers/server";
 import {PATH_PARAM} from "../decorators/path-param";
 import {REQUEST_INTERCEPTORS} from "../interceptors/request";
-import {isArray} from "../../../utils";
 
 const REST_DECORATORS = [GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH, OnError];
 
@@ -84,7 +83,7 @@ export function createRouteDefinition(
   module?: Function | IProvider
 ): RouteDefinition {
   const controllerProvider = verifyProvider(controller);
-  const allControllerMetadata = Injector.getAllMetadataForTarget(controllerProvider);
+  const allControllerMetadata = Injector.Sync.getAllMetadataForTarget(controllerProvider);
   const controllerMetadata: IControllerMetadata = allControllerMetadata.find(item => item.decorator === Controller)?.args;
   const methodDecorator: IMetadata = allControllerMetadata.find(item =>
     item.propertyKey === method.name && item.type === "method" && item.decorator === method.decorator
@@ -123,7 +122,7 @@ export function getRouteDefinitions(moduleInjector: ModuleInjector): Array<Route
   let routeDefinitions: Array<RouteDefinition> = [];
   moduleInjector.getAllMetadata().forEach((moduleMetadata: IModuleMetadata, module: Function) => {
     verifyProviders(moduleMetadata.controllers).forEach((provider: IProvider) => {
-      let allControllerMetadata = Injector.getAllMetadataForTarget(provider);
+      let allControllerMetadata = Injector.Sync.getAllMetadataForTarget(provider);
       let controllerMetadata: IControllerMetadata = allControllerMetadata.find(item => item.decorator === Controller)?.args;
       allControllerMetadata
         .filter(item => inArray(REST_DECORATORS, item.decorator))
@@ -163,7 +162,7 @@ export function getRoutePath(definition: RouteDefinition, modulePath = "/"): str
  * Get Request from injector
  * @param injector
  */
-export function getRequest(injector: Injector): IncomingMessage | Http2ServerRequest | FakeIncomingMessage {
+export function getRequest(injector: Injector | SyncInjector): IncomingMessage | Http2ServerRequest | FakeIncomingMessage {
   return injector.has(Http2ServerRequest) ? injector.get(Http2ServerRequest) : injector.has(FakeIncomingMessage) ?
     injector.get(FakeIncomingMessage) : injector.get(IncomingMessage);
 }
@@ -172,7 +171,7 @@ export function getRequest(injector: Injector): IncomingMessage | Http2ServerReq
  * Get Response from injector
  * @param injector
  */
-export function getResponse(injector: Injector): ServerResponse | Http2ServerResponse | FakeServerResponse {
+export function getResponse(injector: Injector | SyncInjector): ServerResponse | Http2ServerResponse | FakeServerResponse {
   return injector.has(Http2ServerResponse) ? injector.get(Http2ServerResponse) : injector.has(FakeServerResponse) ?
     injector.get(FakeServerResponse) : injector.get(ServerResponse);
 }
@@ -286,7 +285,10 @@ class Executor {
  * @param config
  * @private
  */
-async function applyServerInjectables(handlerInjector: Injector, route: IResolvedRoute, config?: ServerConfig): Promise<Array<IProvider>> {
+async function applyServerInjectables(
+  handlerInjector: Injector | SyncInjector,
+  route: IResolvedRoute, config?: ServerConfig
+): Promise<Array<IProvider>> {
   let providers: Array<IProvider> = [];
   const request = getRequest(handlerInjector);
   const response = getResponse(handlerInjector);
@@ -333,7 +335,7 @@ async function applyHandler(
   provider: IProvider,
   lazyParams: () => Array<any>,
   propertyKey: string | symbol,
-  handlerInjector: Injector,
+  handlerInjector: Injector | SyncInjector,
   providers: Array<IProvider>,
   controllerProviders: Array<IProvider>
 ): Promise<any> {

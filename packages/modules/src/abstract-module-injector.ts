@@ -1,5 +1,6 @@
 import {
   Injector,
+  SyncInjector,
   IProvider,
   verifyProvider
 } from "@typeix/di";
@@ -16,9 +17,7 @@ import {IModuleMetadata} from "./imodule";
  */
 export class AbstractModuleInjector {
   protected _allModulesMetadata: Map<any, IModuleMetadata> = new Map();
-  protected _providers: Map<any, Injector> = new Map();
-  protected _sharedInjector: Injector = new Injector();
-  protected _sharedProviders: Array<IProvider> = [];
+  protected _providers: Map<any, Injector | SyncInjector> = new Map();
   /**
    * Get module instance
    * @param {Function | IProvider} Class
@@ -34,7 +33,7 @@ export class AbstractModuleInjector {
    * @param {IProvider | Function} Class
    * @returns {Injector}
    */
-  getInjector(Class: Function | IProvider): Injector {
+  getInjector(Class: Function | IProvider): Injector | SyncInjector {
     let provider: IProvider = verifyProvider(Class);
     return this._providers.get(provider.provide);
   }

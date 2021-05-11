@@ -46,7 +46,7 @@ export async function pipeServer(server: Server, Class: Function, config?: Serve
   }
   const moduleInjector = await ModuleInjector.createAndResolve(Class, verifyProviders(metadata.shared_providers));
   const routeDefinitions = getRouteDefinitions(moduleInjector);
-  const injector = moduleInjector.getInjector(Class);
+  const injector = await moduleInjector.getInjector(Class);
   const router = injector.get(Router);
   router.setParentInjector(injector);
   const logger = injector.get(Logger);

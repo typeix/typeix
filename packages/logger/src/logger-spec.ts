@@ -10,13 +10,13 @@ describe("Logger Test", () => {
   }
 
   it("Should create an instance of an logger", () => {
-    let injector = Injector.createAndResolve(LoggerService, [Logger]);
+    let injector = Injector.Sync.createAndResolve(LoggerService, [Logger]);
     let logger = injector.get(Logger);
     expect(logger).toBeInstanceOf(Logger);
   });
 
   it("Should create an log errors in dev mode", () => {
-    let injector = Injector.createAndResolve(LoggerService, [
+    let injector = Injector.Sync.createAndResolve(LoggerService, [
       {
         provide: Logger,
         useFactory: () => new Logger({
@@ -36,7 +36,7 @@ describe("Logger Test", () => {
   });
 
   it("Should create an log errors", () => {
-    let injector = Injector.createAndResolve(LoggerService, [
+    let injector = Injector.Sync.createAndResolve(LoggerService, [
       {
         provide: Logger,
         useFactory: () => new Logger({
@@ -55,8 +55,8 @@ describe("Logger Test", () => {
     let result;
     let writeStream = {
       write: (...args: any[]) => result = args
-    }
-    let injector = Injector.createAndResolve(LoggerService, [
+    };
+    let injector = Injector.Sync.createAndResolve(LoggerService, [
       {
         provide: Logger,
         useFactory: () => new Logger({

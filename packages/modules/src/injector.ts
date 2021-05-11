@@ -25,6 +25,8 @@ import {SyncModuleInjector} from "./sync-injector";
 export class ModuleInjector extends AbstractModuleInjector{
 
   static Sync: typeof SyncModuleInjector = SyncModuleInjector;
+  protected _sharedInjector: Injector = new Injector();
+  protected _sharedProviders: Array<IProvider> = [];
   /**
    * Initialize module
    * @param {Function | IProvider} Class

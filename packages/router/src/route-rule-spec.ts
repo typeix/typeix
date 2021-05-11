@@ -9,7 +9,7 @@ describe("RouteRule", () => {
       handler: () => void 0,
       path: "/home/<id:(\\d+)>"
     };
-    let injector = Injector.createAndResolve(RouteRule, [ {provide: RouteConfig, useValue: config} ]);
+    let injector = await Injector.createAndResolve(RouteRule, [ {provide: RouteConfig, useValue: config} ]);
     let route = injector.get(RouteRule);
     expect(route).not.toBeNull();
     let result = await route.parseRequest(Router.parseURI("/home/123", {}), "GET", {});
@@ -42,7 +42,7 @@ describe("RouteRule", () => {
       handler: () => void 0,
       path: "/home/<id:(\\d+)>"
     };
-    let injector = Injector.createAndResolve(RouteRule, [ {provide: RouteConfig, useValue: config} ]);
+    let injector = await Injector.createAndResolve(RouteRule, [ {provide: RouteConfig, useValue: config} ]);
     let route = injector.get(RouteRule);
     expect(route).not.toBeNull();
     let path = "/home/123?query=1&base=2&query=2";
@@ -64,7 +64,7 @@ describe("RouteRule", () => {
       handler: () => void 0,
       path: "/"
     };
-    let injector = Injector.createAndResolve(RouteRule, [ {provide: RouteConfig, useValue: config} ]);
+    let injector = await Injector.createAndResolve(RouteRule, [ {provide: RouteConfig, useValue: config} ]);
     let route = injector.get(RouteRule);
     expect(route).not.toBeNull();
     let path = "/";

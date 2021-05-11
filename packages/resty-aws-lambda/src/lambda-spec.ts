@@ -22,7 +22,7 @@ import {LambdaContext, LambdaEvent} from "./decorators/lambda";
 
 
 
-describe("fakeHttpServer", () => {
+xdescribe("fakeHttpServer", () => {
 
 
   let identity: APIGatewayEventIdentity = {

@@ -11,6 +11,7 @@ import {getAllMetadataForTarget, IMetadata} from "@typeix/metadata";
 import {isArray, isDefined, isFunction, isUndefined} from "@typeix/utils";
 import {Inject, CreateProvider, AfterConstruct} from "../decorators";
 import {AbstractInjector} from "./abstract-injector";
+import {Injector} from "./injector";
 
 /**
  * Main injector logic
@@ -26,6 +27,7 @@ export class SyncInjector extends AbstractInjector<SyncInjector> {
    */
   constructor(_parent?: SyncInjector, keys: Array<any> = []) {
     super(_parent, keys);
+    this.set(Injector, this);
     this.set(SyncInjector, this);
   }
 

@@ -367,7 +367,7 @@ export async function fakeHttpServer(Class: Function, config?: ServerConfig): Pr
     },
     {
       provide: ModuleInjector,
-      useValue: pipeServer(server, Class, Object.assign(isDefined(config) ? config : {}, {isMockServer: true}))
+      useValue: await pipeServer(server, Class, Object.assign(isDefined(config) ? config : {}, {isMockServer: true}))
     }
   ];
   return (await Injector.createAndResolve(FakeServerApi, providers)).get(FakeServerApi);

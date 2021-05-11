@@ -2,6 +2,7 @@ import {
   getProviderName,
   Injector,
   IProvider,
+  SyncInjector,
   shiftLeft,
   verifyProvider,
   verifyProviders
@@ -22,6 +23,8 @@ import {AbstractModuleInjector} from "./abstract-module-injector";
  *
  */
 export class SyncModuleInjector extends AbstractModuleInjector {
+  protected _sharedInjector: SyncInjector = new Injector.Sync();
+  protected _sharedProviders: Array<IProvider> = [];
   /**
    * Initialize module
    * @param {Function | IProvider} Class
@@ -61,7 +64,7 @@ export class SyncModuleInjector extends AbstractModuleInjector {
     let metadata: IMetadata = getClassMetadata(Module, provider.provide);
     let config: IModuleMetadata = metadata.args;
     let moduleProviders: Array<IProvider> = verifyProviders(config.providers);
-    let injector: Injector = new Injector(null, mutableKeys);
+    let injector = new Injector.Sync(null, mutableKeys);
     moduleProviders = this.processImportsAndExports(moduleProviders, config);
     // shared must be after import & export is processed
     let sharedProviders = this._sharedProviders.map(sharedProvider => {

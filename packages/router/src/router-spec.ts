@@ -31,8 +31,8 @@ describe("Router", () => {
     });
   }
 
-  beforeEach(() => {
-    let injector = Injector.createAndResolve(Router, []);
+  beforeEach(async () => {
+    let injector = await Injector.createAndResolve(Router, []);
     router = injector.get(Router);
   });
 
@@ -84,7 +84,7 @@ describe("Router", () => {
 
   test("Parent injector", async () => {
     let parent = new Injector();
-    let injector = Injector.createAndResolve(Router, []);
+    let injector = await Injector.createAndResolve(Router, []);
     injector.get(Router).setParentInjector(parent);
     const cParent: Injector = Reflect.get(injector.get(Router), "injector");
     expect(cParent.getParent()).toEqual(parent);
@@ -189,12 +189,13 @@ describe("Router", () => {
     }
     let count = 0, resolvedRoute;
     let obj = {
-      handler: (injector: Injector, route: IResolvedRoute) => {
-        resolvedRoute = injector.createAndResolve(verifyProvider(A), []).route;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      handler: async (injector: Injector, route: IResolvedRoute) => {
+        resolvedRoute =  (await injector.createAndResolve(verifyProvider(A), [])).route;
         count += 1;
         return "1";
       }
-    }
+    };
 
     let spy = spyOn(obj, "handler").and.callThrough();
 
@@ -221,11 +222,12 @@ describe("Router", () => {
   test("Should throw error", async () => {
     let count = 0;
     let obj = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       handler: (injector: Injector, route: IResolvedRoute) => {
         count += 1;
         throw new RouterError("whatever", 500);
       }
-    }
+    };
 
     let spy = spyOn(obj, "handler").and.callThrough();
 
@@ -249,13 +251,15 @@ describe("Router", () => {
 
   test("RouterError",  () => {
     let obj = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       handler: (injector: Injector, route: IResolvedRoute) => {
         return Buffer.from("1");
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       error: (injector: Injector, route: IResolvedRoute) => {
         return {a: 1, b: 1};
       }
-    }
+    };
     let err = new RouterError("Router", 500, obj);
     expect(err.getData()).toEqual(obj);
     expect(RouterError.from(new Error("Abc"), 500)).toBeInstanceOf(RouterError);

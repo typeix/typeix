@@ -473,7 +473,7 @@ describe("sync @Module", () => {
       @Inject(CService) cService: CService;
     }
 
-    let cInjector = Injector.createAndResolve(CService, []);
+    let cInjector = Injector.Sync.createAndResolve(CService, []);
     let cInstance = cInjector.get(CService);
 
     let injector = ModuleInjector.Sync.createAndResolve(ApplicationModuleA, [ {provide: CService, useValue: cInstance} ]);

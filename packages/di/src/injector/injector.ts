@@ -25,6 +25,7 @@ export class Injector extends AbstractInjector<Injector> {
   constructor( _parent?: Injector, keys: Array<any> = []) {
     super(_parent, keys);
     this.set(Injector, this);
+    this.set(SyncInjector, this);
   }
 
   /**

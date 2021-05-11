@@ -15,6 +15,7 @@ export {
   IRouteHandler,
   RouterError
 } from "@typeix/router";
+export {ModuleInjector} from "@typeix/modules";
 export * from "@typeix/di";
 export * from "@typeix/utils";
 export * from "@typeix/logger";
