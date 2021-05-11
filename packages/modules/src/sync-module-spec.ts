@@ -2,9 +2,9 @@ import {Module} from "./module";
 import {getProviderName, Inject, Injectable, Injector, verifyProvider} from "@typeix/di";
 import {ModuleInjector} from "./injector";
 
-describe("@Module", () => {
+describe("sync @Module", () => {
 
-  test("no imports exports", async () => {
+  test("no imports exports", () => {
 
     @Injectable()
     class AService {
@@ -23,7 +23,7 @@ describe("@Module", () => {
       @Inject(AService) aService: AService;
     }
 
-    let injector: ModuleInjector = await ModuleInjector.createAndResolve(ApplicationModule, []);
+    let injector = ModuleInjector.Sync.createAndResolve(ApplicationModule, []);
     let module: ApplicationModule = injector.get(ApplicationModule);
 
     expect(module).toBeInstanceOf(ApplicationModule);
@@ -33,7 +33,7 @@ describe("@Module", () => {
   });
 
 
-  test("imports", async () => {
+  test("imports", () => {
 
     @Injectable()
     class AService {
@@ -79,7 +79,7 @@ describe("@Module", () => {
       @Inject(AService) aService: AService;
     }
 
-    let injector: ModuleInjector = await ModuleInjector.createAndResolve(ApplicationModuleA, []);
+    let injector = ModuleInjector.Sync.createAndResolve(ApplicationModuleA, []);
 
     let moduleD: ApplicationModuleD = injector.get(ApplicationModuleD);
 
@@ -131,21 +131,16 @@ describe("@Module", () => {
     expect(injector.has(ApplicationModuleD)).toBeTruthy();
     injector.remove(ApplicationModuleD);
     expect(injector.has(ApplicationModuleD)).toBeFalsy();
-    try {
-      await injector.createAndResolve(ApplicationModuleA, []);
-    } catch (e) {
-      expect( () => {
-        throw e;
-      }).toThrow(`Module ${getProviderName(verifyProvider(ApplicationModuleA))} is already initialized`);
-    }
-
+    expect(() => {
+      injector.createAndResolve(ApplicationModuleA, []);
+    }).toThrow(`Module ${getProviderName(verifyProvider(ApplicationModuleA))} is already initialized`);
 
     let method = Reflect.get(injector, "processImportsAndExports");
-    expect(await method([], {})).toEqual([]);
+    expect(method([], {})).toEqual([]);
   });
 
 
-  test("exports", async () => {
+  test("exports", () => {
 
     @Injectable()
     class AService {
@@ -193,7 +188,7 @@ describe("@Module", () => {
       @Inject(AService) aService: AService;
     }
 
-    let injector: ModuleInjector = await ModuleInjector.createAndResolve(ApplicationModuleA, []);
+    let injector = ModuleInjector.Sync.createAndResolve(ApplicationModuleA, []);
 
     let moduleD: ApplicationModuleD = injector.get(ApplicationModuleD);
 
@@ -245,7 +240,7 @@ describe("@Module", () => {
   });
 
 
-  test("exports merge left order", async () => {
+  test("exports merge left order", () => {
 
     @Injectable()
     class AService {
@@ -293,7 +288,7 @@ describe("@Module", () => {
       @Inject(AService) aService: AService;
     }
 
-    let injector: ModuleInjector = await ModuleInjector.createAndResolve(ApplicationModuleA, []);
+    let injector = ModuleInjector.Sync.createAndResolve(ApplicationModuleA, []);
 
     let moduleD: ApplicationModuleD = injector.get(ApplicationModuleD);
     let moduleC: ApplicationModuleC = injector.get(ApplicationModuleC);
@@ -345,7 +340,7 @@ describe("@Module", () => {
   });
 
 
-  test("getAllMetadata", async () => {
+  test("getAllMetadata", () => {
 
     @Injectable()
     class AService {
@@ -401,7 +396,7 @@ describe("@Module", () => {
       @Inject(AService) aService: AService;
     }
 
-    let injector: ModuleInjector = await ModuleInjector.createAndResolve(ApplicationModuleA, []);
+    let injector = ModuleInjector.Sync.createAndResolve(ApplicationModuleA, []);
     let allModuleMetadata = injector.getAllMetadata();
 
     let metadataContainer = new Map();
@@ -415,7 +410,7 @@ describe("@Module", () => {
   });
 
 
-  test("shared providers", async () => {
+  test("shared providers", () => {
 
     @Injectable()
     class AService {
@@ -443,7 +438,8 @@ describe("@Module", () => {
 
     let metadataC = {
       imports: [ ApplicationModuleD ],
-      exports: [ AService, BService ]
+      exports: [ AService, BService ],
+      providers: []
     };
 
     @Module(metadataC)
@@ -477,10 +473,10 @@ describe("@Module", () => {
       @Inject(CService) cService: CService;
     }
 
-    let cInjector = await Injector.createAndResolve(CService, []);
+    let cInjector = Injector.createAndResolve(CService, []);
     let cInstance = cInjector.get(CService);
 
-    let injector: ModuleInjector = await ModuleInjector.createAndResolve(ApplicationModuleA, [ {provide: CService, useValue: cInstance} ]);
+    let injector = ModuleInjector.Sync.createAndResolve(ApplicationModuleA, [ {provide: CService, useValue: cInstance} ]);
 
     let moduleD: ApplicationModuleD = injector.get(ApplicationModuleD);
     let moduleC: ApplicationModuleC = injector.get(ApplicationModuleC);

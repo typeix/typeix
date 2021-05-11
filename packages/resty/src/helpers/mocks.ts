@@ -358,7 +358,7 @@ export class FakeServerApi {
  * @description
  * Fire request.ts
  */
-export function fakeHttpServer(Class: Function, config?: ServerConfig): FakeServerApi {
+export async function fakeHttpServer(Class: Function, config?: ServerConfig): Promise<FakeServerApi> {
   const server = new Server();
   let providers: Array<IProvider> = [
     {
@@ -370,5 +370,5 @@ export function fakeHttpServer(Class: Function, config?: ServerConfig): FakeServ
       useValue: pipeServer(server, Class, Object.assign(isDefined(config) ? config : {}, {isMockServer: true}))
     }
   ];
-  return Injector.createAndResolve(FakeServerApi, providers).get(FakeServerApi);
+  return (await Injector.createAndResolve(FakeServerApi, providers)).get(FakeServerApi);
 }

@@ -26,7 +26,7 @@ export interface ServerConfig {
  * @description
  * Use httpServer function to httpServer an Module.
  */
-export function pipeServer(server: Server, Class: Function, config?: ServerConfig): ModuleInjector {
+export async function pipeServer(server: Server, Class: Function, config?: ServerConfig): Promise<ModuleInjector> {
   let metadata: RootModuleMetadata = getClassMetadata(Module, Class)?.args;
   if (!isArray(metadata.shared_providers)) {
     throw new RouterError("Server must be initialized on @RootModule", 500);
@@ -34,7 +34,17 @@ export function pipeServer(server: Server, Class: Function, config?: ServerConfi
   if (!verifyProviders(metadata.shared_providers).find(item => item.provide === Router)) {
     metadata.shared_providers.push(verifyProvider(Router));
   }
-  const moduleInjector = ModuleInjector.createAndResolve(Class, verifyProviders(metadata.shared_providers));
+  if (!verifyProviders(metadata.shared_providers).find(item => item.provide === Logger)) {
+    metadata.shared_providers.push(verifyProvider({
+      provide: Logger,
+      useFactory: () => new Logger({
+        options: {
+          level: "info"
+        }
+      })
+    }));
+  }
+  const moduleInjector = await ModuleInjector.createAndResolve(Class, verifyProviders(metadata.shared_providers));
   const routeDefinitions = getRouteDefinitions(moduleInjector);
   const injector = moduleInjector.getInjector(Class);
   const router = injector.get(Router);

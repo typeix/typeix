@@ -1,5 +1,3 @@
-import {FakeServerResponse} from "./mocks";
-
 export {
   FakeServerApi,
   FakeServerResponse,

@@ -1,4 +1,5 @@
-import {Injector} from "./injector";
+import {Injector} from "./injector/injector";
+import {SyncInjector} from "./injector/sync-injector";
 
 /**
  * ValueProvider
@@ -10,16 +11,19 @@ export interface IProvider {
   useFactory?: Function;
   providers?: Array<MixedProvider>;
 }
+
 /**
  * Class or Interfaces
  */
 export declare type MixedProvider = Function | IProvider;
+
 /**
  * Type interface
  */
 export interface Type<T> extends Function {
   new(...args: any[]): T;
 }
+
 /**
  * @since 1.0.0
  * @interface
@@ -38,7 +42,7 @@ export interface IAfterConstruct {
 export interface Method {
   invoke: () => any;
   transform: (data: any) => any;
-  readonly injector: Injector;
+  readonly injector: Injector | SyncInjector;
   readonly decoratorArgs: any;
 }
 

@@ -212,16 +212,16 @@ describe("fakeHttpServer", () => {
   });
 
 
-  function doAction(event, context, config?: LambdaServerConfig): Promise<any> {
-    let handler = lambdaServer(LambdaModule, config);
+  async function doAction(lambdaEvent, context, config?: LambdaServerConfig): Promise<any> {
+    let handler = await lambdaServer(LambdaModule, config);
     return new Promise((resolve, reject) => {
-      handler(event, context, (error, data) => {
+      handler(lambdaEvent, context, (error, data) => {
         if (error) {
           reject(error);
         } else {
           resolve(data);
         }
       });
-    })
+    });
   }
 });

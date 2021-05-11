@@ -1,6 +1,6 @@
 import {createParameterAndPropertyDecorator} from "@typeix/metadata";
-import {IProvider} from "./interfaces";
-import {verifyProvider} from "./provider";
+import {IProvider} from "../interfaces";
+import {verifyProvider} from "../helpers/provider";
 
 /**
  * CreateInstance

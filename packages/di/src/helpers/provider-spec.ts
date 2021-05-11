@@ -1,7 +1,7 @@
-import {Injectable} from "./injectable";
+import {Injectable} from "../decorators/injectable";
 import {getProviderName, ProviderList, shiftLeft, shiftRight, verifyProviders} from "./provider";
 
-describe('provider', () => {
+describe("provider", () => {
 
 
   test("merge providers", async () => {

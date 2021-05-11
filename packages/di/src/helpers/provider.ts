@@ -6,16 +6,14 @@ import {
   isObject,
   isString
 } from "@typeix/utils";
-import {IProvider} from "./interfaces";
-import {MixedProvider} from "./interfaces";
+import {IProvider, MixedProvider} from "../interfaces";
 
 /**
  * Get name of provider or class
  * @param Class
- * @param {string} prefix
  * @returns {string}
  */
-export function getProviderName(Class: any, prefix?: string): string {
+export function getProviderName(Class: any): string {
   if (isObject(Class) && (isFactoryProvider(Class) || isClassProvider(Class) || isValueProvider(Class))) {
     return getProviderName(Class.provide);
   } if (isFunction(Class)) {

@@ -1,7 +1,7 @@
 {
   "name": "@typeix/resty",
   "version": "7.4.1",
-  "description": "REST nodejs framework for typescript",
+  "description": "Fast, unopinionated, minimalist framework for building efficient and scalable applications",
   "main": "build/index.js",
   "scripts": {
     "pretest": "tsc --project tsconfig.json",

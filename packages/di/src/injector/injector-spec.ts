@@ -1,19 +1,15 @@
-import {Injectable} from "./injectable";
-import {Inject} from "./inject";
 import {Injector} from "./injector";
-import {verifyProvider} from "./provider";
+import {verifyProvider} from "../helpers/provider";
 import {getMetadata, hasDecorator} from "@typeix/metadata";
-import {IAfterConstruct, Interceptor, Method} from "./interfaces";
-import {AfterConstruct} from "./after-construct";
-import {createMethodInterceptor} from "./method-interceptor";
+import {IAfterConstruct, Interceptor, Method} from "../interfaces";
+import {createMethodInterceptor} from "../helpers/interceptor";
 import {uuid} from "@typeix/utils";
-import {AsyncInterceptor} from "./async-interceptor";
-import {CreateProvider} from "./create-provider";
+import {AsyncInterceptor, CreateProvider, AfterConstruct, Inject, Injectable} from "../decorators";
 
 
-describe("Injector", () => {
+describe("Injector",  () => {
 
-  test("getConstructorProviders", () => {
+  test("getConstructorProviders", async () => {
 
     @Injectable()
     class AService {
@@ -40,11 +36,14 @@ describe("Injector", () => {
 
       uService: AService;
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       constructor(
         aService: AService,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         @Inject("class") value1: CService,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         @Inject("factory") value2: AService,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         @Inject("value") value: string
       ) {
         super();
@@ -58,7 +57,7 @@ describe("Injector", () => {
 
     let metadata = getMetadata("design:paramtypes", BService);
     expect(metadata).toStrictEqual([AService, CService, AService, String]);
-    let injector = Injector.createAndResolve(BService, [
+    let injector = await Injector.createAndResolve(BService, [
       AService,
       CService,
       {provide: "value", useValue: "fancy"},
@@ -79,7 +78,7 @@ describe("Injector", () => {
   });
 
 
-  test("inheritance", () => {
+  test("inheritance", async () => {
 
     @Injectable()
     class CreatedInfoService {
@@ -118,13 +117,13 @@ describe("Injector", () => {
     }
 
 
-    let bInjector = Injector.createAndResolve(BService, [BSubInfoService]);
+    let bInjector = await Injector.createAndResolve(BService, [BSubInfoService]);
     let bService: BService = bInjector.get(BService);
     expect(bService).toBeInstanceOf(BService);
     expect(bService.infoService).toBeInstanceOf(BSubInfoService);
     expect(bService.infoService.createdProviderTest).toBeInstanceOf(CreatedInfoService);
 
-    let aInjector = Injector.createAndResolve(AService, [ASubInfoService]);
+    let aInjector = await Injector.createAndResolve(AService, [ASubInfoService]);
     let aService: AService = aInjector.get(AService);
     expect(aService).toBeInstanceOf(AService);
     expect(aService.infoService).toBeInstanceOf(ASubInfoService);
@@ -132,7 +131,7 @@ describe("Injector", () => {
   });
 
 
-  test("no provider test", () => {
+  test("no provider test", async () => {
 
     @Injectable()
     class InfoService {
@@ -163,22 +162,30 @@ describe("Injector", () => {
       @Inject(BSubInfoService) infoService: BSubInfoService;
     }
 
-    let bInjector = Injector.createAndResolve(BService, [BSubInfoService]);
+    let bInjector = await Injector.createAndResolve(BService, [BSubInfoService]);
     let bService: BService = bInjector.get(BService);
     expect(bService).toBeInstanceOf(BService);
     expect(bService.infoService).toBeInstanceOf(BSubInfoService);
 
+    try {
+      await Injector.createAndResolve(BService, [ASubInfoService]);
+    } catch (e) {
+      expect(() => {
+        throw e;
+      }).toThrow(/No provider BSubInfoService on class BService/);
+    }
 
-    expect(() => Injector.createAndResolve(BService, [ASubInfoService]))
-      .toThrow(/No provider BSubInfoService on class BService/);
-
-    expect(() => Injector.createAndResolve(AService, [BSubInfoService]))
-      .toThrow(/No provider ASubInfoService on class AService/);
-
+    try {
+      await Injector.createAndResolve(AService, [BSubInfoService]);
+    } catch (e) {
+      expect(() => {
+        throw e;
+      }).toThrow(/No provider ASubInfoService on class AService/);
+    }
   });
 
 
-  test("children", () => {
+  test("children", async () => {
 
     @Injectable()
     class InfoService {
@@ -209,9 +216,9 @@ describe("Injector", () => {
       @Inject(BSubInfoService) infoService: BSubInfoService;
     }
 
-    let parent = Injector.createAndResolve(AService, [ASubInfoService]);
+    let parent = await Injector.createAndResolve(AService, [ASubInfoService]);
 
-    let siblingOne = Injector.createAndResolveChild(parent, BService, [BSubInfoService]);
+    let siblingOne = await Injector.createAndResolveChild(parent, BService, [BSubInfoService]);
     let bServiceOne: BService = siblingOne.get(BService);
     let aServiceOne: AService = siblingOne.get(AService);
     expect(bServiceOne).toBeInstanceOf(BService);
@@ -219,7 +226,7 @@ describe("Injector", () => {
     expect(bServiceOne.infoService).toBeInstanceOf(BSubInfoService);
     expect(aServiceOne.infoService).toBeInstanceOf(ASubInfoService);
 
-    let siblingTwo = Injector.createAndResolveChild(parent, BService, [BSubInfoService]);
+    let siblingTwo = await Injector.createAndResolveChild(parent, BService, [BSubInfoService]);
     let bServiceTwo: BService = siblingTwo.get(BService);
     let aServiceTwo: AService = siblingTwo.get(AService);
     expect(bServiceTwo).toBeInstanceOf(BService);
@@ -230,7 +237,7 @@ describe("Injector", () => {
     expect(bServiceOne.infoService).not.toBe(bServiceTwo.infoService);
     expect(aServiceOne.infoService).toBe(aServiceTwo.infoService);
 
-    let childSibling = Injector.createAndResolveChild(siblingTwo, BService, [BSubInfoService]);
+    let childSibling = await Injector.createAndResolveChild(siblingTwo, BService, [BSubInfoService]);
 
     expect(parent.getInjectorsByProvider(verifyProvider(BService)))
       .toEqual([siblingOne, siblingTwo, childSibling]);
@@ -248,7 +255,7 @@ describe("Injector", () => {
   });
 
 
-  test("tokens inherited root to its children", () => {
+  test("tokens inherited root to its children", async () => {
 
     @Injectable()
     class InfoService {
@@ -279,8 +286,8 @@ describe("Injector", () => {
       @Inject(BSubInfoService) infoService: BSubInfoService;
     }
 
-    let parent = Injector.createAndResolve(AService, [InfoService, ASubInfoService, BSubInfoService]);
-    let child = Injector.createAndResolveChild(parent, BService, []);
+    let parent = await Injector.createAndResolve(AService, [InfoService, ASubInfoService, BSubInfoService]);
+    let child = await Injector.createAndResolveChild(parent, BService, []);
     let bService: BService = child.get(BService);
     let aService: AService = child.get(AService);
     expect(bService).toBeInstanceOf(BService);
@@ -290,7 +297,7 @@ describe("Injector", () => {
     expect(parent).not.toBe(child);
   });
 
-  test("tokens inherited root to its children recursive", () => {
+  test("tokens inherited root to its children recursive", async () => {
 
     @Injectable()
     class CService {
@@ -328,8 +335,8 @@ describe("Injector", () => {
       @Inject(CService) cService: CService;
     }
 
-    let parent = Injector.createAndResolve(AService, [CService, InfoService, ASubInfoService, BSubInfoService]);
-    let child = Injector.createAndResolveChild(parent, BService, []);
+    let parent = await Injector.createAndResolve(AService, [CService, InfoService, ASubInfoService, BSubInfoService]);
+    let child = await Injector.createAndResolveChild(parent, BService, []);
     let bService: BService = child.get(BService);
     let aService: AService = child.get(AService);
     expect(bService).toBeInstanceOf(BService);
@@ -342,9 +349,8 @@ describe("Injector", () => {
     expect(parent).not.toBe(child);
   });
 
-  test("afterConstruct", () => {
+  test("afterConstruct", async () => {
     @Injectable()
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     class AfterConstructLegacy implements IAfterConstruct {
       static number = 0;
 
@@ -354,7 +360,6 @@ describe("Injector", () => {
     }
 
     @Injectable()
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     class AfterConstructNew {
       static number = 0;
 
@@ -365,16 +370,16 @@ describe("Injector", () => {
     }
 
     expect(AfterConstructLegacy.number).toBe(0);
-    Injector.createAndResolve(AfterConstructLegacy, []).get(AfterConstructLegacy);
+    await Injector.createAndResolve(AfterConstructLegacy, []);
     expect(AfterConstructLegacy.number).toBe(1);
 
     expect(AfterConstructNew.number).toBe(0);
-    Injector.createAndResolve(AfterConstructNew, []).get(AfterConstructNew);
+    await Injector.createAndResolve(AfterConstructNew, []);
     expect(AfterConstructNew.number).toBe(1);
   });
 
 
-  test("destroy", () => {
+  test("destroy", async () => {
 
 
     @Injectable()
@@ -418,7 +423,7 @@ describe("Injector", () => {
       @Inject() dService: DService;
     }
 
-    let parent = Injector.createAndResolve(AService, [
+    let parent = await Injector.createAndResolve(AService, [
       CService,
       InfoService,
       ASubInfoService,
@@ -432,19 +437,19 @@ describe("Injector", () => {
         providers: [CService]
       }
     ]);
-    let child = Injector.createAndResolveChild(parent, {
+    let child = await Injector.createAndResolveChild(parent, {
       provide: BService,
       useClass: BService,
       providers: [DService]
     }, []);
 
     expect(() => {
-      child.setParent(new Injector())
-    }).toThrow(`Cannot redefine parent for injector: BService`);
+      child.setParent(new Injector());
+    }).toThrow("Cannot redefine parent for injector: BService");
 
     expect(() => {
-      child.setName(verifyProvider(BService))
-    }).toThrow(`Cannot redefine injector name: BService`);
+      child.setName(verifyProvider(BService));
+    }).toThrow("Cannot redefine injector name: BService");
     expect(parent.getInjectorsByProvider(verifyProvider(Injector))).toEqual([parent, child]);
     expect(parent.getInjectorsByProvider(verifyProvider(AService))).toEqual([parent]);
     expect(parent.getInjectorsByProvider(verifyProvider(BService))).toEqual([child]);
@@ -459,7 +464,7 @@ describe("Injector", () => {
   });
 
 
-  test("interceptors", () => {
+  test("interceptors", async () => {
     let interceptor_count = 0, invocation_count = 0;
     let result = [];
     let obj = {
@@ -467,7 +472,7 @@ describe("Injector", () => {
         interceptor_count += 1;
         result.push(value);
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -481,8 +486,8 @@ describe("Injector", () => {
       @Inject() logger: Logger;
 
       invoke(method: Method): any {
-        let result = method.invoke();
-        this.logger.log({result, args: method.decoratorArgs});
+        let cr = method.invoke();
+        this.logger.log({result: cr, args: method.decoratorArgs});
       }
     }
 
@@ -503,9 +508,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'handler');
+    const spy = jest.spyOn(obj, "handler");
     expect(uUID).toBeNull();
     let returnVal: any = instance.process();
     expect(uUID).not.toBeNull();
@@ -538,7 +543,7 @@ describe("Injector", () => {
     ]);
   });
 
-  test("interceptors transform", () => {
+  test("interceptors transform", async () => {
     let interceptor_count = 0, transform_count = 0, transform_interceptor_count = 0;
     let result = [], transformed;
     let obj = {
@@ -549,7 +554,7 @@ describe("Injector", () => {
       transform: (value) => {
         transformed = value;
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -563,26 +568,26 @@ describe("Injector", () => {
       @Inject() logger: Logger;
 
       invoke(method: Method): any {
-        let result = method.invoke();
+        let cr = method.invoke();
         transform_interceptor_count += 1;
-        this.logger.log({result, args: method.decoratorArgs});
+        this.logger.log({result: cr, args: method.decoratorArgs});
       }
     }
 
     @Injectable()
     class TransformInterceptor implements Interceptor {
       invoke(method: Method): any {
-        let result = method.invoke();
+        let cr = method.invoke();
         transform_interceptor_count += 1;
-        let val = method.decoratorArgs.value + "-" + result;
+        let val = method.decoratorArgs.value + "-" + cr;
         obj.transform(val);
         method.transform(val);
       }
     }
 
-    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value})
-    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value})
-    const Transform = (value) => createMethodInterceptor(Transform, TransformInterceptor, {value})
+    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value});
+    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value});
+    const Transform = (value) => createMethodInterceptor(Transform, TransformInterceptor, {value});
 
     let uUID = null, tUID = uuid();
 
@@ -598,9 +603,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'transform');
+    const spy = jest.spyOn(obj, "transform");
     expect(uUID).toBeNull();
     let returnVal = instance.transform();
     expect(uUID).not.toBeNull();
@@ -640,15 +645,15 @@ describe("Injector", () => {
   });
 
 
-  test("interceptors auto invoke", () => {
+  test("interceptors auto invoke", async () => {
     let interceptor_count = 0, invocation_count = 0;
-    let result = []
+    let result = [];
     let obj = {
       handler: (value) => {
         interceptor_count += 1;
         result.push(value);
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -667,8 +672,8 @@ describe("Injector", () => {
       }
     }
 
-    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value})
-    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value})
+    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value});
+    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value});
 
 
     @Injectable()
@@ -682,9 +687,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'handler');
+    const spy = jest.spyOn(obj, "handler");
     expect(instance.process()).toBe("result");
     expect(spy).toBeCalled();
     expect(invocation_count).toBe(1);
@@ -692,7 +697,7 @@ describe("Injector", () => {
     expect(result).toEqual([
       {args: {value: "DataLog"}},
       {args: {value: "FLog"}}
-    ])
+    ]);
   });
 
   test("interceptors async transform", async () => {
@@ -706,7 +711,7 @@ describe("Injector", () => {
       transform: (value) => {
         transformed = value;
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -720,27 +725,27 @@ describe("Injector", () => {
       @Inject() logger: Logger;
 
       async invoke(method: Method): Promise<any> {
-        let result = await method.invoke();
+        let cr = await method.invoke();
         transform_interceptor_count += 1;
-        this.logger.log({result, args: method.decoratorArgs});
+        this.logger.log({result: cr, args: method.decoratorArgs});
       }
     }
 
     @Injectable()
     class TransformInterceptor implements Interceptor {
       async invoke(method: Method): Promise<any> {
-        let result = await method.invoke();
+        let cr = await method.invoke();
         transform_interceptor_count += 1;
-        result = method.decoratorArgs.value + "-" + result;
-        obj.transform(result);
-        method.transform(result);
+        cr = method.decoratorArgs.value + "-" + cr;
+        obj.transform(cr);
+        method.transform(cr);
       }
     }
 
-    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value})
-    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value})
-    const Transform = (value) => createMethodInterceptor(Transform, TransformInterceptor, {value})
-    const Transform2 = (value) => createMethodInterceptor(Transform2, TransformInterceptor, {value})
+    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value});
+    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value});
+    const Transform = (value) => createMethodInterceptor(Transform, TransformInterceptor, {value});
+    const Transform2 = (value) => createMethodInterceptor(Transform2, TransformInterceptor, {value});
 
     let uUID = null;
 
@@ -757,9 +762,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'transform');
+    const spy = jest.spyOn(obj, "transform");
     expect(uUID).toBeNull();
     let returnVal = await instance.transform();
     expect(uUID).not.toBeNull();
@@ -803,7 +808,7 @@ describe("Injector", () => {
       transform: (value) => {
         transformed = value;
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -818,10 +823,10 @@ describe("Injector", () => {
 
       invoke(method: Method): Promise<any> {
         transform_interceptor_count += 1;
-        return method.invoke().then(result => {
-          this.logger.log({result, args: method.decoratorArgs});
-          return result;
-        })
+        return method.invoke().then(cr => {
+          this.logger.log({result: cr, args: method.decoratorArgs});
+          return cr;
+        });
       }
     }
 
@@ -829,19 +834,19 @@ describe("Injector", () => {
     class TransformInterceptor implements Interceptor {
       invoke(method: Method): Promise<any> {
         return method.invoke()
-          .then(result => {
+          .then(cr => {
             transform_interceptor_count += 1;
-            result = method.decoratorArgs.value + "-" + result;
-            obj.transform(result);
-            return method.transform(result);
+            cr = method.decoratorArgs.value + "-" + cr;
+            obj.transform(cr);
+            return method.transform(cr);
           });
       }
     }
 
-    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value})
-    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value})
-    const Transform = (value) => createMethodInterceptor(Transform, TransformInterceptor, {value})
-    const Transform2 = (value) => createMethodInterceptor(Transform2, TransformInterceptor, {value})
+    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value});
+    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value});
+    const Transform = (value) => createMethodInterceptor(Transform, TransformInterceptor, {value});
+    const Transform2 = (value) => createMethodInterceptor(Transform2, TransformInterceptor, {value});
 
     let uUID = null;
 
@@ -858,9 +863,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'transform');
+    const spy = jest.spyOn(obj, "transform");
     expect(uUID).toBeNull();
     let returnVal = await instance.transform();
     expect(uUID).not.toBeNull();
@@ -894,13 +899,13 @@ describe("Injector", () => {
 
   test("interceptors async invoke", async () => {
     let interceptor_count = 0, invocation_count = 0;
-    let result = []
+    let result = [];
     let obj = {
       handler: (value) => {
         interceptor_count += 1;
         result.push(value);
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -915,9 +920,9 @@ describe("Injector", () => {
       @Inject() logger: Logger;
 
       async invoke(method: Method): Promise<any> {
-        let result = await method.invoke();
-        this.logger.log({result, args: method.decoratorArgs});
-        return result;
+        let cr = await method.invoke();
+        this.logger.log({result: cr, args: method.decoratorArgs});
+        return cr;
       }
     }
 
@@ -936,9 +941,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'handler');
+    const spy = jest.spyOn(obj, "handler");
     expect(await instance.process()).toBe(1);
     expect(spy).toBeCalled();
     expect(invocation_count).toBe(1);
@@ -952,13 +957,13 @@ describe("Injector", () => {
 
   test("interceptors async decorator", async () => {
     let interceptor_count = 0, invocation_count = 0;
-    let result = []
+    let result = [];
     let obj = {
       handler: (value) => {
         interceptor_count += 1;
         result.push(value);
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -973,15 +978,15 @@ describe("Injector", () => {
       @Inject() logger: Logger;
 
       invoke(method: Method): any {
-        return method.invoke().then(result => {
-          this.logger.log({result, args: method.decoratorArgs});
-          return result;
+        return method.invoke().then(cr => {
+          this.logger.log({result: cr, args: method.decoratorArgs});
+          return cr;
         });
       }
     }
 
-    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value})
-    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value})
+    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value});
+    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value});
 
 
     @Injectable()
@@ -996,9 +1001,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'handler');
+    const spy = jest.spyOn(obj, "handler");
     expect(hasDecorator(AsyncInterceptor, AService.prototype, "processAsyncDecorator")).toBe(true);
     expect(await instance.processAsyncDecorator()).toBe(1);
     expect(spy).toBeCalled();
@@ -1012,13 +1017,13 @@ describe("Injector", () => {
 
   test("interceptors async invoke Promise", async () => {
     let interceptor_count = 0, invocation_count = 0;
-    let result = []
+    let result = [];
     let obj = {
       handler: (value) => {
         interceptor_count += 1;
         result.push(value);
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -1033,15 +1038,15 @@ describe("Injector", () => {
       @Inject() logger: Logger;
 
       invoke(method: Method): Promise<any> {
-        return method.invoke().then(result => {
-          this.logger.log({result, args: method.decoratorArgs});
-          return result;
+        return method.invoke().then(cr => {
+          this.logger.log({result: cr, args: method.decoratorArgs});
+          return cr;
         });
       }
     }
 
-    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value})
-    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value})
+    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value});
+    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value});
 
 
     @Injectable()
@@ -1055,9 +1060,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'handler');
+    const spy = jest.spyOn(obj, "handler");
     expect(await instance.process()).toBe(1);
     expect(spy).toBeCalled();
     expect(invocation_count).toBe(1);
@@ -1071,13 +1076,13 @@ describe("Injector", () => {
 
   test("interceptors async auto invoke", async () => {
     let interceptor_count = 0, invocation_count = 0;
-    let result = []
+    let result = [];
     let obj = {
       handler: (value) => {
         interceptor_count += 1;
         result.push(value);
       }
-    }
+    };
 
     @Injectable()
     class Logger {
@@ -1096,8 +1101,8 @@ describe("Injector", () => {
       }
     }
 
-    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value})
-    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value})
+    const FLog = (value) => createMethodInterceptor(FLog, LoggerInterceptor, {value});
+    const DataLog = (value) => createMethodInterceptor(DataLog, LoggerInterceptor, {value});
 
 
     @Injectable()
@@ -1111,9 +1116,9 @@ describe("Injector", () => {
       }
     }
 
-    const injector = Injector.createAndResolve(AService, [Logger]);
+    const injector = await Injector.createAndResolve(AService, [Logger]);
     const instance = injector.get(AService);
-    const spy = jest.spyOn(obj, 'handler');
+    const spy = jest.spyOn(obj, "handler");
     expect(await instance.process()).toBe("result");
     expect(spy).toBeCalled();
     expect(invocation_count).toBe(1);

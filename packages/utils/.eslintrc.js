@@ -83,10 +83,7 @@ module.exports = {
       "always"
     ],
     "@typescript-eslint/type-annotation-spacing": "error",
-    "array-bracket-spacing": [
-      "error",
-      "always"
-    ],
+    "array-bracket-spacing": "off",
     "brace-style": [
       "error",
       "1tbs"
@@ -140,7 +137,7 @@ module.exports = {
     "no-eval": "error",
     "no-fallthrough": "error",
     "no-new-wrappers": "error",
-    "no-redeclare": "off",
+    "no-redeclare": "error",
     "no-shadow": [
       "error",
       {

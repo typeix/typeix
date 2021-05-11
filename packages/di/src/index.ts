@@ -1,20 +1,15 @@
-export {Inject} from "./inject";
-export {AsyncInterceptor} from "./async-interceptor";
-export {CreateProvider} from "./create-provider";
-export {Injectable} from "./injectable";
-export {Injector} from "./injector";
-export {AfterConstruct} from "./after-construct";
-export {createMethodInterceptor, createInterceptors} from "./method-interceptor";
+export {Inject, AsyncInterceptor, CreateProvider, Injectable, AfterConstruct} from "./decorators";
+export {Injector, SyncInjector} from "./injector";
+export {IProvider, IAfterConstruct, Method, Interceptor} from "./interfaces";
 export {
-  IProvider,
-  IAfterConstruct,
-  Method,
-  Interceptor
-} from "./interfaces";
-export {
+  createMethodInterceptor,
+  createInterceptors,
   verifyProvider,
   verifyProviders,
   getProviderName,
+  isFactoryProvider,
+  isValueProvider,
+  isClassProvider,
   shiftRight,
   shiftLeft
-} from "./provider";
+} from "./helpers";

@@ -75,7 +75,7 @@ export function Module(config: IModuleMetadata): ClassDecorator {
 ```
 
 ## Usage
-Once created modules can be accessed via ModuleInjector, in example we can see that `ApplicationModuleD`
+Once created asynchronously modules can be accessed via ModuleInjector , in example we can see that `ApplicationModuleD`
 create providers AService and BService and exports them to other modules, what that means is
 that same object reference will be provided to `ApplicationModuleC` or module with imports `ApplicationModuleD`,
 however `ApplicationModuleB` will receive same instance of service `BService` but `AService` will be newly created object
@@ -152,9 +152,10 @@ class ModuleInjector {
 }
 ```
 
-Once modules are created by ModuleInjector all objects and references can be accessed via API
+Once modules are created by ModuleInjector all objects and references can be accessed via API, keep in mind
+that modules are created asynchronously to support lazy loading.
 ```ts
-const injector = ModuleInjector.createAndResolve(ApplicationModuleB);
+const injector = await ModuleInjector.createAndResolve(ApplicationModuleB);
 const dModule: ApplicationModuleD = injector.get(ApplicationModuleD);
 const cModule: ApplicationModuleC = injector.get(ApplicationModuleC);
 const bModule: ApplicationModuleB = injector.get(ApplicationModuleB);

@@ -65,22 +65,6 @@ export function getMethodParams(allMetadata: Array<IMetadata>, methodName: strin
   return actionParams;
 }
 
-/**
- * @since 7.0.0
- * @function
- * @name createRoute
- * @param {RouteMethodDefinition} method
- * @param {Function | IProvider} controller
- * @param {Function | IProvider} module
- * @param {ServerConfig} config
- */
-export function createRoute(
-  method: RouteMethodDefinition,
-  controller: Function | IProvider,
-  module?: Function | IProvider,
-  config?: ServerConfig): IRouteHandler {
-  return createRouteHandler(createRouteDefinition(method, controller, module), config)
-}
 
 /**
  * @since 7.0.0
@@ -208,59 +192,6 @@ export function getRequestBody(request: IncomingMessage | Http2ServerRequest): P
 
 
 /**
- * Create Route Handler
- * @param routeDefinition
- * @param config
- */
-export function createRouteHandler(routeDefinition: RouteDefinition, config?: ServerConfig): IRouteHandler {
-  const actionParams = getMethodParams(routeDefinition.allControllerMetadata, routeDefinition.method.propertyKey);
-  const controllerProviders = verifyProviders(routeDefinition.controller.metadata.providers);
-  let interceptors: Array<ResolvedInterceptor> = verifyProviders(
-    routeDefinition.controller.metadata.interceptors ?? []
-  ).map(item => ({provider: item, args: {}}));
-  routeDefinition.allControllerMetadata.filter(item =>
-    REQUEST_INTERCEPTORS.has(item.decorator) && item.propertyKey === routeDefinition.method.propertyKey
-  ).forEach(item => interceptors.push({
-    provider: verifyProvider(item.args.Class),
-    args: item.args.args
-  }));
-  return async (handlerInjector: Injector, route: IResolvedRoute) => {
-    let providers: Array<IProvider> = await applyServerInjectables(handlerInjector, route, config);
-    const request = getRequest(handlerInjector);
-    const response = getResponse(handlerInjector);
-    const executor = new Executor( () => applyHandler(
-      routeDefinition.controller.provider,
-      () => actionParams.map(token => handlerInjector.get(token)),
-      routeDefinition.method.propertyKey,
-      handlerInjector,
-      providers,
-      controllerProviders
-    ));
-    for (const item of interceptors) {
-      executor.addInterceptor(() => {
-        const method: InterceptedRequest = {
-          handler: () => executor.invoke(),
-          route,
-          request,
-          response,
-          injector: handlerInjector,
-          args: item.args
-        };
-        return applyHandler(
-          item.provider,
-          () => Array.of(method),
-          INTERCEPTOR_METHOD,
-          handlerInjector,
-          providers,
-          controllerProviders
-        );
-      });
-    }
-    return executor.execute(response);
-  };
-}
-
-/**
  * @since 7.0.0
  * @decorator
  * @function
@@ -275,7 +206,8 @@ class Executor {
   private result: any;
   private steps: Array<() => Promise<any>> = [];
 
-  constructor(private handler: () => Promise<any>) {}
+  constructor(private handler: () => Promise<any>) {
+  }
 
   /**
    * Add interceptor
@@ -328,7 +260,7 @@ class Executor {
             "}"
           ].join("\n"),
           500
-        )
+        );
       }
     }
     return await this.invoke();
@@ -377,7 +309,7 @@ async function applyServerInjectables(handlerInjector: Injector, route: IResolve
       useValue: response
     }));
     if (isArray(config.mockProviders)) {
-      providers = providers.concat(config.mockProviders)
+      providers = providers.concat(config.mockProviders);
     }
   }
   return providers;
@@ -405,7 +337,7 @@ async function applyHandler(
   providers: Array<IProvider>,
   controllerProviders: Array<IProvider>
 ): Promise<any> {
-  const instance = handlerInjector.createAndResolve(
+  const instance = await handlerInjector.createAndResolve(
     provider,
     shiftLeft(providers, controllerProviders)
   );
@@ -413,4 +345,74 @@ async function applyHandler(
     instance,
     lazyParams()
   );
+}
+
+/**
+ * Create Route Handler
+ * @param routeDefinition
+ * @param config
+ */
+export function createRouteHandler(routeDefinition: RouteDefinition, config?: ServerConfig): IRouteHandler {
+  const actionParams = getMethodParams(routeDefinition.allControllerMetadata, routeDefinition.method.propertyKey);
+  const controllerProviders = verifyProviders(routeDefinition.controller.metadata.providers);
+  let interceptors: Array<ResolvedInterceptor> = verifyProviders(
+    routeDefinition.controller.metadata.interceptors ?? []
+  ).map(item => ({provider: item, args: {}}));
+  routeDefinition.allControllerMetadata.filter(item =>
+    REQUEST_INTERCEPTORS.has(item.decorator) && item.propertyKey === routeDefinition.method.propertyKey
+  ).forEach(item => interceptors.push({
+    provider: verifyProvider(item.args.Class),
+    args: item.args.args
+  }));
+  return async (handlerInjector: Injector, route: IResolvedRoute) => {
+    let providers: Array<IProvider> = await applyServerInjectables(handlerInjector, route, config);
+    const request = getRequest(handlerInjector);
+    const response = getResponse(handlerInjector);
+    const executor = new Executor(() => applyHandler(
+      routeDefinition.controller.provider,
+      () => actionParams.map(token => handlerInjector.get(token)),
+      routeDefinition.method.propertyKey,
+      handlerInjector,
+      providers,
+      controllerProviders
+    ));
+    for (const item of interceptors) {
+      executor.addInterceptor(() => {
+        const method: InterceptedRequest = {
+          handler: () => executor.invoke(),
+          route,
+          request,
+          response,
+          injector: handlerInjector,
+          args: item.args
+        };
+        return applyHandler(
+          item.provider,
+          () => Array.of(method),
+          INTERCEPTOR_METHOD,
+          handlerInjector,
+          providers,
+          controllerProviders
+        );
+      });
+    }
+    return executor.execute(response);
+  };
+}
+
+/**
+ * @since 7.0.0
+ * @function
+ * @name createRoute
+ * @param {RouteMethodDefinition} method
+ * @param {Function | IProvider} controller
+ * @param {Function | IProvider} module
+ * @param {ServerConfig} config
+ */
+export function createRoute(
+  method: RouteMethodDefinition,
+  controller: Function | IProvider,
+  module?: Function | IProvider,
+  config?: ServerConfig): IRouteHandler {
+  return createRouteHandler(createRouteDefinition(method, controller, module), config);
 }

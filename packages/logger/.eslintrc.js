@@ -70,7 +70,7 @@ module.exports = {
     "@typescript-eslint/no-inferrable-types": "error",
     "@typescript-eslint/no-unused-expressions": "error",
     "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/no-use-before-define": "error",
+    "@typescript-eslint/no-use-before-define": "warn",
     "@typescript-eslint/quotes": [
       "error",
       "double",
@@ -83,10 +83,7 @@ module.exports = {
       "always"
     ],
     "@typescript-eslint/type-annotation-spacing": "error",
-    "array-bracket-spacing": [
-      "error",
-      "always"
-    ],
+    "array-bracket-spacing": "off",
     "brace-style": [
       "error",
       "1tbs"
@@ -140,7 +137,7 @@ module.exports = {
     "no-eval": "error",
     "no-fallthrough": "error",
     "no-new-wrappers": "error",
-    "no-redeclare": "error",
+    "no-redeclare": "off",
     "no-shadow": [
       "error",
       {

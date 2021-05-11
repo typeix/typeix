@@ -83,13 +83,13 @@ const LAMBDA_CONTEXT = "@typeix:LAMBDA_CONTEXT";
  * @description
  * Use httpsServer function to https an Module.
  */
-export function lambdaServer(Class: Function, config: LambdaServerConfig = {}) {
-  let fakeServerApi: FakeServerApi = config?.fakeHttpServer ?? fakeHttpServer(Class, {
+export async function lambdaServer(Class: Function, config: LambdaServerConfig = {}) {
+  let fakeServerApi: FakeServerApi = config?.fakeHttpServer ?? await fakeHttpServer(Class, {
     mockProviders: [
       {
         provide: LambdaEvent,
-        useFactory: (injector) => {
-          const request = getRequest(injector);
+        useFactory: lambdaInjector => {
+          const request = getRequest(lambdaInjector);
           return Reflect.get(request.headers, LAMBDA_EVENT);
         },
         providers: [Injector]
@@ -97,8 +97,8 @@ export function lambdaServer(Class: Function, config: LambdaServerConfig = {}) {
 
       {
         provide: LambdaContext,
-        useFactory: (injector) => {
-          const request = getRequest(injector);
+        useFactory: lambdaInjector => {
+          const request = getRequest(lambdaInjector);
           return Reflect.get(request.headers, LAMBDA_CONTEXT);
         },
         providers: [Injector]
@@ -106,7 +106,7 @@ export function lambdaServer(Class: Function, config: LambdaServerConfig = {}) {
     ],
     isMockServer: true
   });
-  let injector = fakeServerApi.getModuleInjector().getInjector(Class);
+  let injector = await fakeServerApi.getModuleInjector().getInjector(Class);
   let logger: Logger = injector.get(Logger);
   logger.info("Module.info: Lambda Server started");
   return async (event: any, context: any, callback: any) => {
@@ -144,7 +144,7 @@ export function lambdaServer(Class: Function, config: LambdaServerConfig = {}) {
     } else {
       let responseBody = response.getBody().toString();
       logger.debug("LAMBDA_EVENT_RESPONSE_" + context.awsRequestId, responseBody);
-      if (isGatewayProxyEvent(event)) {
+      if (isGatewayProxyEvent(event) && !isGatewayProxyAuthEvent(event)) {
         return callback(null, {
           body: responseBody,
           headers: filterHeaders(response.getHeaders()),

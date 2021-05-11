@@ -19,7 +19,7 @@ module.exports = {
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig-eslint.json",
+    "project": "./tsconfig.json",
     "sourceType": "module"
   },
   "plugins": [
@@ -83,10 +83,7 @@ module.exports = {
       "always"
     ],
     "@typescript-eslint/type-annotation-spacing": "error",
-    "array-bracket-spacing": [
-      "error",
-      "always"
-    ],
+    "array-bracket-spacing": "off",
     "brace-style": [
       "error",
       "1tbs"

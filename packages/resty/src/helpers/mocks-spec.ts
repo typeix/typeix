@@ -25,7 +25,7 @@ describe("fakeHttpServer", () => {
 
   let server: FakeServerApi;
 
-  beforeEach(() => {
+  beforeEach(async () => {
 
     @Controller({
       path: "/"
@@ -106,7 +106,7 @@ describe("fakeHttpServer", () => {
     class MyModule {
     }
 
-    server = fakeHttpServer(MyModule);
+    server = await fakeHttpServer(MyModule);
   });
 
 

@@ -45,9 +45,9 @@ export class Router {
    */
   @Inject() private injector: Injector;
   /**
-   * @param {Array<IRoute>} routes
+   * @param {Array<Promise<IRoute>>} routes
    */
-  private routes: Array<IRoute> = [];
+  private routes: Array<Promise<IRoute>> = [];
 
   /**
    * Helper to parse request.url
@@ -86,7 +86,7 @@ export class Router {
         host,
         origin,
         authority
-      }
+      };
     }
     return {
       pathname: path
@@ -112,7 +112,9 @@ export class Router {
    * All routes must be inherited from Route interface.
    */
   addRules(rules: Array<IRouteConfig>): void {
-    rules.forEach(config => this.routes.push(this.createRule(RouteRule, config)));
+    for (const config of rules) {
+      this.routes.push(this.createRule(RouteRule, config));
+    }
   }
 
   /**
@@ -143,7 +145,7 @@ export class Router {
   async parseRequest(path: string, method: string, headers: { [key: string]: any }): Promise<IResolvedRoute> {
     const uri = Router.parseURI(path, headers);
     for (let route of this.routes) {
-      let result = await route.parseRequest(uri, method, headers);
+      let result = await (await route).parseRequest(uri, method, headers);
       if (isObject(result)) {
         return result;
       }
@@ -383,8 +385,8 @@ export class Router {
    * @description
    * Initialize rule
    */
-  private createRule(Class: TRoute, config?: IRouteConfig): IRoute {
-    let injector = Injector.createAndResolveChild(
+  private async createRule(Class: TRoute, config?: IRouteConfig): Promise<IRoute> {
+    let injector = await Injector.createAndResolveChild(
       this.injector,
       Class,
       isDefined(config) ? [{provide: RouteConfig, useValue: config}] : []

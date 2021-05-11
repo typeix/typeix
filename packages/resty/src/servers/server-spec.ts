@@ -12,11 +12,11 @@ import {
   POST,
   PUT,
   RootModule,
-  TRACE,
+  TRACE
 } from "../decorators";
 import {getClassMetadata, IMetadata} from "@typeix/metadata";
 import {InterceptedRequest, RequestInterceptor} from "../interfaces";
-import {Injectable, Injector, verifyProvider} from "@typeix/di";
+import {Injectable, Injector, verifyProvider, verifyProviders} from "@typeix/di";
 import {IncomingMessage, ServerResponse} from "http";
 import {IRouteHandler, Router, RouterError} from "@typeix/router";
 import {Server, Socket} from "net";
@@ -95,11 +95,12 @@ describe("server", () => {
     request.url = "/";
     request.method = "GET";
     request.headers = {};
-    injector.set(ServerResponse, new ServerResponse(request))
+    injector.set(ServerResponse, new ServerResponse(request));
     injector.set(IncomingMessage, request);
     let result = await handler(injector, {
       params: {},
       headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       handler: () => {
       },
       path: "/",
@@ -111,6 +112,7 @@ describe("server", () => {
     result = await handler(injector, {
       params: {},
       headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       handler: () => {
       },
       path: "/",
@@ -130,11 +132,11 @@ describe("server", () => {
 
       async invoke(method: InterceptedRequest): Promise<any> {
         if (cache.has(method.route.path)) {
-          let result = cache.get(method.route.path);
-          method.response.end(result);
+          let cr = cache.get(method.route.path);
+          method.response.end(cr);
         } else {
-          let result = await method.handler();
-          cache.set(method.route.path, result);
+          let cr = await method.handler();
+          cache.set(method.route.path, cr);
         }
       }
     }
@@ -166,11 +168,12 @@ describe("server", () => {
     request.url = "/";
     request.method = "GET";
     request.headers = {};
-    injector.set(ServerResponse, new ServerResponse(request))
+    injector.set(ServerResponse, new ServerResponse(request));
     injector.set(IncomingMessage, request);
     let result = await handler(injector, {
       params: {},
       headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       handler: () => {
       },
       path: "/",
@@ -183,6 +186,7 @@ describe("server", () => {
       await handler(injector, {
         params: {},
         headers: {},
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         handler: () => {
         },
         path: "/",
@@ -204,12 +208,12 @@ describe("server", () => {
 
       async invoke(method: InterceptedRequest): Promise<any> {
         if (cache.has(method.route.path)) {
-          let result = cache.get(method.route.path);
-          method.response.end(result);
-          return result;
+          let cr = cache.get(method.route.path);
+          method.response.end(cr);
+          return cr;
         } else {
-          let result = await method.handler();
-          cache.set(method.route.path, result);
+          let cr = await method.handler();
+          cache.set(method.route.path, cr);
         }
       }
     }
@@ -241,11 +245,12 @@ describe("server", () => {
     request.url = "/";
     request.method = "GET";
     request.headers = {};
-    injector.set(ServerResponse, new ServerResponse(request))
+    injector.set(ServerResponse, new ServerResponse(request));
     injector.set(IncomingMessage, request);
     let result = await handler(injector, {
       params: {},
       headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       handler: () => {
       },
       path: "/",
@@ -257,6 +262,7 @@ describe("server", () => {
     result = await handler(injector, {
       params: {},
       headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       handler: () => {
       },
       path: "/",
@@ -268,33 +274,48 @@ describe("server", () => {
   });
 
 
-  it("should pipe server", () => {
+  it("should pipe server", async () => {
     @Module({providers: []})
     class BModule {
     }
 
     let server = new Server();
-    expect(() => {
-      pipeServer(server, BModule);
-    }).toThrow(new RouterError("Server must be initialized on @RootModule", 500));
+    try {
+      await pipeServer(server, BModule);
+    } catch (e) {
+      expect(() => {
+        throw e;
+      }).toThrow(new RouterError("Server must be initialized on @RootModule", 500));
+    }
   });
 
-  it("should add shared providers", () => {
+  it("should add shared providers", async () => {
+    const loggerProvider = {
+      provide: Logger,
+      useFactory: () => new Logger({
+        options: {
+          level: "info"
+        }
+      })
+    };
     @RootModule({
       controllers: [],
-      providers: [Logger],
-      shared_providers: [verifyProvider(Router)]
+      providers: [],
+      shared_providers: [verifyProvider(Router), loggerProvider]
     })
     class BModule {
     }
 
     let server = new Server();
-    pipeServer(server, BModule);
+    await pipeServer(server, BModule);
     let metadata: RootModuleMetadata = getClassMetadata(AModule, BModule).args;
-    expect(metadata.shared_providers).toEqual([verifyProvider(Router)]);
+    expect(metadata.shared_providers).toEqual([
+      verifyProvider(Router),
+      loggerProvider
+    ]);
   });
 
-  it("should create shared providers", () => {
+  it("should create shared providers", async () => {
     @Module({
       exports: [],
       providers: []
@@ -306,15 +327,17 @@ describe("server", () => {
     @RootModule({
       imports: [MyAModule],
       controllers: [],
-      providers: [Logger]
+      providers: []
     })
     class RooAModule {
     }
 
     let server = new Server();
-    pipeServer(server, RooAModule);
+    await pipeServer(server, RooAModule);
     let metadata: RootModuleMetadata = getClassMetadata(AModule, RooAModule).args;
-    expect(metadata.shared_providers).toEqual([verifyProvider(Router)]);
+    let providers = verifyProviders(metadata.shared_providers);
+    expect(providers.pop()?.provide).toBe(Logger);
+    expect(providers.pop()?.provide).toBe(Router);
   });
 
   it("should create route handler", async () => {
@@ -328,6 +351,7 @@ describe("server", () => {
         return "HELLO_WORLD";
       }
     }
+
     const handler = createRoute(
       {
         name: "indexAction",
@@ -339,7 +363,7 @@ describe("server", () => {
         mockProviders: [],
         isMockServer: true
       }
-    )
+    );
 
 
     const injector = new Injector();
@@ -347,7 +371,7 @@ describe("server", () => {
     request.url = "/";
     request.method = "GET";
     request.headers = {};
-    injector.set(ServerResponse, new ServerResponse(request))
+    injector.set(ServerResponse, new ServerResponse(request));
     injector.set(IncomingMessage, request);
     const result = await handler(injector, {
       params: {},
@@ -358,5 +382,5 @@ describe("server", () => {
       path: "/"
     });
     expect(result).toBe("HELLO_WORLD");
-  })
+  });
 });

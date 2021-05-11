@@ -37,5 +37,8 @@ export function Module(config: IModuleMetadata) {
   if (!isArray(config.imports)) {
     config.imports = [];
   }
+  if (!isArray(config.providers)) {
+    config.providers = [];
+  }
   return createClassDecorator(Module, config);
 }
