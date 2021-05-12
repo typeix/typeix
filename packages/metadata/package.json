@@ -4,10 +4,10 @@
   "description": "@typeix metadata apis::::",
   "main": "build/index.js",
   "scripts": {
-    "pretest": "../../node_modules/.bin/tsc",
-    "test": "../../node_modules/.bin/jest -c jest-runner.json --coverage",
-    "lint": "../../node_modules/.bin/eslint src/**/*.ts",
-    "format": "../../node_modules/.bin/eslint src/**/*.ts --fix",
+    "pretest": "tsc",
+    "test": "jest -c jest-runner.json --coverage",
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
     "prepublishOnly": "npm test"
   },
   "repository": {

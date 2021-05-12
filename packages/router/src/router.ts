@@ -1,5 +1,5 @@
 import {isArray, isDefined, isObject} from "@typeix/utils";
-import {Inject, Injectable, Injector} from "@typeix/di";
+import {Injectable, Injector} from "@typeix/di";
 import {IResolvedRoute, IRoute, IRouteHandler, IRouteConfig, TRoute, URI} from "./iroute";
 import {ResolvedRoute, RouteRule, RouteConfig} from "./route-rule";
 import {RouterError} from "./router-error";
@@ -40,10 +40,6 @@ const URL_RE = /^(([^:\/\s]+):\/?\/?([^\/\s@]*@)?([^\/@:]*)?:?(\d+)?)?(\/[^?]*)?
 export class Router {
 
   static readonly ERROR = "@typeix:TRACE";
-  /**
-   * @param {Injector} injector
-   */
-  @Inject() private injector: Injector;
   /**
    * @param {Array<Promise<IRoute>>} routes
    */
@@ -91,14 +87,6 @@ export class Router {
     return {
       pathname: path
     };
-  }
-
-  /**
-   * Attach parent injector to current injector
-   * @param injector
-   */
-  setParentInjector(injector: Injector) {
-    injector.addChild(this.injector);
   }
 
   /**
@@ -170,7 +158,7 @@ export class Router {
       request: IncomingMessage | Http2ServerRequest,
       response: ServerResponse | Http2ServerResponse
     ) => {
-      let injector = new Injector(this.injector);
+      let injector = new Injector();
       response.on("finish", () => injector.destroy());
       injector.set(request.constructor, request);
       injector.set(response.constructor, response);
@@ -196,6 +184,9 @@ export class Router {
       let route: IResolvedRoute = await this.parseRequest(request.url, !!error ? Router.ERROR : request.method, request.headers);
       if (!injector.has(ResolvedRoute)) {
         injector.set(ResolvedRoute, route);
+      }
+      if (!injector.getParent()) {
+        injector.setParent(route.injector);
       }
       let result = await route.handler(injector, route);
       if (!response.writableEnded && Buffer.isBuffer(result)) {
@@ -238,11 +229,13 @@ export class Router {
    * Get route
    * @param path
    * @param handler
+   * @param injector
    */
-  get(path: string, handler: IRouteHandler): this {
+  get(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "GET"
     });
     return this;
@@ -252,11 +245,13 @@ export class Router {
    * Head route
    * @param path
    * @param handler
+   * @param injector
    */
-  head(path: string, handler: IRouteHandler): this {
+  head(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "HEAD"
     });
     return this;
@@ -266,11 +261,13 @@ export class Router {
    * Post route
    * @param path
    * @param handler
+   * @param injector
    */
-  post(path: string, handler: IRouteHandler): this {
+  post(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "POST"
     });
     return this;
@@ -280,11 +277,13 @@ export class Router {
    * Put route
    * @param path
    * @param handler
+   * @param injector
    */
-  put(path: string, handler: IRouteHandler): this {
+  put(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "PUT"
     });
     return this;
@@ -294,11 +293,13 @@ export class Router {
    * Delete route
    * @param path
    * @param handler
+   * @param injector
    */
-  delete(path: string, handler: IRouteHandler): this {
+  delete(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "DELETE"
     });
     return this;
@@ -308,11 +309,13 @@ export class Router {
    * Connect route
    * @param path
    * @param handler
+   * @param injector
    */
-  connect(path: string, handler: IRouteHandler): this {
+  connect(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "CONNECT"
     });
     return this;
@@ -322,11 +325,13 @@ export class Router {
    * Options route
    * @param path
    * @param handler
+   * @param injector
    */
-  options(path: string, handler: IRouteHandler): this {
+  options(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "OPTIONS"
     });
     return this;
@@ -337,11 +342,13 @@ export class Router {
    * Trace route
    * @param path
    * @param handler
+   * @param injector
    */
-  trace(path: string, handler: IRouteHandler): this {
+  trace(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "TRACE"
     });
     return this;
@@ -352,11 +359,13 @@ export class Router {
    * Patch route
    * @param path
    * @param handler
+   * @param injector
    */
-  patch(path: string, handler: IRouteHandler): this {
+  patch(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: "PATCH"
     });
     return this;
@@ -366,11 +375,13 @@ export class Router {
    * OnError route
    * @param path
    * @param handler
+   * @param injector
    */
-  onError(path: string, handler: IRouteHandler): this {
+  onError(path: string, handler: IRouteHandler, injector?: Injector): this {
     this.addRule(RouteRule, {
       path,
       handler,
+      injector,
       method: Router.ERROR
     });
     return this;
@@ -387,8 +398,8 @@ export class Router {
    * Initialize rule
    */
   private async createRule(Class: TRoute, config?: IRouteConfig): Promise<IRoute> {
-    let injector = await Injector.createAndResolveChild(
-      this.injector,
+    const injector = await Injector.createAndResolveChild(
+      config?.injector ?? new Injector(),
       Class,
       isDefined(config) ? [{provide: RouteConfig, useValue: config}] : []
     );

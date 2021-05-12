@@ -431,7 +431,7 @@ describe("@Module", () => {
     }
 
     let metadataD = {
-      providers: [AService, BService],
+      providers: [AService, BService, CService],
       exports: [AService, BService]
     };
 
@@ -537,9 +537,14 @@ describe("@Module", () => {
     expect(moduleB.bService.aService).not.toBe(moduleB.aService);
     expect(moduleA.bService.aService).toBe(moduleA.aService);
 
-    expect(moduleA.cService).toBe(cInstance);
-    expect(moduleB.cService).toBe(cInstance);
-    expect(moduleC.cService).toBe(cInstance);
-    expect(moduleD.cService).toBe(cInstance);
+    expect(moduleA.cService).toEqual(cInstance);
+    expect(moduleB.cService).toEqual(cInstance);
+    expect(moduleC.cService).toEqual(cInstance);
+    expect(moduleD.cService).toEqual(cInstance);
+
+    expect(moduleA.cService === cInstance).toBeFalsy();
+    expect(moduleB.cService === cInstance).toBeTruthy();
+    expect(moduleC.cService === cInstance).toBeTruthy();
+    expect(moduleD.cService === cInstance).toBeFalsy();
   });
 });

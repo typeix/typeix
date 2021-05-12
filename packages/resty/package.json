@@ -4,10 +4,10 @@
   "description": "Fast, unopinionated, minimalist framework for building efficient and scalable applications",
   "main": "build/index.js",
   "scripts": {
-    "pretest": "../../node_modules/.bin/tsc --project tsconfig.json",
-    "test": "../../node_modules/.bin/jest -c jest-runner.json --coverage",
-    "lint": "../../node_modules/.bin/eslint src/**/*.ts src/*.ts",
-    "format": "../../node_modules/.bin/eslint src/**/*.ts src/*.ts --fix",
+    "pretest": "tsc --project tsconfig.json",
+    "test": "jest -c jest-runner.json --coverage",
+    "lint": "eslint src/**/*.ts src/*.ts",
+    "format": "eslint src/**/*.ts src/*.ts --fix",
     "prepublishOnly": "npm test"
   },
   "repository": {

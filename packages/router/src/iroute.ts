@@ -67,6 +67,7 @@ export declare type TRoute = {
 export interface IRouteConfig {
   path: string;
   handler: IRouteHandler;
+  injector?: Injector;
   method: string;
 }
 

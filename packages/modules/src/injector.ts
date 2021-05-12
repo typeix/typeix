@@ -25,8 +25,6 @@ import {SyncModuleInjector} from "./sync-injector";
 export class ModuleInjector extends AbstractModuleInjector<Injector> {
 
   static Sync: typeof SyncModuleInjector = SyncModuleInjector;
-  protected _sharedInjector: Injector = new Injector();
-  protected _sharedProviders: Array<IProvider> = [];
 
   /**
    * Initialize module
@@ -40,37 +38,33 @@ export class ModuleInjector extends AbstractModuleInjector<Injector> {
     sharedProviders: Array<Function | IProvider>,
     mutableKeys: Array<any> = []
   ): Promise<ModuleInjector> {
-    const moduleInjector = new ModuleInjector();
-    const injector = new Injector(null, mutableKeys);
-    injector.set(ModuleInjector, moduleInjector);
-    await moduleInjector.createAndResolveSharedProviders(sharedProviders, injector);
-    await moduleInjector.createAndResolve(Class, injector, mutableKeys);
-    return moduleInjector;
+    const injector = new ModuleInjector();
+    const sharedInjector = await injector.createAndResolveSharedProviders(sharedProviders);
+    await injector.createAndResolve(Class, sharedInjector, mutableKeys);
+    return injector;
   }
 
   /**
    * Create and resolve shared providers
    * @param {Array<Function | IProvider>} providers
-   * @param {Injector} injector
    */
-  async createAndResolveSharedProviders(providers: Array<Function | IProvider>, injector: Injector): Promise<void> {
-    this._sharedProviders = shiftLeft(this._sharedProviders, verifyProviders(providers));
-    for (const provider of this._sharedProviders) {
-      await this._sharedInjector.createAndResolve(provider, [{
-        provide: Injector,
-        useValue: injector
-      }]);
+  async createAndResolveSharedProviders(providers: Array<Function | IProvider>): Promise<Injector> {
+    const injector: Injector = new Injector();
+    injector.set(ModuleInjector, this);
+    for (const provider of verifyProviders(providers)) {
+      await injector.createAndResolve(provider, []);
     }
+    return injector;
   }
 
   /**
    * Initialize modules
    * @param {Function | IProvider} Class
-   * @param {Injector} parent
+   * @param {Injector} sharedInjector
    * @param {Array<any>} mutableKeys
    * @returns {Injector}
    */
-  async createAndResolve(Class: Function | IProvider, parent: Injector, mutableKeys: Array<any> = []): Promise<void> {
+  async createAndResolve(Class: Function | IProvider, sharedInjector: Injector, mutableKeys: Array<any> = []): Promise<Injector> {
     const provider: IProvider = verifyProvider(Class);
     if (this.has(provider)) {
       throw new Error(`Module ${getProviderName(provider)} is already initialized`);
@@ -78,32 +72,29 @@ export class ModuleInjector extends AbstractModuleInjector<Injector> {
     const metadata: IMetadata = getClassMetadata(Module, provider.provide);
     const config: IModuleMetadata = metadata.args;
     let moduleProviders: Array<IProvider> = verifyProviders(config.providers);
-    const injector = new Injector(parent, mutableKeys);
-    moduleProviders = await this.processImportsAndExports(moduleProviders, config, injector);
+    const injector = new Injector(sharedInjector, mutableKeys);
+    moduleProviders = await this.processImportsAndExports(moduleProviders, config, sharedInjector, mutableKeys);
     // shared must be after import & export is processed
-    const sharedProviders = this._sharedProviders.map(sharedProvider => {
-      return {
-        provide: sharedProvider.provide,
-        useValue: this._sharedInjector.get(sharedProvider.provide)
-      };
-    });
     injector.setName(provider);
-    await injector.createAndResolve(provider, shiftLeft(sharedProviders, moduleProviders));
+    await injector.createAndResolve(provider, moduleProviders);
     this._providers.set(provider.provide, injector);
     this._allModulesMetadata.set(provider.provide, config);
+    return injector;
   }
 
   /**
    * Process Module imports
    * @param providers
    * @param config
-   * @param injector
+   * @param sharedInjector
+   * @param mutableKeys
    * @private
    */
   private async processImportsAndExports(
     providers: Array<IProvider>,
     config: IModuleMetadata,
-    injector: Injector
+    sharedInjector: Injector,
+    mutableKeys: Array<any> = []
   ): Promise<Array<IProvider>> {
     if (isArray(config.imports)) {
       for (const importModule of verifyProviders(config.imports)) {
@@ -114,7 +105,7 @@ export class ModuleInjector extends AbstractModuleInjector<Injector> {
          * Initialize modules recursive, deep traversal
          */
         if (!this.has(importedProvider)) {
-          await this.createAndResolve(importedProvider, injector);
+          await this.createAndResolve(importedProvider, sharedInjector, mutableKeys);
         }
         if (isArray(importedConfig.exports)) {
           providers = shiftLeft(

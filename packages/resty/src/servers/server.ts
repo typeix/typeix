@@ -56,7 +56,7 @@ export async function pipeServer(server: Server, Class: Function, config?: Serve
     Reflect.get(
       router,
       method === Router.ERROR ? "onError" : method.toLowerCase()
-    ).apply(router, [path, createRouteHandler(def, config)]);
+    ).apply(router, [path, createRouteHandler(def, config), injector]);
   }
   router.pipe(server);
   return moduleInjector;

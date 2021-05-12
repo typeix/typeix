@@ -1,5 +1,5 @@
 import {Router} from "./router";
-import {Injectable, Injector, SyncInjector, verifyProvider} from "@typeix/di";
+import {Injectable, Injector, verifyProvider} from "@typeix/di";
 import {IRoute, IResolvedRoute, URI} from "./iroute";
 import {RouterError} from "./router-error";
 import {Server, Socket} from "net";
@@ -36,21 +36,7 @@ describe("Router", () => {
     router = injector.get(Router);
   });
 
-  test("Router should have injector", () => {
-    const injector = Injector.Sync.createAndResolve(Router, []);
-    const localRouter = injector.get(Router);
-    expect(localRouter).toBeInstanceOf(Router);
-    expect(Reflect.get(localRouter, "injector")).toBe(injector);
-    expect(injector.get(Injector)).toBe(injector);
-  });
 
-  test("Router should have async injector", async () => {
-    const injector = await Injector.createAndResolve(Router, []);
-    const localRouter = injector.get(Router);
-    expect(localRouter).toBeInstanceOf(Router);
-    expect(Reflect.get(localRouter, "injector")).toBe(injector);
-    expect(injector.get(Injector)).toBe(injector);
-  });
 
   test("Parse request and create dynamic url", () => {
 
@@ -80,6 +66,7 @@ describe("Router", () => {
     router.get("/home", () => void 0);
     router.get("*", () => void 0);
     router.post("/", () => void 0);
+    router.post("/injector", () => void 0, new Injector());
 
     return Promise.all([
       router.parseRequest("/", "POST", {}),
@@ -96,14 +83,6 @@ describe("Router", () => {
       expectEqual(route3, "/home", "GET", {});
       expectEqual(route4, "/home/123", "GET", {id: "123"});
     });
-  });
-
-  test("Parent injector", async () => {
-    let parent = new Injector();
-    let injector = await Injector.createAndResolve(Router, []);
-    injector.get(Router).setParentInjector(parent);
-    const cParent: Injector = Reflect.get(injector.get(Router), "injector");
-    expect(cParent.getParent()).toEqual(parent);
   });
 
   test("Should add rules and execute", async () => {

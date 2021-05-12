@@ -24,9 +24,6 @@ import {ModuleInjector} from "./injector";
  *
  */
 export class SyncModuleInjector extends AbstractModuleInjector<SyncInjector> {
-  protected _sharedInjector: SyncInjector = new Injector.Sync();
-  protected _sharedProviders: Array<IProvider> = [];
-
   /**
    * Initialize module
    * @param {Function | IProvider} Class
@@ -35,37 +32,33 @@ export class SyncModuleInjector extends AbstractModuleInjector<SyncInjector> {
    * @returns {ModuleInjector}
    */
   static createAndResolve(Class: Function | IProvider, sharedProviders: Array<Function | IProvider>, mutableKeys: Array<any> = []) {
-    const moduleInjector = new SyncModuleInjector();
-    const injector = new Injector.Sync(null, mutableKeys);
-    injector.set(ModuleInjector, moduleInjector);
-    moduleInjector.createAndResolveSharedProviders(sharedProviders, injector);
-    moduleInjector.createAndResolve(Class, injector, mutableKeys);
-    return moduleInjector;
+    const injector = new SyncModuleInjector();
+    const sharedInjector = injector.createAndResolveSharedProviders(sharedProviders);
+    injector.createAndResolve(Class, sharedInjector, mutableKeys);
+    return injector;
   }
 
   /**
    * Create and resolve shared providers
    * @param {Array<Function | IProvider>} providers
-   * @param {SyncInjector} injector
    */
-  createAndResolveSharedProviders(providers: Array<Function | IProvider>, injector: SyncInjector): void {
-    this._sharedProviders = shiftLeft(this._sharedProviders, verifyProviders(providers));
-    this._sharedProviders.forEach(provider => {
-      this._sharedInjector.createAndResolve(provider, [{
-        provide: Injector,
-        useValue: injector
-      }]);
-    });
+  createAndResolveSharedProviders(providers: Array<Function | IProvider>): SyncInjector {
+    const injector: SyncInjector = new Injector.Sync();
+    injector.set(ModuleInjector, this);
+    for (const provider of verifyProviders(providers)) {
+      injector.createAndResolve(provider, []);
+    }
+    return injector;
   }
 
   /**
    * Initialize modules
    * @param {Function | IProvider} Class
-   * @param {Injector} parent
+   * @param {Injector} sharedInjector
    * @param {Array<any>} mutableKeys
    * @returns {Injector}
    */
-  createAndResolve(Class: Function | IProvider, parent: SyncInjector, mutableKeys: Array<any> = []): void {
+  createAndResolve(Class: Function | IProvider, sharedInjector: SyncInjector, mutableKeys: Array<any> = []): void {
     const provider: IProvider = verifyProvider(Class);
     if (this.has(provider)) {
       throw new Error(`Module ${getProviderName(provider)} is already initialized`);
@@ -73,18 +66,11 @@ export class SyncModuleInjector extends AbstractModuleInjector<SyncInjector> {
     const metadata: IMetadata = getClassMetadata(Module, provider.provide);
     const config: IModuleMetadata = metadata.args;
     let moduleProviders: Array<IProvider> = verifyProviders(config.providers);
-    const injector = new Injector.Sync(parent, mutableKeys);
+    const injector = new Injector.Sync(sharedInjector, mutableKeys);
+    moduleProviders = this.processImportsAndExports(moduleProviders, config, sharedInjector, mutableKeys);
     // create local module injector
-    moduleProviders = this.processImportsAndExports(moduleProviders, config, injector);
-    // shared must be after import & export is processed
-    let sharedProviders = this._sharedProviders.map(sharedProvider => {
-      return {
-        provide: sharedProvider.provide,
-        useValue: this._sharedInjector.get(sharedProvider.provide)
-      };
-    });
     injector.setName(provider);
-    injector.createAndResolve(provider, shiftLeft(sharedProviders, moduleProviders));
+    injector.createAndResolve(provider, moduleProviders);
     this._providers.set(provider.provide, injector);
     this._allModulesMetadata.set(provider.provide, config);
   }
@@ -93,10 +79,16 @@ export class SyncModuleInjector extends AbstractModuleInjector<SyncInjector> {
    * Process Module imports
    * @param providers
    * @param config
-   * @param injector
+   * @param sharedInjector
+   * @param mutableKeys
    * @private
    */
-  private processImportsAndExports(providers: Array<IProvider>, config: IModuleMetadata, injector: SyncInjector): Array<IProvider> {
+  private processImportsAndExports(
+    providers: Array<IProvider>,
+    config: IModuleMetadata,
+    sharedInjector: SyncInjector,
+    mutableKeys: Array<any> = []
+  ): Array<IProvider> {
     if (isArray(config.imports)) {
       for (const importModule of verifyProviders(config.imports)) {
         const importedProvider: IProvider = verifyProvider(importModule);
@@ -106,7 +98,7 @@ export class SyncModuleInjector extends AbstractModuleInjector<SyncInjector> {
          * Initialize modules recursive, deep traversal
          */
         if (!this.has(importedProvider)) {
-          this.createAndResolve(importedProvider, injector);
+          this.createAndResolve(importedProvider, sharedInjector, mutableKeys);
         }
         if (isArray(importedConfig.exports)) {
           providers = shiftLeft(
