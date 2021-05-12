@@ -1,7 +1,16 @@
 import {IProvider, verifyProvider} from "@typeix/di";
 import {IModuleMetadata} from "./imodule";
-import {Type} from "../../di/src/interfaces";
 
+/**
+ * Abstract required interfaces
+ */
+interface Type<T> extends Function {
+  new(...args: any[]): T;
+}
+
+/**
+ * Abstract InjectorImpl interface
+ */
 interface InjectorImpl {
   get(provider: string, Class?: IProvider): any;
   get<P>(provider: Type<P>, Class?: IProvider): P;

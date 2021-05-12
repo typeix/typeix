@@ -42,7 +42,6 @@ describe("Router", () => {
     expect(localRouter).toBeInstanceOf(Router);
     expect(Reflect.get(localRouter, "injector")).toBe(injector);
     expect(injector.get(Injector)).toBe(injector);
-    expect(injector.get(SyncInjector)).toBe(injector);
   });
 
   test("Router should have async injector", async () => {
@@ -51,7 +50,6 @@ describe("Router", () => {
     expect(localRouter).toBeInstanceOf(Router);
     expect(Reflect.get(localRouter, "injector")).toBe(injector);
     expect(injector.get(Injector)).toBe(injector);
-    expect(injector.get(SyncInjector)).toBe(injector);
   });
 
   test("Parse request and create dynamic url", () => {
