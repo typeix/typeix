@@ -2,7 +2,7 @@ import {Injector} from "@typeix/di";
 import {IResolvedRoute, Router, RouterError} from "../";
 import {createServer, IncomingMessage, ServerResponse} from "http";
 
-let router: Router = Injector.createAndResolve(Router, []).get(Router);
+let router: Router = Injector.Sync.createAndResolve(Router, []).get(Router);
 /**
  * Route handler example
  * @param injector

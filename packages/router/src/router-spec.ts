@@ -1,5 +1,5 @@
 import {Router} from "./router";
-import {Injectable, Injector, verifyProvider} from "@typeix/di";
+import {Injectable, Injector, SyncInjector, verifyProvider} from "@typeix/di";
 import {IRoute, IResolvedRoute, URI} from "./iroute";
 import {RouterError} from "./router-error";
 import {Server, Socket} from "net";
@@ -32,8 +32,26 @@ describe("Router", () => {
   }
 
   beforeEach(async () => {
-    let injector = await Injector.createAndResolve(Router, []);
+    const injector = await Injector.createAndResolve(Router, []);
     router = injector.get(Router);
+  });
+
+  test("Router should have injector", () => {
+    const injector = Injector.Sync.createAndResolve(Router, []);
+    const localRouter = injector.get(Router);
+    expect(localRouter).toBeInstanceOf(Router);
+    expect(Reflect.get(localRouter, "injector")).toBe(injector);
+    expect(injector.get(Injector)).toBe(injector);
+    expect(injector.get(SyncInjector)).toBe(injector);
+  });
+
+  test("Router should have async injector", async () => {
+    const injector = await Injector.createAndResolve(Router, []);
+    const localRouter = injector.get(Router);
+    expect(localRouter).toBeInstanceOf(Router);
+    expect(Reflect.get(localRouter, "injector")).toBe(injector);
+    expect(injector.get(Injector)).toBe(injector);
+    expect(injector.get(SyncInjector)).toBe(injector);
   });
 
   test("Parse request and create dynamic url", () => {
@@ -93,15 +111,17 @@ describe("Router", () => {
   test("Should add rules and execute", async () => {
     let count = 0;
     let obj = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       handler: (injector: Injector, route: IResolvedRoute) => {
         count += 1;
         return Buffer.from("1");
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       error: (injector: Injector, route: IResolvedRoute) => {
         count += 1;
         return {a: 1, b: 1};
       }
-    }
+    };
 
     let spy = spyOn(obj, "handler").and.callThrough();
     let spy2 = spyOn(obj, "error").and.callThrough();
@@ -161,15 +181,15 @@ describe("Router", () => {
   });
 
 
-
   test("Should handle errors", async () => {
     let count = 0;
     let obj = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       error: (injector: Injector, route: IResolvedRoute) => {
         count += 1;
         return {a: 1, b: 1};
       }
-    }
+    };
 
     let spy = spyOn(obj, "error").and.callThrough();
     let server = new Server();
@@ -187,11 +207,13 @@ describe("Router", () => {
     class A {
       @ResolvedRoute() route: IResolvedRoute;
     }
+
     let count = 0, resolvedRoute;
     let obj = {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       handler: async (injector: Injector, route: IResolvedRoute) => {
-        resolvedRoute =  (await injector.createAndResolve(verifyProvider(A), [])).route;
+        const rule = await injector.createAndResolve(verifyProvider(A), []);
+        resolvedRoute = rule.route;
         count += 1;
         return "1";
       }
@@ -249,7 +271,7 @@ describe("Router", () => {
 
   });
 
-  test("RouterError",  () => {
+  test("RouterError", () => {
     let obj = {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       handler: (injector: Injector, route: IResolvedRoute) => {

@@ -56,14 +56,14 @@ export class Router {
    * @param defaultHost
    */
   static parseURI(path: string, headers: { [key: string]: any }, defaultHost = "localhost"): URI {
-    const host = Reflect.get(headers, "host") ?? defaultHost;
-    let protocol = "http";
+    const currentHost = Reflect.get(headers, "host") ?? defaultHost;
+    let currentProtocol = "http";
     if (Reflect.has(headers, protoXFP)) {
-      protocol = Reflect.get(headers, protoXFP);
+      currentProtocol = Reflect.get(headers, protoXFP);
     } else if (Reflect.has(headers, protoMS)) {
-      protocol = Reflect.get(headers, protoMS);
+      currentProtocol = Reflect.get(headers, protoMS);
     }
-    const href = `${protocol}://${host}${path}`;
+    const href = `${currentProtocol}://${currentHost}${path}`;
     const matches = URL_RE.exec(href);
     if (isArray(matches)) {
       const hash = matches[9];
@@ -113,7 +113,7 @@ export class Router {
    */
   addRules(rules: Array<IRouteConfig>): void {
     for (const config of rules) {
-      this.routes.push(this.createRule(RouteRule, config));
+      this.addRule(RouteRule, config);
     }
   }
 
@@ -144,8 +144,9 @@ export class Router {
    */
   async parseRequest(path: string, method: string, headers: { [key: string]: any }): Promise<IResolvedRoute> {
     const uri = Router.parseURI(path, headers);
-    for (let route of this.routes) {
-      let result = await (await route).parseRequest(uri, method, headers);
+    for (const routePromise of this.routes) {
+      const route = await routePromise;
+      const result = await route.parseRequest(uri, method, headers);
       if (isObject(result)) {
         return result;
       }
