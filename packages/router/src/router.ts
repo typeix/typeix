@@ -145,9 +145,6 @@ export class Router {
         if (!injector.getParent()) {
           injector.setParent(route.injector);
         }
-        if (!injector.has(ResolvedRoute)) {
-          injector.set(ResolvedRoute, route);
-        }
         return result;
       }
     }
@@ -194,6 +191,9 @@ export class Router {
   ): Promise<any> {
     try {
       let route: IResolvedRoute = await this.parseRequest(injector, request.url, !!error ? Router.ERROR : request.method, request.headers);
+      if (!injector.has(ResolvedRoute)) {
+        injector.set(ResolvedRoute, route);
+      }
       let result = await route.handler(injector, route);
       if (!response.writableEnded && Buffer.isBuffer(result)) {
         response.end(result);

@@ -1,9 +1,10 @@
 import {Router} from "./router";
-import {Injectable, Injector} from "@typeix/di";
+import {Injectable, Injector, verifyProvider} from "@typeix/di";
 import {IRoute, IResolvedRoute, URI} from "./iroute";
 import {RouterError} from "./router-error";
 import {Server, Socket} from "net";
 import {IncomingMessage, ServerResponse} from "http";
+import {ResolvedRoute} from "./route-rule";
 
 describe("Router", () => {
 
@@ -178,12 +179,19 @@ describe("Router", () => {
   });
 
 
-  test("Should handle string type", async () => {
+  test("Should handle ResolvedRoute", async () => {
 
-    let count = 0, resolvedRoute;
+    @Injectable()
+    class A {
+      @ResolvedRoute() route: IResolvedRoute;
+    }
+
+    let count = 0, resolvedRoute: IResolvedRoute;
     let obj = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       handler: async (injector: Injector, route: IResolvedRoute) => {
-        resolvedRoute = route;
+        const rule = await injector.createAndResolve(verifyProvider(A), []);
+        resolvedRoute = rule.route;
         count += 1;
         return "1";
       }
