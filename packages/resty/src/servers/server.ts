@@ -50,13 +50,14 @@ export async function pipeServer(server: Server, Class: Function, config?: Serve
   const router = injector.get(Router);
   const logger = injector.get(Logger);
   for (const def of routeDefinitions) {
+    const routeInjector = moduleInjector.getInjector(def.module.provider);
     const path = getRoutePath(def, def.module.metadata.path);
     const method = def.method.decorator === OnError ? Router.ERROR : def.method.decorator.name;
     logger.info(`Router.add ${path} for controller ${def.controller.provider.provide.name} on method ${method}`);
     Reflect.get(
       router,
       method === Router.ERROR ? "onError" : method.toLowerCase()
-    ).apply(router, [path, createRouteHandler(def, config), injector]);
+    ).apply(router, [path, createRouteHandler(def, config), routeInjector]);
   }
   router.pipe(server);
   return moduleInjector;
