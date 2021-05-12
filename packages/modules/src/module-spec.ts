@@ -16,7 +16,7 @@ describe("@Module", () => {
     }
 
     @Module({
-      providers: [ AService, BService ]
+      providers: [AService, BService]
     })
     class ApplicationModule {
       @Inject(BService) bService: BService;
@@ -45,7 +45,7 @@ describe("@Module", () => {
     }
 
     @Module({
-      providers: [ AService, BService ]
+      providers: [AService, BService]
     })
     class ApplicationModuleD {
       @Inject(BService) bService: BService;
@@ -53,8 +53,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleD ],
-      providers: [ AService, BService ]
+      imports: [ApplicationModuleD],
+      providers: [AService, BService]
     })
     class ApplicationModuleC {
       @Inject(BService) bService: BService;
@@ -62,8 +62,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleC ],
-      providers: [ AService, BService ]
+      imports: [ApplicationModuleC],
+      providers: [AService, BService]
     })
     class ApplicationModuleB {
       @Inject(BService) bService: BService;
@@ -71,8 +71,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleB, ApplicationModuleD ],
-      providers: [ AService, BService ]
+      imports: [ApplicationModuleB, ApplicationModuleD],
+      providers: [AService, BService]
     })
     class ApplicationModuleA {
       @Inject(BService) bService: BService;
@@ -132,9 +132,9 @@ describe("@Module", () => {
     injector.remove(ApplicationModuleD);
     expect(injector.has(ApplicationModuleD)).toBeFalsy();
     try {
-      await injector.createAndResolve(ApplicationModuleA, []);
+      await injector.createAndResolve(ApplicationModuleA, injector.getInjector(ApplicationModuleA));
     } catch (e) {
-      expect( () => {
+      expect(() => {
         throw e;
       }).toThrow(`Module ${getProviderName(verifyProvider(ApplicationModuleA))} is already initialized`);
     }
@@ -157,8 +157,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      providers: [ AService, BService ],
-      exports: [ AService, BService ]
+      providers: [AService, BService],
+      exports: [AService, BService]
     })
     class ApplicationModuleD {
       @Inject(BService) bService: BService;
@@ -166,8 +166,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleD ],
-      exports: [ AService, BService ],
+      imports: [ApplicationModuleD],
+      exports: [AService, BService],
       providers: []
     })
     class ApplicationModuleC {
@@ -176,7 +176,7 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleC ],
+      imports: [ApplicationModuleC],
       providers: []
     })
     class ApplicationModuleB {
@@ -185,8 +185,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleB, ApplicationModuleD ],
-      providers: [ AService, BService ]
+      imports: [ApplicationModuleB, ApplicationModuleD],
+      providers: [AService, BService]
     })
     class ApplicationModuleA {
       @Inject(BService) bService: BService;
@@ -257,8 +257,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      providers: [ AService, BService ],
-      exports: [ AService, BService ]
+      providers: [AService, BService],
+      exports: [AService, BService]
     })
     class ApplicationModuleD {
       @Inject(BService) bService: BService;
@@ -266,8 +266,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleD ],
-      exports: [ AService, BService ],
+      imports: [ApplicationModuleD],
+      exports: [AService, BService],
       providers: []
     })
     class ApplicationModuleC {
@@ -276,8 +276,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleC ],
-      providers: [ AService ]
+      imports: [ApplicationModuleC],
+      providers: [AService]
     })
     class ApplicationModuleB {
       @Inject(BService) bService: BService;
@@ -285,8 +285,8 @@ describe("@Module", () => {
     }
 
     @Module({
-      imports: [ ApplicationModuleB, ApplicationModuleD ],
-      providers: [ AService, BService ]
+      imports: [ApplicationModuleB, ApplicationModuleD],
+      providers: [AService, BService]
     })
     class ApplicationModuleA {
       @Inject(BService) bService: BService;
@@ -357,8 +357,8 @@ describe("@Module", () => {
     }
 
     let metadataD = {
-      providers: [ AService, BService ],
-      exports: [ AService, BService ]
+      providers: [AService, BService],
+      exports: [AService, BService]
     };
 
     @Module(metadataD)
@@ -368,8 +368,8 @@ describe("@Module", () => {
     }
 
     let metadataC = {
-      imports: [ ApplicationModuleD ],
-      exports: [ AService, BService ],
+      imports: [ApplicationModuleD],
+      exports: [AService, BService],
       providers: []
     };
 
@@ -380,8 +380,8 @@ describe("@Module", () => {
     }
 
     let metadataB = {
-      imports: [ ApplicationModuleC ],
-      providers: [ AService ]
+      imports: [ApplicationModuleC],
+      providers: [AService]
     };
 
     @Module(metadataB)
@@ -391,8 +391,8 @@ describe("@Module", () => {
     }
 
     let metadataA = {
-      imports: [ ApplicationModuleB, ApplicationModuleD ],
-      providers: [ AService, BService ]
+      imports: [ApplicationModuleB, ApplicationModuleD],
+      providers: [AService, BService]
     };
 
     @Module(metadataA)
@@ -427,11 +427,12 @@ describe("@Module", () => {
     }
 
     @Injectable()
-    class CService {}
+    class CService {
+    }
 
     let metadataD = {
-      providers: [ AService, BService ],
-      exports: [ AService, BService ]
+      providers: [AService, BService],
+      exports: [AService, BService]
     };
 
     @Module(metadataD)
@@ -442,8 +443,8 @@ describe("@Module", () => {
     }
 
     let metadataC = {
-      imports: [ ApplicationModuleD ],
-      exports: [ AService, BService ]
+      imports: [ApplicationModuleD],
+      exports: [AService, BService]
     };
 
     @Module(metadataC)
@@ -454,8 +455,8 @@ describe("@Module", () => {
     }
 
     let metadataB = {
-      imports: [ ApplicationModuleC ],
-      providers: [ AService ]
+      imports: [ApplicationModuleC],
+      providers: [AService]
     };
 
     @Module(metadataB)
@@ -466,8 +467,8 @@ describe("@Module", () => {
     }
 
     let metadataA = {
-      imports: [ ApplicationModuleB, ApplicationModuleD ],
-      providers: [ AService, BService, CService ]
+      imports: [ApplicationModuleB, ApplicationModuleD],
+      providers: [AService, BService, CService]
     };
 
     @Module(metadataA)
@@ -480,7 +481,10 @@ describe("@Module", () => {
     let cInjector = await Injector.createAndResolve(CService, []);
     let cInstance = cInjector.get(CService);
 
-    let injector: ModuleInjector = await ModuleInjector.createAndResolve(ApplicationModuleA, [ {provide: CService, useValue: cInstance} ]);
+    let injector: ModuleInjector = await ModuleInjector.createAndResolve(ApplicationModuleA, [{
+      provide: CService,
+      useValue: cInstance
+    }]);
 
     let moduleD: ApplicationModuleD = injector.get(ApplicationModuleD);
     let moduleC: ApplicationModuleC = injector.get(ApplicationModuleC);

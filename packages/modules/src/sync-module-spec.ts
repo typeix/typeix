@@ -132,7 +132,7 @@ describe("sync @Module", () => {
     injector.remove(ApplicationModuleD);
     expect(injector.has(ApplicationModuleD)).toBeFalsy();
     expect(() => {
-      injector.createAndResolve(ApplicationModuleA, []);
+      injector.createAndResolve(ApplicationModuleA, injector.getInjector(ApplicationModuleA));
     }).toThrow(`Module ${getProviderName(verifyProvider(ApplicationModuleA))} is already initialized`);
 
     let method = Reflect.get(injector, "processImportsAndExports");

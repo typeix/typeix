@@ -28,7 +28,6 @@ export class SyncInjector extends AbstractInjector<SyncInjector> {
   constructor(_parent?: SyncInjector, keys: Array<any> = []) {
     super(_parent, keys);
     this.set(Injector, this);
-    this.set(SyncInjector, this);
   }
 
   /**

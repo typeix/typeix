@@ -441,7 +441,7 @@ describe("Injector", () => {
     expect(() => {
       child.setName(verifyProvider(BService));
     }).toThrow("Cannot redefine injector name: BService");
-    expect(parent.getInjectorsByProvider(verifyProvider(Injector.Sync))).toEqual([parent, child]);
+    expect(parent.getInjectorsByProvider(verifyProvider(Injector))).toEqual([parent, child]);
     expect(parent.getInjectorsByProvider(verifyProvider(AService))).toEqual([parent]);
     expect(parent.getInjectorsByProvider(verifyProvider(BService))).toEqual([child]);
     child.destroy();
@@ -451,7 +451,7 @@ describe("Injector", () => {
     expect(child.getParent()).toBe(undefined);
     expect(parent.getInjectorsByProvider(verifyProvider(AService))).toEqual([]);
     expect(parent.getInjectorsByProvider(verifyProvider(BService))).toEqual([]);
-    expect(parent.getInjectorsByProvider(verifyProvider(Injector.Sync))).toEqual([]);
+    expect(parent.getInjectorsByProvider(verifyProvider(Injector))).toEqual([]);
   });
 
 
