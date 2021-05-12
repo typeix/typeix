@@ -1,6 +1,6 @@
 {
   "name": "@typeix/router",
-  "version": "8.0.3-alpha.3",
+  "version": "8.0.0-alpha.0",
   "description": "Node js router for typescript projects",
   "main": "build/index.js",
   "scripts": {
@@ -28,9 +28,9 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/di": "^8.0.3-alpha.3",
-    "@typeix/metadata": "^8.0.3-alpha.3",
-    "@typeix/utils": "^8.0.3-alpha.3"
+    "@typeix/di": "^8.0.0-alpha.0",
+    "@typeix/metadata": "^8.0.0-alpha.0",
+    "@typeix/utils": "^8.0.0-alpha.0"
   },
   "publishConfig": {
     "access": "public"
