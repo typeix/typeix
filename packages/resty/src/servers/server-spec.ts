@@ -1,4 +1,4 @@
-import {getMethodDecorator, getMethodParams} from "../helpers/index";
+import {getMethodDecorator, getMethodParams} from "../helpers";
 import {
   CONNECT,
   Controller,
@@ -98,6 +98,7 @@ describe("server", () => {
     injector.set(ServerResponse, new ServerResponse(request));
     injector.set(IncomingMessage, request);
     let result = await handler(injector, {
+      injector,
       params: {},
       headers: {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -110,6 +111,7 @@ describe("server", () => {
     expect(result).toEqual("HELLO_WORLD");
     expect(hitCount).toBe(1);
     result = await handler(injector, {
+      injector,
       params: {},
       headers: {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -171,6 +173,7 @@ describe("server", () => {
     injector.set(ServerResponse, new ServerResponse(request));
     injector.set(IncomingMessage, request);
     let result = await handler(injector, {
+      injector,
       params: {},
       headers: {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -184,6 +187,7 @@ describe("server", () => {
     expect(hitCount).toBe(1);
     try {
       await handler(injector, {
+        injector,
         params: {},
         headers: {},
         // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -248,6 +252,7 @@ describe("server", () => {
     injector.set(ServerResponse, new ServerResponse(request));
     injector.set(IncomingMessage, request);
     let result = await handler(injector, {
+      injector,
       params: {},
       headers: {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -260,6 +265,7 @@ describe("server", () => {
     expect(result).toEqual("HELLO_WORLD");
     expect(hitCount).toBe(1);
     result = await handler(injector, {
+      injector,
       params: {},
       headers: {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -374,6 +380,7 @@ describe("server", () => {
     injector.set(ServerResponse, new ServerResponse(request));
     injector.set(IncomingMessage, request);
     const result = await handler(injector, {
+      injector,
       params: {},
       headers: {},
       url: Router.parseURI("/", {}),

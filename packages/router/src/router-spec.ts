@@ -1,10 +1,9 @@
 import {Router} from "./router";
-import {Injectable, Injector, verifyProvider} from "@typeix/di";
+import {Injectable, Injector} from "@typeix/di";
 import {IRoute, IResolvedRoute, URI} from "./iroute";
 import {RouterError} from "./router-error";
 import {Server, Socket} from "net";
 import {IncomingMessage, ServerResponse} from "http";
-import {ResolvedRoute} from "./route-rule";
 
 describe("Router", () => {
 
