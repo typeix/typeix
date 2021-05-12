@@ -44,6 +44,10 @@ export interface IRoute {
   parseRequest(uri: URI, method: string, headers: { [key: string]: any }): Promise<IResolvedRoute>;
 }
 
+export interface ICreatedRoute {
+  rule: IRoute;
+  injector: Injector;
+}
 /**
  * @since 7.0.0
  * @type
@@ -81,6 +85,7 @@ export interface IRouteConfig {
  */
 export interface IResolvedRoute extends IRouteConfig {
   params: { [key: string]: string };
+  injector: Injector;
   headers: { [key: string]: any };
   url: URI;
 }

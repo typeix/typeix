@@ -13,7 +13,9 @@ describe("RouteRule", () => {
     let route = injector.get(RouteRule);
     expect(route).not.toBeNull();
     let result = await route.parseRequest(Router.parseURI("/home/123", {}), "GET", {});
-    const expected = {...config,
+    const expected = {
+      injector,
+      ...config,
       path: "/home/123",
       params: {id: "123"},
       url: Router.parseURI("/home/123", {}),
@@ -22,8 +24,9 @@ describe("RouteRule", () => {
     expect(result).toEqual(expected);
     let path = "/home/123?query=1&base=2&query=2";
     result = await route.parseRequest(Router.parseURI(path, {}), "GET", {});
-    let uri = Router.parseURI(path, {})
-    expect(result).toEqual({...expected, path: uri.pathname,  url: uri});
+    let uri = Router.parseURI(path, {});
+
+    expect(result).toEqual({ ...expected, path: uri.pathname,  url: uri});
 
     path = "/home/123-not-found?query=1&base=2&query=2";
     uri = Router.parseURI(path, {})
@@ -49,6 +52,7 @@ describe("RouteRule", () => {
     let uri = Router.parseURI(path, {});
     let result = await route.parseRequest(uri, "GET", {});
     expect(result).toEqual({
+      injector,
       ...config,
       path: uri.pathname,
       params: {id: "123"},
@@ -72,6 +76,7 @@ describe("RouteRule", () => {
     let uri = Router.parseURI(path, headers);
     let result = await route.parseRequest(uri, "GET", headers);
     expect(result).toEqual({
+      injector,
       ...config,
       path,
       params: {},
@@ -83,6 +88,7 @@ describe("RouteRule", () => {
     uri = Router.parseURI(path, headers1);
     result = await route.parseRequest(uri, "GET", headers1);
     expect(result).toEqual({
+      injector,
       ...config,
       path,
       params: {},

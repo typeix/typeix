@@ -9,6 +9,7 @@ import {ResolvedRoute} from "./route-rule";
 describe("Router", () => {
 
   let router: Router;
+  const routeInjector = new Injector();
 
   function expectEqual(route, url, method, params) {
     expect(route.path).toBe(url);
@@ -50,7 +51,7 @@ describe("Router", () => {
 
     router.addRule(DynamicRule);
 
-    return router.parseRequest("/", "GET", {}).then((data) => {
+    return router.parseRequest(routeInjector, "/", "GET", {}).then((data) => {
       let result = [];
       expect(data).toEqual(result);
     })
@@ -69,10 +70,10 @@ describe("Router", () => {
     router.post("/injector", () => void 0, new Injector());
 
     return Promise.all([
-      router.parseRequest("/", "POST", {}),
-      router.parseRequest("/authenticate", "GET", {}),
-      router.parseRequest("/home", "GET", {}),
-      router.parseRequest("/home/123", "GET", {})
+      router.parseRequest(routeInjector, "/", "POST", {}),
+      router.parseRequest(routeInjector, "/authenticate", "GET", {}),
+      router.parseRequest(routeInjector, "/home", "GET", {}),
+      router.parseRequest(routeInjector, "/home/123", "GET", {})
     ]).then((data) => {
       let route1 = data.shift();
       let route2 = data.shift();
@@ -180,17 +181,10 @@ describe("Router", () => {
 
   test("Should handle string type", async () => {
 
-    @Injectable()
-    class A {
-      @ResolvedRoute() route: IResolvedRoute;
-    }
-
     let count = 0, resolvedRoute;
     let obj = {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       handler: async (injector: Injector, route: IResolvedRoute) => {
-        const rule = await injector.createAndResolve(verifyProvider(A), []);
-        resolvedRoute = rule.route;
+        resolvedRoute = route;
         count += 1;
         return "1";
       }

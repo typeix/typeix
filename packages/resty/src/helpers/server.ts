@@ -398,7 +398,7 @@ export function createRouteHandler(routeDefinition: RouteDefinition, config?: Se
         );
       });
     }
-    return executor.execute(response);
+    return await executor.execute(response);
   };
 }
 

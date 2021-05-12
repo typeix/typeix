@@ -1,4 +1,4 @@
-import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
+import {IAfterConstruct, Inject, Injectable, Injector} from "@typeix/di";
 import {RouteParser} from "./parser";
 import {IResolvedRoute, IRoute, IRouteConfig, URI} from "./iroute";
 /**
@@ -29,8 +29,8 @@ export function RouteConfig() {
 @Injectable()
 export class RouteRule implements IRoute, IAfterConstruct {
 
-  @RouteConfig()
-  private config: IRouteConfig;
+  @RouteConfig() private config: IRouteConfig;
+  @Inject() private injector: Injector;
   private routeParser: RouteParser;
   /**
    * @since 1.0.0
@@ -62,6 +62,7 @@ export class RouteRule implements IRoute, IAfterConstruct {
     if (this.routeParser.isValid(uri.pathname) && this.config.method === method) {
       let params = this.routeParser.getParams(uri.pathname);
       return {
+        injector: this.injector,
         handler: this.config.handler,
         path: uri.pathname,
         url: uri,

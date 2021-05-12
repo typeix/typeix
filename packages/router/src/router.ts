@@ -1,6 +1,6 @@
 import {isArray, isDefined, isObject} from "@typeix/utils";
 import {Injectable, Injector} from "@typeix/di";
-import {IResolvedRoute, IRoute, IRouteHandler, IRouteConfig, TRoute, URI} from "./iroute";
+import {IResolvedRoute, IRouteHandler, IRouteConfig, TRoute, URI, ICreatedRoute} from "./iroute";
 import {ResolvedRoute, RouteRule, RouteConfig} from "./route-rule";
 import {RouterError} from "./router-error";
 import {IncomingMessage, ServerResponse} from "http";
@@ -41,9 +41,9 @@ export class Router {
 
   static readonly ERROR = "@typeix:TRACE";
   /**
-   * @param {Array<Promise<IRoute>>} routes
+   * @param {Array<Promise<ICreatedRoute>>} routes
    */
-  private routes: Array<Promise<IRoute>> = [];
+  private routes: Array<Promise<ICreatedRoute>> = [];
 
   /**
    * Helper to parse request.url
@@ -123,6 +123,7 @@ export class Router {
    * @since 1.0.0
    * @function
    * @name Router#parseRequest
+   * @param {Injector} injector
    * @param {string} path
    * @param {String} method
    * @param {[key: string]: any} headers
@@ -130,12 +131,23 @@ export class Router {
    * @description
    * Parse request based on pathName and method
    */
-  async parseRequest(path: string, method: string, headers: { [key: string]: any }): Promise<IResolvedRoute> {
+  async parseRequest(
+    injector: Injector,
+    path: string,
+    method: string,
+    headers: { [key: string]: any }
+  ): Promise<IResolvedRoute> {
     const uri = Router.parseURI(path, headers);
-    for (const routePromise of this.routes) {
-      const route = await routePromise;
-      const result = await route.parseRequest(uri, method, headers);
+    for (const createdRoutePromise of this.routes) {
+      const route = await createdRoutePromise;
+      const result = await route.rule.parseRequest(uri, method, headers);
       if (isObject(result)) {
+        if (!injector.getParent()) {
+          injector.setParent(route.injector);
+        }
+        if (!injector.has(ResolvedRoute)) {
+          injector.set(ResolvedRoute, route);
+        }
         return result;
       }
     }
@@ -181,13 +193,7 @@ export class Router {
     error?: RouterError
   ): Promise<any> {
     try {
-      let route: IResolvedRoute = await this.parseRequest(request.url, !!error ? Router.ERROR : request.method, request.headers);
-      if (!injector.has(ResolvedRoute)) {
-        injector.set(ResolvedRoute, route);
-      }
-      if (!injector.getParent()) {
-        injector.setParent(route.injector);
-      }
+      let route: IResolvedRoute = await this.parseRequest(injector, request.url, !!error ? Router.ERROR : request.method, request.headers);
       let result = await route.handler(injector, route);
       if (!response.writableEnded && Buffer.isBuffer(result)) {
         response.end(result);
@@ -397,12 +403,15 @@ export class Router {
    * @description
    * Initialize rule
    */
-  private async createRule(Class: TRoute, config?: IRouteConfig): Promise<IRoute> {
+  private async createRule(Class: TRoute, config?: IRouteConfig): Promise<ICreatedRoute> {
     const injector = await Injector.createAndResolveChild(
       config?.injector ?? new Injector(),
       Class,
       isDefined(config) ? [{provide: RouteConfig, useValue: config}] : []
     );
-    return injector.get(Class);
+    return {
+      injector,
+      rule: injector.get(Class)
+    };
   }
 }
