@@ -2,7 +2,7 @@
   "name": "@typeix/resty-aws-lambda",
   "version": "8.0.0-y.0",
   "description": "REST nodejs framework for typescript",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "pretest": "tsc",
     "test": "jest -c jest-runner.json --coverage",

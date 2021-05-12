@@ -2,7 +2,7 @@
   "name": "@typeix/di",
   "version": "8.0.0-y.0",
   "description": "Typescript dependency injection",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "pretest": "tsc",
     "test": "jest -c jest-runner.json --coverage",

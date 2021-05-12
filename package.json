@@ -6,7 +6,7 @@
   "scripts": {
     "coveralls-merge": "npm run test && node coveralls-merge.js",
     "bootstrap": "lerna exec npm install",
-    "clean": "lerna exec rimraf build",
+    "clean": "lerna exec rimraf dist",
     "test": "lerna exec npm test",
     "publish:all": "lerna publish --force-publish --loglevel=verbose--loglevel=verbose",
     "publish:beta": "lerna publish --force-publish --dist-tag=beta --loglevel=verbose",

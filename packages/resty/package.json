@@ -2,7 +2,7 @@
   "name": "@typeix/resty",
   "version": "8.0.0-y.0",
   "description": "Fast, unopinionated, minimalist framework for building efficient and scalable applications",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "pretest": "tsc --project tsconfig.json",
     "test": "jest -c jest-runner.json --coverage",
