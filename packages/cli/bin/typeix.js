@@ -6,7 +6,7 @@ const path = require("path");
 const pkgInfo = require("../package.json");
 const program = require("commander");
 
-const segments = ["build", "commands"];
+const segments = ["dist", "commands"];
 const npm_segments = ["node_modules", "@typeix", "cli"];
 
 program

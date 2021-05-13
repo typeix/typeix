@@ -1,6 +1,6 @@
 import {CliTools} from "./cli-tools";
 import {EventEmitter} from "events";
-import {Injector, verifyProvider} from "@typeix/di";
+import {Injector, SyncInjector, verifyProvider} from "@typeix/di";
 import {InfoCommand} from "./info.command";
 import * as chalk from "chalk";
 import {BANNER} from "../ui";
@@ -11,7 +11,7 @@ import {join, normalize} from "path";
 
 describe("Should create info command", () => {
   const eventEmitter = new EventEmitter();
-  let injector: Injector;
+  let injector: SyncInjector;
   let action = () => {
     // not defined now
   };
@@ -45,7 +45,7 @@ describe("Should create info command", () => {
       },
       allowUnknownOption: () => programMock
     };
-    injector = Injector.createAndResolve(CliTools, [
+    injector = Injector.Sync.createAndResolve(CliTools, [
       {
         provide: "program",
         useValue: programMock

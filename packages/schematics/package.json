@@ -14,7 +14,7 @@
     "copy:collection": "cpx src/collection.json dist && cpx 'src/lib/**/schema.json' dist/lib",
     "copy:lib": "cpx 'src/lib/**/{files,workspace}/**/*.*' dist/lib && cpx 'src/lib/**/{files,workspace}/**/.!(gitignore)' dist/lib",
     "lint": "eslint '{src,test}/**/*.ts' --fix",
-    "pretest": "rimraf dist",
+    "pretest": "rimraf dist && tsc --project tsconfig.json",
     "test": "jest --config jest-runner.json --coverage",
     "test:dev": "npm run -s test -- --watchAll",
     "prepublishOnly": "npm run build"
@@ -38,7 +38,7 @@
     "pluralize": "8.0.0"
   },
   "engines": {
-    "node": ">=12.9.0"
+    "node": ">=12.10.0"
   },
   "schematics": "./dist/collection.json",
   "repository": {
