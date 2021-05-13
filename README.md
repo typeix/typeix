@@ -20,7 +20,7 @@ It uses modern <a href="http://www.typescriptlang.org" target="_blank">TypeScrip
 Functional Programming and Reactive Programming.
 
 <p>
-Typeix uses <a href="https://img.shields.io/npm/v/@typeix/router" target="_blank">@typeix/router</a> as a lightweight server, but also, provides compatibility with a wide range of other libraries, 
+Typeix uses <a href="https://github.com/typeix/typeix/tree/main/packages/router" target="_blank">@typeix/router</a> as a lightweight server, but also, provides compatibility with a wide range of other libraries, 
 allowing for easy use of the myriad third-party plugins which are available.
 </p>
 
