@@ -1,6 +1,6 @@
 {
   "name": "@typeix/schematics",
-  "version": "8.0.0-y.0",
+  "version": "8.0.0-alpha.2.1",
   "files": [
     "dist/**/*"
   ],
@@ -20,9 +20,9 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@typeix/resty": "^8.0.0-y.0",
     "@commitlint/cli": "12.1.1",
     "@commitlint/config-angular": "12.1.1",
+    "@typeix/resty": "^8.0.0-alpha.2.1",
     "@types/fs-extra": "9.0.11",
     "@types/jest": "^26.0.23",
     "cpx": "^1.5.0",
