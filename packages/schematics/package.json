@@ -15,8 +15,8 @@
     "copy:lib": "cpx 'src/lib/**/{files,workspace}/**/*.*' dist/lib && cpx 'src/lib/**/{files,workspace}/**/.!(gitignore)' dist/lib",
     "lint": "eslint '{src,test}/**/*.ts' --fix",
     "pretest": "rimraf dist",
-    "test": "NODE_ENV=test jest -w 1 --no-cache --config jest-runner.json",
-    "test:dev": "NODE_ENV=test npm run -s test -- --watchAll",
+    "test": "jest --config jest-runner.json --coverage",
+    "test:dev": "npm run -s test -- --watchAll",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
