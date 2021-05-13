@@ -6,7 +6,7 @@ describe("AppController", () => {
   let appController: AppController;
 
   beforeEach(async () => {
-    const injector = Injector.createAndResolve(AppController, [AppService]);
+    const injector = await Injector.createAndResolve(AppController, [AppService]);
     appController = injector.get(AppController);
   });
 

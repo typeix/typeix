@@ -9,6 +9,10 @@ import {createServer} from "http";
  * @name pipeServer
  *
  */
-const server = createServer();
-pipeServer(server, AppModule);
-server.listen(3000);
+async function bootstrap() {
+  const server = createServer();
+  await pipeServer(server, AppModule);
+  server.listen(3000);
+}
+
+export default bootstrap();

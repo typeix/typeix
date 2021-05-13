@@ -1,3 +1,4 @@
+
 module.exports = {
   "env": {
     "browser": true,
@@ -6,7 +7,7 @@ module.exports = {
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.build.json",
+    "project": "./tsconfig.json",
     "sourceType": "module"
   },
   "plugins": [
@@ -70,10 +71,7 @@ module.exports = {
       "always"
     ],
     "@typescript-eslint/type-annotation-spacing": "error",
-    "array-bracket-spacing": [
-      "error",
-      "never"
-    ],
+    "array-bracket-spacing": "off",
     "brace-style": [
       "error",
       "1tbs"
@@ -96,13 +94,38 @@ module.exports = {
     ],
     "no-bitwise": "off",
     "no-caller": "error",
-    "no-console": "off",
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "log",
+          "warn",
+          "dir",
+          "timeLog",
+          "assert",
+          "clear",
+          "count",
+          "countReset",
+          "group",
+          "groupEnd",
+          "table",
+          "dirxml",
+          "error",
+          "groupCollapsed",
+          "Console",
+          "profile",
+          "profileEnd",
+          "timeStamp",
+          "context"
+        ]
+      }
+    ],
     "no-debugger": "error",
     "no-empty": "error",
     "no-eval": "error",
     "no-fallthrough": "error",
     "no-new-wrappers": "error",
-    "no-redeclare": "error",
+    "no-redeclare": "off",
     "no-shadow": [
       "error",
       {
