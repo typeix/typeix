@@ -12,6 +12,7 @@ export {
   getRequestBody,
   getResponse,
   getMethodDecorator,
+  createRoute,
   createRouteHandler,
   createRouteDefinition
 } from "./server";

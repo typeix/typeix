@@ -27,8 +27,9 @@ allowing for easy use of the myriad third-party plugins which are available.
 
 ## Philosophy
 <p>
-In 2016 inspired by Angular first version of typeix was born, which provides an application architecture 
-to allow effortless creation of highly testable, scalable, loosely coupled and easily maintainable applications. 
+In 2016 when I was Head of Engineering at [GSG](https://global-savings-group.com), I had team of 20+ engineers working on
+backoffice Angular UI application, I wanted to utilize same resources to do fullstack node.js development by creating 
+more familiar development environment and therefore I've created Typeix.
 
 Typeix has unique features like request interceptors, method interceptors, extensive dependency injection with custom decorators, global and local error routing handlers,
 aws lambda adapter, (gcp & azure will be added).
