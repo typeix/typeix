@@ -66,7 +66,7 @@ import {Router, Injector} from "@typeix/router";
 import {createServer, IncomingMessage, ServerResponse} from "http";
 import {readFileSync} from "fs";
 
-const router: Router = Injector.createAndResolve(Router, []).get(Router);
+const router: Router = Injector.Sync.createAndResolve(Router, []).get(Router);
 
 router.get("/", (injector: Injector, route: IResolvedRoute) => {});
 router.post("/api/users", (injector: Injector, route: IResolvedRoute) => {});
@@ -96,7 +96,7 @@ If any errors is thrown in route handler, router will forward exception to inter
 import {Router, Injector} from "@typeix/router";
 import {createServer, IncomingMessage, ServerResponse} from "http";
 
-const router: Router = Injector.createAndResolve(Router, []).get(Router);
+const router: Router = Injector.Sync.createAndResolve(Router, []).get(Router);
 
 router.get("/",  (injector: Injector, route: IResolvedRoute) => {});
 router.post("/api/users",  (injector: Injector, route: IResolvedRoute) => {});
@@ -125,7 +125,7 @@ Router supports all implemented servers in Node.js however http2 is implemented 
 import {Router, Injector} from "@typeix/router";
 import {createServer, IncomingMessage, ServerResponse} from "http";
 
-const router: Router = Injector.createAndResolve(Router, []).get(Router);
+const router: Router = Injector.Sync.createAndResolve(Router, []).get(Router);
 router.get("/", (injector: Injector, route: IResolvedRoute) => {
     const request = injector.get(IncomingMessage);
     const response = injector.get(ServerResponse);
@@ -142,7 +142,7 @@ import {Router, Injector} from "@typeix/router";
 import {createServer, IncomingMessage, ServerResponse} from "https";
 import {readFileSync} from "fs";
 
-const router: Router = Injector.createAndResolve(Router, []).get(Router);
+const router: Router = Injector.Sync.createAndResolve(Router, []).get(Router);
 router.get("/", (injector: Injector, route: IResolvedRoute) => {
     const request = injector.get(IncomingMessage);
     const response = injector.get(ServerResponse);
@@ -164,7 +164,7 @@ import {Router, Injector} from "@typeix/router";
 import {createServer, Http2ServerRequest, Http2ServerResponse} from "http2";
 import {readFileSync} from "fs";
 
-const router: Router = Injector.createAndResolve(Router, []).get(Router);
+const router: Router = Injector.Sync.createAndResolve(Router, []).get(Router);
 router.get("/", (injector: Injector, route: IResolvedRoute) => {
     const request = injector.get(Http2ServerRequest);
     const response = injector.get(Http2ServerResponse);

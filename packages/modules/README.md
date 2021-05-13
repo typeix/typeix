@@ -136,26 +136,51 @@ class ApplicationModuleB {
 If provider is not mutable, and you are trying to create new instance of same provider on current ModuleInjector instance,
 injector will throw error.
 
+### Async
+Since version 8.x default Injector behavior is converted to async API, if you want to use sync api you need to use
+`ModuleInjector.Sync.createAndResolve`  difference is that Async API supports Async providers,
+it's allowed to use of async/await in factory and return Promises in value provider!
+
 `ModuleInjector.createAndResolve(Class, sharedProviders)` special sharedProviders property will create all providers
 which are provided and visible to all modules, however if module have same provider provided in `providers` module metadata,
 new instance will be delivered to that module.
 ```ts
 class ModuleInjector {
-    static createAndResolve(Class: Function | IProvider, sharedProviders: Array<Function | IProvider>, mutableKeys?: Array<any>): ModuleInjector;
+    static createAndResolve(Class: Function | IProvider, sharedProviders: Array<Function | IProvider>, mutableKeys?: Array<any>): Promise<ModuleInjector>;
     get(Class: Function | IProvider): any;
     getInjector(Class: Function | IProvider): Injector;
     has(Class: IProvider | Function): boolean;
     remove(Class: Function | IProvider): boolean;
     getAllMetadata(): Map<any, IModuleMetadata>;
-    createAndResolveSharedProviders(providers: Array<Function | IProvider>): void;
-    createAndResolve(Class: Function | IProvider, mutableKeys?: Array<any>): void;
+    createAndResolveSharedProviders(providers: Array<Function | IProvider>): Promise<Injector>;
+    createAndResolve(Class: Function | IProvider, mutableKeys?: Array<any>): Promise<Injector>;
 }
 ```
 
-Once modules are created by ModuleInjector all objects and references can be accessed via API, keep in mind
-that modules are created asynchronously to support lazy loading.
+
+Once modules are created by ModuleInjector all objects and references can be accessed via API
 ```ts
 const injector = await ModuleInjector.createAndResolve(ApplicationModuleB);
+```
+
+### Sync API
+Sync api is accessible via `ModuleInjector.Sync.createAndResolve(Class, sharedProviders)` or by simply importing `SyncModuleInjector`
+```ts
+class SyncModuleInjector {
+    static createAndResolve(Class: Function | IProvider, sharedProviders: Array<Function | IProvider>, mutableKeys?: Array<any>): SyncModuleInjector;
+    get(Class: Function | IProvider): any;
+    getInjector(Class: Function | IProvider): SyncInjector;
+    has(Class: IProvider | Function): boolean;
+    remove(Class: Function | IProvider): boolean;
+    getAllMetadata(): Map<any, IModuleMetadata>;
+    createAndResolveSharedProviders(providers: Array<Function | IProvider>): SyncInjector;
+    createAndResolve(Class: Function | IProvider, mutableKeys?: Array<any>): SyncInjector;
+}
+```
+
+In following example we can see sync api usage:
+```ts
+const injector = ModuleInjector.Sync.createAndResolve(ApplicationModuleB);
 const dModule: ApplicationModuleD = injector.get(ApplicationModuleD);
 const cModule: ApplicationModuleC = injector.get(ApplicationModuleC);
 const bModule: ApplicationModuleB = injector.get(ApplicationModuleB);

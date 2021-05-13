@@ -105,9 +105,15 @@ class HomeController {
 class ApplicationModule {}
 
 // START SERVER
-const server = createServer();
-pipeServer(server, ApplicationModule);
-server.listen(4000);
+async function bootstrap() {
+  const server = createServer();
+  const injector = await pipeServer(server, Application);
+  server.on("error", e => console.error(e));
+  server.listen(3000);
+  return injector;
+}
+
+export default bootstrap();
 ```
 
 [travis-url]: https://travis-ci.com/typeix/typeix

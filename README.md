@@ -37,6 +37,7 @@ aws lambda adapter, (gcp & azure will be added).
 </p>
 
 ## Core Packages
+* [@typeix/cli](packages/cli)
 * [@typeix/metadata](packages/metadata)
 * [@typeix/di](packages/di)
 * [@typeix/modules](packages/modules)
