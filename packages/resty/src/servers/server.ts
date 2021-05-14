@@ -1,4 +1,4 @@
-import {ModuleInjector, Module} from "@typeix/modules";
+import {ModuleInjector, Module, SyncModuleInjector} from "@typeix/modules";
 import {isArray} from "@typeix/utils";
 import {Router, RouterError} from "@typeix/router";
 import {getClassMetadata} from "@typeix/metadata";
@@ -12,6 +12,7 @@ import {getRouteDefinitions, getRoutePath, createRouteHandler} from "../helpers"
 export interface ServerConfig {
   mockProviders?: Array<IProvider>;
   isMockServer?: boolean;
+  useSyncInjector?: boolean;
 }
 
 /**
@@ -26,7 +27,7 @@ export interface ServerConfig {
  * @description
  * Use httpServer function to httpServer an Module.
  */
-export async function pipeServer(server: Server, Class: Function, config?: ServerConfig): Promise<ModuleInjector> {
+export async function pipeServer(server: Server, Class: Function, config?: ServerConfig): Promise<SyncModuleInjector | ModuleInjector> {
   let metadata: RootModuleMetadata = getClassMetadata(Module, Class)?.args;
   if (!isArray(metadata.shared_providers)) {
     throw new RouterError("Server must be initialized on @RootModule", 500);
@@ -44,7 +45,9 @@ export async function pipeServer(server: Server, Class: Function, config?: Serve
       })
     }));
   }
-  const moduleInjector = await ModuleInjector.createAndResolve(Class, verifyProviders(metadata.shared_providers));
+  const sharedProviders = verifyProviders(metadata.shared_providers);
+  const moduleInjector = config?.useSyncInjector ? ModuleInjector.Sync.createAndResolve(Class, sharedProviders) :
+    await ModuleInjector.createAndResolve(Class, sharedProviders);
   const routeDefinitions = getRouteDefinitions(moduleInjector);
   const injector = moduleInjector.getInjector(Class);
   const router = injector.get(Router);

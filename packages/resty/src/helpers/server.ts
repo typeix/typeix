@@ -14,7 +14,7 @@ import {
 } from "../decorators";
 import {Injector, IProvider, shiftLeft, SyncInjector, verifyProvider, verifyProviders} from "@typeix/di";
 import {inArray, isArray, isDefined, isFalsy, isTruthy, isUndefined} from "@typeix/utils";
-import {Module, ModuleInjector} from "@typeix/modules";
+import {Module, ModuleInjector, SyncModuleInjector} from "@typeix/modules";
 import {getClassMetadata, IMetadata} from "@typeix/metadata";
 import {
   InterceptedRequest,
@@ -118,7 +118,7 @@ export function createRouteDefinition(
  * @description
  * Use httpServer function to httpServer an Module.
  */
-export function getRouteDefinitions(moduleInjector: ModuleInjector): Array<RouteDefinition> {
+export function getRouteDefinitions(moduleInjector: SyncModuleInjector | ModuleInjector): Array<RouteDefinition> {
   let routeDefinitions: Array<RouteDefinition> = [];
   moduleInjector.getAllMetadata().forEach((moduleMetadata: IModuleMetadata, module: Function) => {
     verifyProviders(moduleMetadata.controllers).forEach((provider: IProvider) => {

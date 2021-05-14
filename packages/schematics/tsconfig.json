@@ -8,7 +8,7 @@
     "experimentalDecorators": true,
     "declaration": true,
     "removeComments": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "skipLibCheck": true
   },
   "include": ["src/utils", "src/lib", "src/index.ts"],
