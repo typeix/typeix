@@ -107,10 +107,12 @@ export class BuildCommand implements IAfterConstruct {
     const entryFile = this.getBinFile(options, !useWebpackCompiler);
     const watchMode = <boolean>this.cli.getOptionValue(options, "watch");
     const preserveWatchOutput = <boolean>this.cli.getOptionValue(options, "preserveWatchOutput");
+    const isDebugEnabled = <boolean>this.cli.getOptionValue(options, "debug");
     const compilerConfig = {
       ...config,
       entryFile,
       watchMode,
+      isDebugEnabled: !!isDebugEnabled,
       compilerOptions: {
         preserveWatchOutput
       }

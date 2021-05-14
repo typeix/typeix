@@ -2,7 +2,7 @@ import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
 import {Option} from "./interfaces";
 import {EventEmitter} from "events";
 import {BuildCommand} from "./build.command";
-import {isDefined, isNumber} from "@typeix/utils";
+import {isDefined, isNumber, isString} from "@typeix/utils";
 import {ChildProcess, spawn} from "child_process";
 import * as killProcess from "tree-kill";
 
@@ -87,8 +87,12 @@ export class StartCommand extends BuildCommand implements IAfterConstruct {
       });
     }
     const exec = this.cli.getOptionValue(options, "exec");
+    const debug = this.cli.getOptionValue(options, "debug");
     const filePath = this.getBinFile(options);
     const processArgs = [...this.cli.getRemainingFlags().split(/\s/)];
+    if (!!debug) {
+      processArgs.push(isString(debug) ? `--inspect=${debug}` : "--inspect");
+    }
     return spawn(`${exec} ${filePath}`, processArgs, {
       stdio: "inherit",
       shell: true

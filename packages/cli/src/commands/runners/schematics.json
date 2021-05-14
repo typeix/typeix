@@ -28,10 +28,5 @@
     "name": "service",
     "alias": "srv",
     "description": "Generate a service declaration"
-  },
-  {
-    "name": "sub-app",
-    "alias": "sapp",
-    "description": "Generate a new application within a monorepo"
   }
 ]
