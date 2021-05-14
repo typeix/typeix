@@ -10,7 +10,7 @@
     "start": "babel-node src/bootstrap.js",
     "start:dev": "nodemon",
     "test": "jest --config ./jest-runner.json",
-    "test:cov": "jest --coverage --config ./jest-runner.json",
+    "test:cov": "jest --config ./jest-runner.json --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
