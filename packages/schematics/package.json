@@ -20,9 +20,9 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
+    "@typeix/resty": "^8.0.6",
     "@commitlint/cli": "12.1.1",
     "@commitlint/config-angular": "12.1.1",
-    "@typeix/resty": "^8.0.6",
     "@types/fs-extra": "9.0.11",
     "@types/jest": "^26.0.23",
     "cpx": "^1.5.0",

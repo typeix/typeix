@@ -1,6 +1,6 @@
 {
   "name": "<%= name %>",
-  "version": "<%= version %>",
+  "version": "1.0.0",
   "description": "<%= description %>",
   "author": "<%= author %>",
   "private": true,
@@ -14,7 +14,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@typeix/resty": "^8.0.2"
+    "@typeix/resty": "^<%= version %>"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

@@ -1,6 +1,6 @@
 {
   "name": "<%= name %>",
-  "version": "<%= version %>",
+  "version": "1.0.0",
   "description": "<%= description %>",
   "author": "<%= author %>",
   "private": true,
@@ -21,11 +21,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@typeix/resty": "^8.0.2"
+    "@typeix/resty": "^<%= version %>"
   },
   "devDependencies": {
-    "@typeix/cli": "^8.0.2",
-    "@typeix/schematics": "^8.0.2",
+    "@typeix/cli": "^<%= version %>",
+    "@typeix/schematics": "^<%= version %>",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.36",
     "@typescript-eslint/eslint-plugin": "^4.19.0",

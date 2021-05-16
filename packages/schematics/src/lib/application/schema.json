@@ -13,6 +13,11 @@
       },
       "x-prompt": "What name would you like to use for the new project?"
     },
+    "version": {
+      "type": "string",
+      "description": "Typeix version.",
+      "default": "8.0.7"
+    },
     "author": {
       "type": "string",
       "description": "Typeix application author.",
@@ -26,11 +31,6 @@
     "directory": {
       "type": "string",
       "description": "Typeix application destination directory"
-    },
-    "version": {
-      "type": "string",
-      "description": "Typeix application version.",
-      "default": "0.0.1"
     },
     "language": {
       "type": "string",
