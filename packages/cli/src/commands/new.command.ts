@@ -21,6 +21,7 @@ export class NewCommand implements IAfterConstruct {
   @Inject() git: GitRunner;
 
   afterConstruct(): void {
+    const pkg = this.cli.getPackageJson();
     this.cli.commander()
       .command("new [name]")
       .alias("n")
@@ -41,6 +42,11 @@ export class NewCommand implements IAfterConstruct {
         "Programming language to be used (TypeScript or JavaScript)."
       )
       .option(
+        "-tpx, --tpx-version [version]",
+        "Typeix Version.",
+        pkg.version
+      )
+      .option(
         "-c, --collection [collectionName]",
         "Schematics collection to use."
       )
@@ -51,6 +57,7 @@ export class NewCommand implements IAfterConstruct {
         options.push({name: "dry-run", value: !!command.dryRun});
         options.push({name: "skip-git", value: !!command.skipGit});
         options.push({name: "skip-install", value: !!command.skipInstall});
+        options.push({name: "version", value: command.tpxVersion ?? pkg.version});
         options.push({
           name: "package-manager",
           value: command.packageManager

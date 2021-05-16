@@ -2,11 +2,10 @@ import {AfterConstruct, Inject, Injectable} from "@typeix/di";
 import {isArray, isDefined, isFunction, isUndefined} from "@typeix/utils";
 import {MESSAGES} from "../ui";
 import {existsSync, readdir, readFile} from "fs";
-import {join} from "path";
+import {join, normalize} from "path";
 import {Question} from "inquirer";
 import {CommanderStatic} from "commander";
 import {Option, TpxCliConfig} from "./interfaces";
-import {normalize} from "@angular-devkit/core";
 import {
   CompilerPluginExtension,
   TpxConfiguration,
@@ -58,6 +57,12 @@ export class CliTools {
     }
   }
 
+  /**
+   * Package json
+   */
+  getPackageJson() {
+    return require(normalize(join("..", "..", "package.json")));
+  }
   /**
    * Use webpack compiler
    * @param tpxCompilerOptions
