@@ -1,6 +1,6 @@
 {
   "name": "@typeix/schematics",
-  "version": "8.0.7",
+  "version": "8.1.0-rc.0",
   "files": [
     "dist/**/*"
   ],
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@commitlint/cli": "12.1.1",
     "@commitlint/config-angular": "12.1.1",
-    "@typeix/resty": "^8.0.7",
+    "@typeix/resty": "^8.1.0-rc.0",
     "@types/fs-extra": "9.0.11",
     "@types/jest": "^26.0.23",
     "cpx": "^1.5.0",
