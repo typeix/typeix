@@ -245,17 +245,17 @@ class InterceptedMethod implements Method {
 
   readonly injector: Injector | SyncInjector;
   readonly decoratorArgs: any;
-  readonly args: any;
+  readonly methodArgs: any;
 
   constructor(
     injector: Injector | SyncInjector,
-    args: any,
+    methodArgs: any,
     decoratorArgs: any,
     private container: Executor
   ) {
     this.injector = injector;
     this.decoratorArgs = decoratorArgs;
-    this.args = args;
+    this.methodArgs = methodArgs;
   }
 
   invoke(): any {
@@ -286,12 +286,12 @@ function applyInterceptors(
 ) {
   const instance = injector.get(provider.provide);
   for (const [key, value] of interceptors.entries()) {
-    const interceptor = (...args: any[]) => {
-      const container = new Executor(args, (...handlerArgs: any[]) => value.handler(...handlerArgs), value.isAsync);
+    const interceptor = (...methodArgs: any[]) => {
+      const container = new Executor(methodArgs, (...handlerArgs: any[]) => value.handler(...handlerArgs), value.isAsync);
       for (const item of value.interceptors) {
         const method = new InterceptedMethod(
           injector,
-          args,
+          methodArgs,
           item.args,
           container
         );

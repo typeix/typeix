@@ -45,6 +45,7 @@ export interface Method {
   transform: (data: any) => any;
   readonly injector: Injector | SyncInjector;
   readonly decoratorArgs: any;
+  readonly methodArgs: any;
 }
 
 /**
