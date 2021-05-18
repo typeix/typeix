@@ -1123,4 +1123,71 @@ describe("Injector", () => {
     }).toThrow();
   });
 
+
+  test("interceptors args check", async () => {
+    let transform_interceptor_count = 0;
+
+
+    @Injectable()
+    class TransformInterceptor implements Interceptor {
+      async invoke(method: Method): Promise<any> {
+        let result = await method.invoke();
+        transform_interceptor_count += 1;
+        result = method.decoratorArgs.value + "-" + result;
+        method.transform(result);
+      }
+    }
+
+    const Transform = (value) => createMethodInterceptor(Transform, TransformInterceptor, {value});
+
+
+    @Injectable()
+    class AService {
+      @Transform("SECOND")
+      async transform(@Inject("test") value: string): Promise<any> {
+        return value;
+      }
+    }
+
+    const injector = Injector.Sync.createAndResolve(AService, [{provide: "test", useValue: "test-value"}]);
+    const instance = injector.get(AService);
+    let returnVal = await instance.transform(injector.get("test"));
+    expect(returnVal).toBe("SECOND-test-value");
+    expect(transform_interceptor_count).toBe(1);
+
+  });
+
+
+  test("interceptors args override check", async () => {
+    let transform_interceptor_count = 0;
+
+
+    @Injectable()
+    class TransformInterceptor implements Interceptor {
+      async invoke(method: Method): Promise<any> {
+        let result = await method.invokeWithArgs("one");
+        transform_interceptor_count += 1;
+        result = method.decoratorArgs.value + "-" + result;
+        method.transform(result);
+      }
+    }
+
+    const Transform = (value) => createMethodInterceptor(Transform, TransformInterceptor, {value});
+
+    @Injectable()
+    class AService {
+      @Transform("SECOND")
+      async transform(@Inject("test") value: string): Promise<any> {
+        return value;
+      }
+    }
+
+    const injector = Injector.Sync.createAndResolve(AService, [{provide: "test", useValue: "test-value"}]);
+    const instance = injector.get(AService);
+    let returnVal = await instance.transform(injector.get("test"));
+    expect(returnVal).toBe("SECOND-one");
+    expect(transform_interceptor_count).toBe(1);
+
+  });
+
 });

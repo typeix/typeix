@@ -149,7 +149,7 @@ class Executor {
   private result: any;
   private steps: Array<Function> = [];
 
-  constructor(private handler: () => any, private isAsync: boolean) {
+  constructor(private args: any[], private handler: (...handlerArgs: any[]) => any, private isAsync: boolean) {
     if (!isAsync) {
       this.isAsync = ASYNC.test(handler.toString());
     }
@@ -191,11 +191,18 @@ class Executor {
   }
 
   /**
+   * Override arguments
+   * @param args
+   */
+  overrideArgs(...args: any[]) {
+    this.args = args;
+  }
+  /**
    * Invoke
    */
   invoke(): any {
     if (isUndefined(this.result)) {
-      this.result = this.handler();
+      this.result = this.handler(...this.args);
     }
     return this.result;
   }
@@ -238,14 +245,17 @@ class InterceptedMethod implements Method {
 
   readonly injector: Injector | SyncInjector;
   readonly decoratorArgs: any;
+  readonly args: any;
 
   constructor(
     injector: Injector | SyncInjector,
+    args: any,
     decoratorArgs: any,
     private container: Executor
   ) {
     this.injector = injector;
     this.decoratorArgs = decoratorArgs;
+    this.args = args;
   }
 
   invoke(): any {
@@ -254,6 +264,11 @@ class InterceptedMethod implements Method {
 
   transform(data: any): any {
     return this.container.transform(data);
+  }
+
+  invokeWithArgs(...args: []): any {
+    this.container.overrideArgs(...args);
+    return this.container.invoke();
   }
 }
 
@@ -272,10 +287,11 @@ function applyInterceptors(
   const instance = injector.get(provider.provide);
   for (const [key, value] of interceptors.entries()) {
     const interceptor = (...args: any[]) => {
-      const container = new Executor(() => value.handler(...args), value.isAsync);
+      const container = new Executor(args, (...handlerArgs: any[]) => value.handler(...handlerArgs), value.isAsync);
       for (const item of value.interceptors) {
         const method = new InterceptedMethod(
           injector,
+          args,
           item.args,
           container
         );

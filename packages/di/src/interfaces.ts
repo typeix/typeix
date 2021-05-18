@@ -41,6 +41,7 @@ export interface IAfterConstruct {
  */
 export interface Method {
   invoke: () => any;
+  invokeWithArgs: (...args: any[]) => any;
   transform: (data: any) => any;
   readonly injector: Injector | SyncInjector;
   readonly decoratorArgs: any;
