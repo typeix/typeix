@@ -239,7 +239,8 @@ describe("Decorators", () => {
         return "string";
       }
 
-      @Inject()
+      @Inject(1)
+      @Inject(2)
       methodDecorator() {
       }
 
@@ -250,17 +251,30 @@ describe("Decorators", () => {
 
     expect(getDecoratorId(Inject)).toMatch("@typeix:method:Inject");
     let decorator = getMethodMetadata(Inject, BService, "methodDecorator");
-    expect(decorator).toStrictEqual({
-      args: {token: undefined},
-      type: "method",
-      designParam: [],
-      decoratorType: "method",
-      decorator: Inject,
-      metadataKey: getDecoratorId(Inject),
-      propertyKey: "methodDecorator",
-      designReturn: undefined,
-      designType: Function
-    });
+    expect(decorator).toEqual([
+      {
+        args: {token: 2},
+        type: "method",
+        designParam: [],
+        decoratorType: "method",
+        decorator: Inject,
+        metadataKey: getDecoratorId(Inject),
+        propertyKey: "methodDecorator",
+        designReturn: undefined,
+        designType: Function
+      },
+      {
+        args: {token: 1},
+        type: "method",
+        designParam: [],
+        decoratorType: "method",
+        decorator: Inject,
+        metadataKey: getDecoratorId(Inject),
+        propertyKey: "methodDecorator",
+        designReturn: undefined,
+        designType: Function
+      }
+    ]);
 
     decorator = getMethodMetadata(Inject, BService, "methodDecoratorString");
     expect(decorator).toStrictEqual({
@@ -293,6 +307,7 @@ describe("Decorators", () => {
   test("Get Decorator Metadata", () => {
     let Injectable = () => createClassDecorator(Injectable);
     let Inject = (token?) => createParameterAndPropertyDecorator(Inject, {token});
+    let SetHeader = (key, value) => createMethodDecorator(SetHeader, {key, value});
 
     @Injectable()
     class AService {
@@ -309,11 +324,10 @@ describe("Decorators", () => {
       constructor(@Inject() bServiceConst: AService) {
       }
 
-      publicMethod(
-        @Inject() firstProperty: AService,
-        @Inject(AService) secondProperty: AService,
-        thirdProperty: string
-      ) {
+      @SetHeader("content-type", "application/json")
+      @SetHeader("connection", "closed")
+      publicMethod(@Inject() firstProperty: AService, @Inject(AService) secondProperty: AService, thirdProperty: string) {
+        //
       }
     }
 
@@ -381,6 +395,11 @@ describe("Decorators", () => {
         metadataKey: getDecoratorId(Inject, 0)
       },
       {
+        propertyKey: "publicMethod",
+        target: CService.prototype,
+        metadataKey: getDecoratorId(SetHeader)
+      },
+      {
         propertyKey: "cServiceProperty",
         target: CService.prototype,
         metadataKey: "design:type"
@@ -403,117 +422,216 @@ describe("Decorators", () => {
     ]);
 
     let metadata = getAllMetadataForTarget(CService);
-    expect(metadata).toStrictEqual([
-      {
-        args: [
-          AService,
-          DService
-        ],
-        "metadataKey": "design:paramtypes",
-        "propertyKey": "constructor"
+    expect(metadata.length).toBe(19);
+    expect(metadata.shift()).toEqual({
+      args: [
+        AService,
+        DService
+      ],
+      "metadataKey": "design:paramtypes",
+      "propertyKey": "constructor"
+    });
+    expect(metadata.shift()).toEqual({
+      args: {
+        token: undefined
       },
-      {
-        args: {
-          token: undefined
-        },
-        "decoratorType": "mixed",
-        decorator: Inject,
-        "type": "parameter",
-        "metadataKey": getDecoratorId(Inject, 1),
-        "paramIndex": 1,
-        "propertyKey": "constructor",
-        "designParam": [
-          AService,
-          DService
-        ]
+      "decoratorType": "mixed",
+      decorator: Inject,
+      "type": "parameter",
+      "metadataKey": getDecoratorId(Inject, 1),
+      "paramIndex": 1,
+      "propertyKey": "constructor",
+      "designParam": [
+        AService,
+        DService
+      ]
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        token: undefined
       },
-      {
-        "args": {
-          token: undefined
-        },
-        "decoratorType": "mixed",
-        decorator: Inject,
-        "type": "parameter",
-        "metadataKey": getDecoratorId(Inject, 0),
-        "paramIndex": 0,
-        "propertyKey": "constructor",
-        "designParam": [
-          AService,
-          DService
-        ]
+      "decoratorType": "mixed",
+      decorator: Inject,
+      "type": "parameter",
+      "metadataKey": getDecoratorId(Inject, 0),
+      "paramIndex": 0,
+      "propertyKey": "constructor",
+      "designParam": [
+        AService
+      ]
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        token: undefined
       },
-      {
-        "args": {},
-        "decoratorType": "constructor",
-        "type": "constructor",
-        decorator: Injectable,
-        "metadataKey": getDecoratorId(Injectable),
-        "propertyKey": "constructor",
-        "designParam": [
-          AService,
-          DService
-        ]
+      "decoratorType": "mixed",
+      decorator: Inject,
+      "type": "parameter",
+      "metadataKey": getDecoratorId(Inject, 0),
+      "paramIndex": 0,
+      "propertyKey": "constructor",
+      "designParam": [
+        AService,
+        DService
+      ]
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {},
+      "decoratorType": "constructor",
+      "type": "constructor",
+      decorator: Injectable,
+      "metadataKey": getDecoratorId(Injectable),
+      "propertyKey": "constructor",
+      "designParam": [
+        AService
+      ]
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {},
+      "designParam": [
+        AService,
+        DService
+      ],
+      "decoratorType": "constructor",
+      "type": "constructor",
+      decorator: Injectable,
+      "metadataKey": getDecoratorId(Injectable),
+      "propertyKey": "constructor"
+    });
+    expect(metadata.shift()).toEqual({
+      "args": undefined,
+      "metadataKey": "design:returntype",
+      "propertyKey": "publicMethod"
+    });
+    expect(metadata.shift()).toEqual({
+      "args": [
+        AService,
+        AService,
+        String
+      ],
+      "metadataKey": "design:paramtypes",
+      "propertyKey": "publicMethod"
+    });
+    expect(metadata.shift()).toEqual({
+      "args": Function,
+      "metadataKey": "design:type",
+      "propertyKey": "publicMethod"
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        token: AService
       },
-      {
-        "args": undefined,
-        "metadataKey": "design:returntype",
-        "propertyKey": "publicMethod"
+      "decoratorType": "mixed",
+      "type": "parameter",
+      decorator: Inject,
+      "metadataKey": getDecoratorId(Inject, 1),
+      "paramIndex": 1,
+      designReturn: undefined,
+      designType: Function,
+      "propertyKey": "publicMethod",
+      "designParam": [
+        AService,
+        AService,
+        String
+      ]
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        token: AService
       },
-      {
-        "args": [
-          AService,
-          AService,
-          String
-        ],
-        "metadataKey": "design:paramtypes",
-        "propertyKey": "publicMethod"
+      "decoratorType": "mixed",
+      "type": "parameter",
+      decorator: Inject,
+      "metadataKey": getDecoratorId(Inject, 1),
+      "paramIndex": 1,
+      designReturn: undefined,
+      designType: Function,
+      "propertyKey": "publicMethod",
+      "designParam": [
+        AService,
+        AService,
+        String
+      ]
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        token: undefined
       },
-      {
-        "args": Function,
-        "metadataKey": "design:type",
-        "propertyKey": "publicMethod"
+      "designParam": [
+        AService,
+        AService,
+        String
+      ],
+      "decoratorType": "mixed",
+      "type": "parameter",
+      designType: Function,
+      designReturn: undefined,
+      "paramIndex": 0,
+      decorator: Inject,
+      "metadataKey": getDecoratorId(Inject, 0),
+      "propertyKey": "publicMethod"
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        token: undefined
       },
-      {
-        "args": {
-          token: AService
-        },
-        "decoratorType": "mixed",
-        "type": "parameter",
-        decorator: Inject,
-        "metadataKey": getDecoratorId(Inject, 1),
-        "paramIndex": 1,
-        designReturn: undefined,
-        designType: Function,
-        "propertyKey": "publicMethod",
-        "designParam": [
-          AService,
-          AService,
-          String
-        ]
+      "designParam": [
+        AService,
+        AService,
+        String
+      ],
+      "decoratorType": "mixed",
+      "type": "parameter",
+      designType: Function,
+      decorator: Inject,
+      "paramIndex": 0,
+      "designReturn": undefined,
+      "metadataKey": getDecoratorId(Inject, 0),
+      "propertyKey": "publicMethod"
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        "key": "connection",
+        "value": "closed"
       },
-      {
-        "args": {
-          token: undefined
-        },
-        "decoratorType": "mixed",
-        "type": "parameter",
-        decorator: Inject,
-        "metadataKey": getDecoratorId(Inject, 0),
-        "paramIndex": 0,
-        designReturn: undefined,
-        designType: Function,
-        "propertyKey": "publicMethod",
-        "designParam": [
-          AService,
-          AService,
-          String
-        ]
+      "designParam": [
+        AService,
+        AService,
+        String
+      ],
+      "decoratorType": "method",
+      "type": "method",
+      designType: Function,
+      decorator: SetHeader,
+      "designReturn": undefined,
+      "metadataKey": getDecoratorId(SetHeader),
+      "propertyKey": "publicMethod"
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        "key": "content-type",
+        "value": "application/json"
       },
-      {
-        "args": AService,
-        "metadataKey": "design:type",
-        "propertyKey": "cServiceProperty"
-      },
+      "decoratorType": "method",
+      "designParam": [
+        AService,
+        AService,
+        String
+      ],
+      "type": "method",
+      "designReturn": undefined,
+      designType: Function,
+      decorator: SetHeader,
+      "metadataKey": getDecoratorId(SetHeader),
+      "propertyKey": "publicMethod"
+    });
+    expect(metadata.shift()).toEqual({
+      "args": AService,
+      "metadataKey": "design:type",
+      "propertyKey": "cServiceProperty"
+    });
+
+    expect(metadata.shift()).toEqual(
       {
         "args": {
           token: undefined
@@ -524,24 +642,13 @@ describe("Decorators", () => {
         decorator: Inject,
         "metadataKey": getDecoratorId(Inject),
         "propertyKey": "cServiceProperty"
-      },
-      {
-        "args": AService,
-        "metadataKey": "design:type",
-        "propertyKey": "bServiceProperty"
-      },
-      {
-        "args": {
-          token: undefined
-        },
-        "decoratorType": "mixed",
-        "type": "property",
-        designType: AService,
-        decorator: Inject,
-        "metadataKey": getDecoratorId(Inject),
-        "propertyKey": "bServiceProperty"
       }
-    ]);
+    );
+    expect(metadata.shift()).toEqual({
+      "args": AService,
+      "metadataKey": "design:type",
+      "propertyKey": "bServiceProperty"
+    });
   });
 
 
@@ -617,58 +724,58 @@ describe("Decorators", () => {
     ]);
 
     let metadata: Array<IMetadata> = getMetadataForTarget(CService);
-    expect(metadata).toStrictEqual([
-      {
-        "args": [
-          AService,
-          DService
-        ],
-        "propertyKey": "constructor",
-        "metadataKey": "design:paramtypes"
+    expect(metadata.shift()).toEqual({
+      "args": [
+        AService,
+        DService
+      ],
+      "propertyKey": "constructor",
+      "metadataKey": "design:paramtypes"
+    });
+    expect(metadata.shift()).toEqual({
+      args: {
+        token: undefined
       },
-      {
-        args: {
-          token: undefined
-        },
-        "decoratorType": "mixed",
-        decorator: Inject,
-        "type": "parameter",
-        "metadataKey": getDecoratorId(Inject, 1),
-        "paramIndex": 1,
-        "propertyKey": "constructor",
-        "designParam": [
-          AService,
-          DService
-        ]
+      "decoratorType": "mixed",
+      decorator: Inject,
+      "type": "parameter",
+      "metadataKey": getDecoratorId(Inject, 1),
+      "paramIndex": 1,
+      "propertyKey": "constructor",
+      "designParam": [
+        AService,
+        DService
+      ]
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        token: undefined
       },
-      {
-        "args": {
-          token: undefined
-        },
-        "decoratorType": "mixed",
-        decorator: Inject,
-        "type": "parameter",
-        "metadataKey": getDecoratorId(Inject, 0),
-        "paramIndex": 0,
-        "propertyKey": "constructor",
-        "designParam": [
-          AService,
-          DService
-        ]
+      "decoratorType": "mixed",
+      decorator: Inject,
+      "type": "parameter",
+      "metadataKey": getDecoratorId(Inject, 0),
+      "paramIndex": 0,
+      "propertyKey": "constructor",
+      "designParam": [
+        AService
+      ]
+    });
+    expect(metadata.shift()).toEqual({
+      "args": {
+        "token": undefined
       },
-      {
-        "args": {},
-        "decoratorType": "constructor",
-        "type": "constructor",
-        decorator: Injectable,
-        "metadataKey": getDecoratorId(Injectable),
-        "propertyKey": "constructor",
-        "designParam": [
-          AService,
-          DService
-        ]
-      }
-    ]);
+      "decorator": Inject,
+      "decoratorType": "mixed",
+      "metadataKey": getDecoratorId(Inject, 0),
+      "paramIndex": 0,
+      "type": "parameter",
+      "propertyKey": "constructor",
+      "designParam": [
+        AService,
+        DService
+      ]
+    });
 
     keys = getMetadataKeysForTarget(CService, "publicMethod");
     expect(keys).toStrictEqual([
@@ -704,12 +811,14 @@ describe("Decorators", () => {
       }
     ]);
     metadata = getMetadataForTarget(CService, "publicMethod");
-    expect(metadata).toStrictEqual([
+    expect(metadata.shift()).toEqual(
       {
         "args": undefined,
         "metadataKey": "design:returntype",
         "propertyKey": "publicMethod"
-      },
+      }
+    );
+    expect(metadata.shift()).toEqual(
       {
         "args": [
           AService,
@@ -718,12 +827,16 @@ describe("Decorators", () => {
         ],
         "metadataKey": "design:paramtypes",
         "propertyKey": "publicMethod"
-      },
+      }
+    );
+    expect(metadata.shift()).toEqual(
       {
         "args": Function,
         "metadataKey": "design:type",
         "propertyKey": "publicMethod"
-      },
+      }
+    );
+    expect(metadata.shift()).toEqual(
       {
         args: {
           token: AService
@@ -741,16 +854,18 @@ describe("Decorators", () => {
           AService,
           String
         ]
-      },
+      }
+    );
+    expect(metadata.shift()).toEqual(
       {
         "args": {
-          token: undefined
+          token: AService
         },
         "decoratorType": "mixed",
         decorator: Inject,
         "type": "parameter",
-        "metadataKey": getDecoratorId(Inject, 0),
-        "paramIndex": 0,
+        "metadataKey": getDecoratorId(Inject, 1),
+        "paramIndex": 1,
         "propertyKey": "publicMethod",
         designReturn: undefined,
         designType: Function,
@@ -759,16 +874,19 @@ describe("Decorators", () => {
           AService,
           String
         ]
-      },
+      }
+    );
+    expect(metadata.shift()).toEqual(
       {
         "args": {
-          "type": "/nice/"
+          "token": undefined
         },
-        "decoratorType": "method",
-        "type": "method",
-        decorator: Produces,
-        "metadataKey": getDecoratorId(Produces),
+        "decoratorType": "mixed",
+        "type": "parameter",
+        decorator: Inject,
+        "metadataKey": getDecoratorId(Inject, 0),
         designReturn: undefined,
+        "paramIndex": 0,
         designType: Function,
         "propertyKey": "publicMethod",
         "designParam": [
@@ -777,7 +895,7 @@ describe("Decorators", () => {
           String
         ]
       }
-    ]);
+    );
   });
 
   it("Should throw error on defineMetadata", () => {
@@ -790,8 +908,10 @@ describe("Decorators", () => {
   it("Should have metadata and decorator info", () => {
     const metadataKey = "metadata";
     const metadataValue = {a: 1, b: 2};
+
     class A {
     }
+
     defineMetadata(metadataKey, metadataValue, A);
     expect(hasMetadata(metadataKey, A)).toBeTruthy();
     expect(hasMetadata(metadataKey, null)).toBeFalsy();
@@ -807,8 +927,11 @@ describe("Decorators", () => {
     expect(deleteMetadata(metadataKey, null)).toBeFalsy();
 
     const Injectable = () => createClassDecorator(Injectable);
+
     @Injectable()
-    class BInjectable {}
+    class BInjectable {
+    }
+
     expect(getDecoratorId(Injectable)).toContain("@typeix:constructor:Injectable");
     expect(getDecoratorUUID(Injectable)).toBeDefined();
     expect(getDecoratorName(Injectable)).toBe("Injectable");
@@ -843,6 +966,7 @@ describe("Decorators", () => {
 
       constructor(@Param() data: string) {
       }
+
       @Method()
       asset() {
 

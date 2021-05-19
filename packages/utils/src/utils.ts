@@ -249,3 +249,15 @@ export function isEqual(a, b): boolean {
   }
   return false;
 }
+
+/**
+ * @since 8.1.0
+ * @author Igor Ivanovic
+ * @function flatten
+ *
+ * @description
+ * flatten two dimensional array into single dimension
+ */
+export function flatten(value: Array<any>): Array<any> {
+  return isArray(value) ? value.reduce((acc, cur) => acc.concat(isArray(cur) ? flatten(<Array<any>>cur) : cur), []) : [];
+}

@@ -11,7 +11,7 @@ import {
   isDate,
   isSymbol,
   isRegExp,
-  isObject, isTruthy, isFalsy, isClass, isEqual, inArray
+  isObject, isTruthy, isFalsy, isClass, isEqual, inArray, flatten
 } from "./utils";
 
 describe("utils test", () => {
@@ -345,12 +345,17 @@ describe("utils test", () => {
     expect(isEqual(/a/, /b/)).toBeFalsy();
   });
 
-  test('inArray', () => {
+  test("inArray", () => {
     let data = [1, 2, 3, String];
     expect(inArray(data, 1)).toBeTruthy();
     expect(inArray(data, 2)).toBeTruthy();
     expect(inArray(data, 3)).toBeTruthy();
     expect(inArray(data, String)).toBeTruthy();
     expect(inArray(data, 4)).toBeFalsy();
+  });
+
+  test("flatten", () => {
+    expect(flatten([1, [2,1], [3], 1])).toEqual([1, 2, 1, 3, 1]);
+    expect(flatten([1, 2, 3])).toEqual([1, 2, 3]);
   });
 });

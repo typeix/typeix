@@ -9,9 +9,10 @@ import {
   isString,
   isSymbol,
   isNull,
-  isObject
+  isObject, isArray
 } from "@typeix/utils";
 import "reflect-metadata";
+import {flatten} from "../../utils/src";
 
 const TX_PREFIX = "@typeix";
 const TX_NAME = `${TX_PREFIX}:name`;
@@ -236,17 +237,17 @@ export function hasDecorator(decorator: any, target?: any, targetKey?: any, inde
   return isDecorator(decorator) ? hasMetadata(getDecoratorId(decorator, index), target, targetKey) : false;
 }
 
-
+declare type MixedMetadata = IMetadata | Array<IMetadata>;
 /**
  * Return decorator metadata
  * @param decorator
  * @param target
  */
-export function getClassMetadata(decorator: Function, target: Function): IMetadata;
-export function getClassMetadata(decorator: Function, target: Function): IMetadata;
-export function getClassMetadata(decorator: any, target: Function): IMetadata {
+export function getClassMetadata(decorator: Function, target: Function): MixedMetadata;
+export function getClassMetadata(decorator: Function, target: Function): MixedMetadata;
+export function getClassMetadata(decorator: any, target: Function): MixedMetadata {
   validateDecorator(decorator, "constructor");
-  return <IMetadata>getMetadata(getDecoratorId(decorator), target);
+  return <MixedMetadata>getMetadata(getDecoratorId(decorator), target);
 }
 
 /**
@@ -255,11 +256,11 @@ export function getClassMetadata(decorator: any, target: Function): IMetadata {
  * @param target
  * @param targetKey
  */
-export function getPropertyMetadata(decorator: Function, target: Function, targetKey: string): IMetadata;
-export function getPropertyMetadata(decorator: Function, target: Function, targetKey: symbol): IMetadata;
-export function getPropertyMetadata(decorator: any, target: Function, targetKey: any): IMetadata {
+export function getPropertyMetadata(decorator: Function, target: Function, targetKey: string): MixedMetadata;
+export function getPropertyMetadata(decorator: Function, target: Function, targetKey: symbol): MixedMetadata;
+export function getPropertyMetadata(decorator: any, target: Function, targetKey: any): MixedMetadata {
   validateDecorator(decorator, "property");
-  return <IMetadata>getMetadata(getDecoratorId(decorator), target.prototype, targetKey);
+  return <MixedMetadata>getMetadata(getDecoratorId(decorator), target.prototype, targetKey);
 }
 
 /**
@@ -269,11 +270,11 @@ export function getPropertyMetadata(decorator: any, target: Function, targetKey:
  * @param targetKey
  * @param isStatic
  */
-export function getMethodMetadata(decorator: Function, target: Function, targetKey: string, isStatic?: boolean): IMetadata;
-export function getMethodMetadata(decorator: Function, target: Function, targetKey: symbol, isStatic?: boolean): IMetadata;
-export function getMethodMetadata(decorator: any, target: Function, targetKey: any, isStatic = false): IMetadata {
+export function getMethodMetadata(decorator: Function, target: Function, targetKey: string, isStatic?: boolean): MixedMetadata;
+export function getMethodMetadata(decorator: Function, target: Function, targetKey: symbol, isStatic?: boolean): MixedMetadata;
+export function getMethodMetadata(decorator: any, target: Function, targetKey: any, isStatic = false): MixedMetadata {
   validateDecorator(decorator, "method");
-  return <IMetadata>getMetadata(getDecoratorId(decorator), !!isStatic ? target : target.prototype, targetKey);
+  return <MixedMetadata>getMetadata(getDecoratorId(decorator), !!isStatic ? target : target.prototype, targetKey);
 }
 
 /**
@@ -283,11 +284,11 @@ export function getMethodMetadata(decorator: any, target: Function, targetKey: a
  * @param index
  * @param targetKey
  */
-export function getParameterMetadata(decorator: Function, target: Function, index: number, targetKey: string): IMetadata;
-export function getParameterMetadata(decorator: Function, target: Function, index: number, targetKey: symbol): IMetadata;
-export function getParameterMetadata(decorator: any, target: Function, index: number, targetKey: any): IMetadata {
+export function getParameterMetadata(decorator: Function, target: Function, index: number, targetKey: string): MixedMetadata;
+export function getParameterMetadata(decorator: Function, target: Function, index: number, targetKey: symbol): MixedMetadata;
+export function getParameterMetadata(decorator: any, target: Function, index: number, targetKey: any): MixedMetadata {
   validateDecorator(decorator, "parameter");
-  return <IMetadata>getMetadata(getDecoratorId(decorator, index), target.prototype, targetKey);
+  return <MixedMetadata>getMetadata(getDecoratorId(decorator, index), target.prototype, targetKey);
 }
 
 /**
@@ -352,7 +353,7 @@ export function getMetadataForTarget(target: Function, targetKey?: string | symb
   if (!isNull(proto)) {
     keys = mergeKeys(keys, getMetadataKeysForTarget(proto, targetKey));
   }
-  return keys.map(item => mapKeyToMetadata(item));
+  return flatten(keys.map(item => mapKeyToMetadata(item)));
 }
 
 /**
@@ -393,7 +394,7 @@ export function getAllMetadataKeysForTarget(target: Function): Array<IDecoratorM
  * @param target
  */
 export function getAllMetadataForTarget(target: Function): Array<IMetadata> {
-  return getAllMetadataKeysForTarget(target).map(item => mapKeyToMetadata(item));
+  return flatten(getAllMetadataKeysForTarget(target).map(item => mapKeyToMetadata(item)));
 }
 
 /**
@@ -458,9 +459,17 @@ function decorate(decorator: Function, type: string, args: object): any {
     }
 
     metadata.metadataKey = getDecoratorId(decorator, metadata.paramIndex);
-
-    defineMetadata(metadata.metadataKey, metadata, target, propertyKey);
-
+    if (hasMetadata(metadata.metadataKey, target, propertyKey)) {
+      const currentMetadata = getMetadata(metadata.metadataKey, target, propertyKey);
+      if (isArray(currentMetadata)) {
+        currentMetadata.push(metadata);
+        defineMetadata(metadata.metadataKey, currentMetadata, target, propertyKey);
+      } else {
+        defineMetadata(metadata.metadataKey, Array.of(currentMetadata, metadata), target, propertyKey);
+      }
+    } else {
+      defineMetadata(metadata.metadataKey, metadata, target, propertyKey);
+    }
     return target;
   };
 }
