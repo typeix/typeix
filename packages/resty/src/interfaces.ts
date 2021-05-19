@@ -19,12 +19,12 @@ export const INTERCEPTOR_METHOD = "invoke";
  * Method Interceptor
  */
 export interface InterceptedRequest {
-  handler: () => any;
+  handler: (...handlerArgs: any[]) => any;
   injector: Injector;
   route: IResolvedRoute;
   request: IncomingMessage | Http2ServerRequest;
   response: ServerResponse | Http2ServerResponse;
-  args: any;
+  readonly args: any;
 }
 
 /**

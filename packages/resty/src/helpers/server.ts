@@ -205,7 +205,7 @@ class Executor {
   private result: any;
   private steps: Array<() => Promise<any>> = [];
 
-  constructor(private handler: () => Promise<any>) {
+  constructor(private args: any[], private handlerInjector: Injector, private handler: (...handlerArgs: any[]) => Promise<any>) {
   }
 
   /**
@@ -270,7 +270,7 @@ class Executor {
    */
   async invoke(): Promise<any> {
     if (isUndefined(this.result)) {
-      this.result = await this.handler();
+      this.result = await this.handler(...this.args.map(token => this.handlerInjector.get(token)));
     }
     return await this.result;
   }
@@ -323,7 +323,7 @@ async function applyServerInjectables(
  * @function
  * @name applyHandler
  * @param provider
- * @param lazyParams
+ * @param actionParams
  * @param propertyKey
  * @param handlerInjector
  * @param providers
@@ -333,7 +333,7 @@ async function applyServerInjectables(
  */
 async function applyHandler(
   provider: IProvider,
-  lazyParams: () => Array<any>,
+  actionParams: Array<any>,
   propertyKey: string | symbol,
   handlerInjector: Injector | SyncInjector,
   providers: Array<IProvider>,
@@ -345,7 +345,7 @@ async function applyHandler(
   );
   return await Reflect.get(instance, propertyKey).apply(
     instance,
-    lazyParams()
+    actionParams
   );
 }
 
@@ -370,14 +370,16 @@ export function createRouteHandler(routeDefinition: RouteDefinition, config?: Se
     let providers: Array<IProvider> = await applyServerInjectables(handlerInjector, route, config);
     const request = getRequest(handlerInjector);
     const response = getResponse(handlerInjector);
-    const executor = new Executor(() => applyHandler(
+    const instance = await handlerInjector.createAndResolve(
       routeDefinition.controller.provider,
-      () => actionParams.map(token => handlerInjector.get(token)),
-      routeDefinition.method.propertyKey,
-      handlerInjector,
-      providers,
-      controllerProviders
-    ));
+      shiftLeft(providers, controllerProviders)
+    );
+    const executor = new Executor(actionParams, handlerInjector, async (...handlerArgs: any[]) =>
+      await Reflect.get(instance, routeDefinition.method.propertyKey).apply(
+        instance,
+        handlerArgs
+      )
+    );
     for (const item of interceptors) {
       executor.addInterceptor(() => {
         const method: InterceptedRequest = {
@@ -390,7 +392,7 @@ export function createRouteHandler(routeDefinition: RouteDefinition, config?: Se
         };
         return applyHandler(
           item.provider,
-          () => Array.of(method),
+          Array.of(method),
           INTERCEPTOR_METHOD,
           handlerInjector,
           providers,
