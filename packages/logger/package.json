@@ -1,6 +1,6 @@
 {
   "name": "@typeix/logger",
-  "version": "8.1.0-rc.1",
+  "version": "8.1.0-rc.2",
   "description": "Pino Logger wrapper for typescript",
   "main": "dist/index.js",
   "scripts": {
@@ -26,7 +26,7 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/di": "^8.1.0-rc.1",
+    "@typeix/di": "^8.1.0-rc.2",
     "pino": "^6.11.3"
   },
   "devDependencies": {

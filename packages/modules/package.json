@@ -1,6 +1,6 @@
 {
   "name": "@typeix/modules",
-  "version": "8.1.0-rc.1",
+  "version": "8.1.0-rc.2",
   "description": "missing modularity system for nodejs",
   "main": "dist/index.js",
   "scripts": {
@@ -26,9 +26,9 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/di": "^8.1.0-rc.1",
-    "@typeix/metadata": "^8.1.0-rc.1",
-    "@typeix/utils": "^8.1.0-rc.1"
+    "@typeix/di": "^8.1.0-rc.2",
+    "@typeix/metadata": "^8.1.0-rc.2",
+    "@typeix/utils": "^8.1.0-rc.2"
   },
   "publishConfig": {
     "access": "public"
