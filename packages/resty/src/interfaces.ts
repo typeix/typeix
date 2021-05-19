@@ -36,7 +36,7 @@ export interface InterceptedRequest {
  * Request Interceptor
  */
 export interface RequestInterceptor {
-  invoke(method: InterceptedRequest): Promise<any>;
+  invoke(request: InterceptedRequest): Promise<any>;
 }
 
 /**
