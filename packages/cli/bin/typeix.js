@@ -3,7 +3,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const pkgInfo = require("../package.json");
+const pkgInfo = require(path.join("..", "package.json"));
 const program = require("commander");
 
 const segments = ["dist", "commands"];
@@ -38,6 +38,6 @@ function packageExists(segments) {
 }
 
 function loadPackage(commander, segments) {
-  const pathToLoad = path.posix.join(module.path, ...segments);
+  const pathToLoad = path.join(module.path, ...segments);
   require(path.normalize(pathToLoad)).setup(commander);
 }
