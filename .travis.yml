@@ -4,7 +4,8 @@ node_js:
   - "12.9.0"
 
 install:
-  - npm i
+  - rm package-lock.json
+  - npm install
   - npm run bootstrap:clean:lock
 
 script:
