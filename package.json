@@ -6,7 +6,7 @@
   "scripts": {
     "coveralls-merge": "npm run test && node coveralls-merge.js",
     "bootstrap:clean:lock": "npm run clean:lock && npm run bootstrap",
-    "bootstrap": "npm i && lerna exec npm i",
+    "bootstrap": "lerna exec npm i",
     "prebuild": "npm run clean:coverage",
     "build": "lerna exec npm run build",
     "build:clean": "npm run clean:all && npm run bootstrap && npm run build",
