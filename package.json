@@ -5,7 +5,7 @@
   "description": "typeix helper functions",
   "scripts": {
     "coveralls-merge": "npm run test && node coveralls-merge.js",
-    "bootstrap:no-lock": "npm i --no-package-lock && lerna exec 'npm i --no-package-lock'",
+    "bootstrap:clean:lock": "npm run clean:lock && npm i && lerna exec npm i",
     "bootstrap": "npm i && lerna exec npm i",
     "prebuild": "npm run clean:coverage",
     "build": "lerna exec npm run build",
@@ -16,7 +16,7 @@
     "clean:node_modules": "lerna exec rimraf node_modules",
     "clean:all": "npm run clean && npm run clean:lock && npm run clean:node_modules",
     "test": "lerna exec npm test",
-    "publish:all": "lerna publish --force-publish --loglevel=verbose--loglevel=verbose",
+    "publish:all": "lerna publish --force-publish --loglevel=verbose",
     "publish:beta": "lerna publish --force-publish --dist-tag=beta --loglevel=verbose",
     "publish:next": "lerna publish --force-publish --dist-tag=next --loglevel=verbose",
     "publish:rc": "lerna publish --force-publish --dist-tag=rc --loglevel=verbose",
