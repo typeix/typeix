@@ -4,6 +4,8 @@
   "description": "Pino Logger wrapper for typescript",
   "main": "dist/index.js",
   "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc --project tsconfig.json",
     "pretest": "tsc",
     "test": "jest -c jest-runner.json --coverage",
     "lint": "eslint src/**/*.ts src/*.ts",

@@ -4,6 +4,8 @@
   "description": "Fast, unopinionated, minimalist framework for building efficient and scalable applications",
   "main": "dist/index.js",
   "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc --project tsconfig.json",
     "pretest": "tsc --project tsconfig.json",
     "test": "jest -c jest-runner.json --coverage",
     "lint": "eslint src/**/*.ts src/*.ts",
