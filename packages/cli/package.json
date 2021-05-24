@@ -1,6 +1,6 @@
 {
   "name": "@typeix/cli",
-  "version": "8.1.1-rc.2",
+  "version": "8.1.1-rc.0",
   "description": "Cli tools for Typeix",
   "main": "bin/typeix.js",
   "publishConfig": {
@@ -37,9 +37,9 @@
     "@angular-devkit/core": "^11.2.4",
     "@angular-devkit/schematics": "^11.2.4",
     "@angular-devkit/schematics-cli": "^0.1102.11",
-    "@typeix/di": "^8.1.1-rc.2",
-    "@typeix/schematics": "^8.1.1-rc.2",
-    "@typeix/utils": "^8.1.1-rc.2",
+    "@typeix/di": "^8.1.1-rc.0",
+    "@typeix/schematics": "^8.1.1-rc.0",
+    "@typeix/utils": "^8.1.1-rc.0",
     "chalk": "^4.1.1",
     "chokidar": "^3.5.1",
     "cli-table3": "^0.6.0",
