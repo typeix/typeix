@@ -5,7 +5,7 @@
   "description": "typeix helper functions",
   "scripts": {
     "coveralls-merge": "npm run test && node coveralls-merge.js",
-    "bootstrap:clean:lock": "npm run clean:lock && npm i && lerna exec npm i",
+    "bootstrap:clean:lock": "npm run clean:lock && npm run bootstrap",
     "bootstrap": "npm i && lerna exec npm i",
     "prebuild": "npm run clean:coverage",
     "build": "lerna exec npm run build",
