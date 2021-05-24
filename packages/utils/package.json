@@ -9,8 +9,7 @@
     "pretest": "tsc",
     "test": "jest -c jest-runner.json --coverage",
     "lint": "eslint src/**/*.ts",
-    "format": "eslint src/**/*.ts --fix",
-    "prepublishOnly": "npm test"
+    "format": "eslint src/**/*.ts --fix"
   },
   "repository": {
     "type": "git",

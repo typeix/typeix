@@ -16,8 +16,7 @@
     "lint": "eslint '{src,test}/**/*.ts' --fix",
     "pretest": "rimraf dist && tsc --project tsconfig.json",
     "test": "jest --config jest-runner.json --coverage",
-    "test:dev": "npm run -s test -- --watchAll",
-    "prepublishOnly": "npm run build"
+    "test:dev": "npm run -s test -- --watchAll"
   },
   "devDependencies": {
     "@commitlint/cli": "12.1.1",

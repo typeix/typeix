@@ -16,11 +16,11 @@
     "clean:node_modules": "lerna exec rimraf node_modules",
     "clean:all": "npm run clean && npm run clean:lock && npm run clean:node_modules",
     "test": "lerna exec npm test",
-    "publish:all": "lerna publish --force-publish --loglevel=verbose",
-    "publish:beta": "lerna publish --force-publish --dist-tag=beta --loglevel=verbose",
-    "publish:next": "lerna publish --force-publish --dist-tag=next --loglevel=verbose",
-    "publish:rc": "lerna publish --force-publish --dist-tag=rc --loglevel=verbose",
-    "publish:test": "lerna publish --force-publish --dist-tag=test --loglevel=verbose"
+    "publish:all": "npm run build && lerna publish --force-publish --loglevel=verbose",
+    "publish:beta": "npm run build && lerna publish --force-publish --dist-tag=beta --loglevel=verbose",
+    "publish:next": "npm run build && lerna publish --force-publish --dist-tag=next --loglevel=verbose",
+    "publish:rc": "npm run build && lerna publish --force-publish --dist-tag=rc --loglevel=verbose",
+    "publish:test": "npm run build && lerna publish --force-publish --dist-tag=test --loglevel=verbose"
   },
   "repository": {
     "type": "git",
