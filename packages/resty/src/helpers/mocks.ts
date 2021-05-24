@@ -101,8 +101,9 @@ export class FakeServerResponse extends ServerResponse {
    * @description
    * Set response header
    */
-  setHeader(name: string, value: string | string[]) {
+  setHeader(name: string, value: string | number | readonly string[]) {
     Reflect.set(this.headers, name, value);
+    return this;
   }
 
   /**

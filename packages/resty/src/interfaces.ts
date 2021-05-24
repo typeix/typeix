@@ -7,9 +7,13 @@ import {Injector, IProvider} from "@typeix/di";
 import {IResolvedRoute} from "@typeix/router";
 import {IncomingMessage, ServerResponse} from "http";
 import {Http2ServerRequest, Http2ServerResponse} from "http2";
+import {FakeIncomingMessage, FakeServerResponse} from "./helpers/mocks";
 
 
 export const INTERCEPTOR_METHOD = "invoke";
+
+export declare type RestyRequest = IncomingMessage | Http2ServerRequest | FakeIncomingMessage;
+export declare type RestyResponse =  ServerResponse | Http2ServerResponse | FakeServerResponse;
 /**
  * @since 7.0.0
  * @interface
@@ -22,8 +26,8 @@ export interface InterceptedRequest {
   handler: () => any;
   injector: Injector;
   route: IResolvedRoute;
-  request: IncomingMessage | Http2ServerRequest;
-  response: ServerResponse | Http2ServerResponse;
+  request: RestyRequest;
+  response: RestyResponse;
   readonly args: any;
 }
 

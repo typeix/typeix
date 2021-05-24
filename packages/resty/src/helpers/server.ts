@@ -19,7 +19,7 @@ import {getClassMetadata, IMetadata} from "@typeix/metadata";
 import {
   InterceptedRequest,
   INTERCEPTOR_METHOD,
-  ResolvedInterceptor,
+  ResolvedInterceptor, RestyRequest, RestyResponse,
   RouteDefinition,
   RouteMethodDefinition
 } from "../interfaces";
@@ -162,7 +162,7 @@ export function getRoutePath(definition: RouteDefinition, modulePath = "/"): str
  * Get Request from injector
  * @param injector
  */
-export function getRequest(injector: Injector | SyncInjector): IncomingMessage | Http2ServerRequest | FakeIncomingMessage {
+export function getRequest(injector: Injector | SyncInjector): RestyRequest {
   return injector.has(Http2ServerRequest) ? injector.get(Http2ServerRequest) : injector.has(FakeIncomingMessage) ?
     injector.get(FakeIncomingMessage) : injector.get(IncomingMessage);
 }
@@ -171,7 +171,7 @@ export function getRequest(injector: Injector | SyncInjector): IncomingMessage |
  * Get Response from injector
  * @param injector
  */
-export function getResponse(injector: Injector | SyncInjector): ServerResponse | Http2ServerResponse | FakeServerResponse {
+export function getResponse(injector: Injector | SyncInjector): RestyResponse {
   return injector.has(Http2ServerResponse) ? injector.get(Http2ServerResponse) : injector.has(FakeServerResponse) ?
     injector.get(FakeServerResponse) : injector.get(ServerResponse);
 }
@@ -180,7 +180,7 @@ export function getResponse(injector: Injector | SyncInjector): ServerResponse |
  * Get Body
  * @param request
  */
-export function getRequestBody(request: IncomingMessage | Http2ServerRequest): Promise<Buffer> {
+export function getRequestBody(request: RestyRequest): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let body: Array<Buffer> = [];
     request.on("data", item => body.push(<Buffer>item));
@@ -219,7 +219,7 @@ class Executor {
   /**
    * Execute steps
    */
-  async execute(response: ServerResponse | Http2ServerResponse): Promise<any> {
+  async execute(response: RestyResponse): Promise<any> {
     for (const step of this.steps) {
       let result = await step();
       if (isDefined(result) && !response.writableEnded) {
