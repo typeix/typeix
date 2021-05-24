@@ -9,10 +9,11 @@ import {
   isString,
   isSymbol,
   isNull,
-  isObject, isArray
+  isObject,
+  isArray,
+  flatten
 } from "@typeix/utils";
 import "reflect-metadata";
-import {flatten} from "../../utils/src";
 
 const TX_PREFIX = "@typeix";
 const TX_NAME = `${TX_PREFIX}:name`;
@@ -237,17 +238,16 @@ export function hasDecorator(decorator: any, target?: any, targetKey?: any, inde
   return isDecorator(decorator) ? hasMetadata(getDecoratorId(decorator, index), target, targetKey) : false;
 }
 
-declare type MixedMetadata = IMetadata | Array<IMetadata>;
 /**
  * Return decorator metadata
  * @param decorator
  * @param target
  */
-export function getClassMetadata(decorator: Function, target: Function): MixedMetadata;
-export function getClassMetadata(decorator: Function, target: Function): MixedMetadata;
-export function getClassMetadata(decorator: any, target: Function): MixedMetadata {
+export function getClassMetadata(decorator: Function, target: Function): IMetadata;
+export function getClassMetadata(decorator: Function, target: Function): IMetadata;
+export function getClassMetadata(decorator: any, target: Function): IMetadata {
   validateDecorator(decorator, "constructor");
-  return <MixedMetadata>getMetadata(getDecoratorId(decorator), target);
+  return <IMetadata>getMetadata(getDecoratorId(decorator), target);
 }
 
 /**
@@ -256,11 +256,11 @@ export function getClassMetadata(decorator: any, target: Function): MixedMetadat
  * @param target
  * @param targetKey
  */
-export function getPropertyMetadata(decorator: Function, target: Function, targetKey: string): MixedMetadata;
-export function getPropertyMetadata(decorator: Function, target: Function, targetKey: symbol): MixedMetadata;
-export function getPropertyMetadata(decorator: any, target: Function, targetKey: any): MixedMetadata {
+export function getPropertyMetadata(decorator: Function, target: Function, targetKey: string): IMetadata;
+export function getPropertyMetadata(decorator: Function, target: Function, targetKey: symbol): IMetadata;
+export function getPropertyMetadata(decorator: any, target: Function, targetKey: any): IMetadata {
   validateDecorator(decorator, "property");
-  return <MixedMetadata>getMetadata(getDecoratorId(decorator), target.prototype, targetKey);
+  return <IMetadata>getMetadata(getDecoratorId(decorator), target.prototype, targetKey);
 }
 
 /**
@@ -270,11 +270,12 @@ export function getPropertyMetadata(decorator: any, target: Function, targetKey:
  * @param targetKey
  * @param isStatic
  */
-export function getMethodMetadata(decorator: Function, target: Function, targetKey: string, isStatic?: boolean): MixedMetadata;
-export function getMethodMetadata(decorator: Function, target: Function, targetKey: symbol, isStatic?: boolean): MixedMetadata;
-export function getMethodMetadata(decorator: any, target: Function, targetKey: any, isStatic = false): MixedMetadata {
+declare type IMetadataOrListOfIMetadata = IMetadata | Array<IMetadata>;
+export function getMethodMetadata(decorator: Function, target: Function, targetKey: string, isStatic?: boolean): IMetadataOrListOfIMetadata;
+export function getMethodMetadata(decorator: Function, target: Function, targetKey: symbol, isStatic?: boolean): IMetadataOrListOfIMetadata;
+export function getMethodMetadata(decorator: any, target: Function, targetKey: any, isStatic = false): IMetadataOrListOfIMetadata {
   validateDecorator(decorator, "method");
-  return <MixedMetadata>getMetadata(getDecoratorId(decorator), !!isStatic ? target : target.prototype, targetKey);
+  return <IMetadataOrListOfIMetadata>getMetadata(getDecoratorId(decorator), !!isStatic ? target : target.prototype, targetKey);
 }
 
 /**
@@ -284,11 +285,11 @@ export function getMethodMetadata(decorator: any, target: Function, targetKey: a
  * @param index
  * @param targetKey
  */
-export function getParameterMetadata(decorator: Function, target: Function, index: number, targetKey: string): MixedMetadata;
-export function getParameterMetadata(decorator: Function, target: Function, index: number, targetKey: symbol): MixedMetadata;
-export function getParameterMetadata(decorator: any, target: Function, index: number, targetKey: any): MixedMetadata {
+export function getParameterMetadata(decorator: Function, target: Function, index: number, targetKey: string): IMetadata;
+export function getParameterMetadata(decorator: Function, target: Function, index: number, targetKey: symbol): IMetadata;
+export function getParameterMetadata(decorator: any, target: Function, index: number, targetKey: any): IMetadata {
   validateDecorator(decorator, "parameter");
-  return <MixedMetadata>getMetadata(getDecoratorId(decorator, index), target.prototype, targetKey);
+  return <IMetadata>getMetadata(getDecoratorId(decorator, index), target.prototype, targetKey);
 }
 
 /**
@@ -459,7 +460,7 @@ function decorate(decorator: Function, type: string, args: object): any {
     }
 
     metadata.metadataKey = getDecoratorId(decorator, metadata.paramIndex);
-    if (hasMetadata(metadata.metadataKey, target, propertyKey)) {
+    if (hasMetadata(metadata.metadataKey, target, propertyKey) && metadata.type === "method") {
       const currentMetadata = getMetadata(metadata.metadataKey, target, propertyKey);
       if (isArray(currentMetadata)) {
         currentMetadata.push(metadata);
