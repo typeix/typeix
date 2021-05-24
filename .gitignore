@@ -109,3 +109,5 @@ dist
 *.iml
 lcov.info
 package-lock.json
+packages/*/package-lock.json
+packages/package-lock.json
