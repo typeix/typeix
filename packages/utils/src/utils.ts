@@ -75,7 +75,7 @@ export function isDefined(value): boolean {
 /**
  * @since 4.0.0
  * @author Igor Ivanovic
- * @function isString
+ * @function isSymbol
  *
  * @description
  * Check if value is string
@@ -240,7 +240,7 @@ export function isEqual(a, b): boolean {
   } else if (isArray(a) && isArray(b)) {
     return a.every((item, index) => {
       if (isDefined(b[index])) {
-        return (a === item && b === b[index]) || isEqual(item, b[index])
+        return (a === item && b === b[index]) || isEqual(item, b[index]);
       }
       return false;
     });

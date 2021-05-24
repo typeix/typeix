@@ -1,13 +1,14 @@
 {
   "name": "typeix-srcs",
   "private": true,
-  "version": "8.1.0",
+  "version": "8.1.1",
   "description": "typeix helper functions",
   "scripts": {
     "coveralls-merge": "npm run test && node coveralls-merge.js",
     "bootstrap": "lerna exec npm install",
     "prebuild": "npm run clean:coverage",
     "build": "lerna exec npm run build",
+    "build:clean": "npm run clean:all && npm run bootstrap && npm run build",
     "clean": "lerna exec rimraf dist",
     "clean:coverage": "lerna exec rimraf coverage",
     "clean:lock": "lerna exec rm package-lock.json",

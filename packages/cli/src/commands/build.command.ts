@@ -36,6 +36,7 @@ export class BuildCommand implements IAfterConstruct {
         options.push({name: "webpackPath", value: command.webpackPath});
         options.push({name: "path", value: command.path});
         options.push({name: "file", value: command.file});
+        options.push({name: "debug", value: false});
         options.push({
           name: "preserveWatchOutput",
           value:
