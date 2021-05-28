@@ -1,7 +1,7 @@
 import {Injector} from "@typeix/di";
 import {EventEmitter} from "events";
 import {CliTools} from "./cli-tools";
-import {join} from "path";
+import {join, normalize} from "path";
 
 
 let webpackCfg = {};
@@ -29,7 +29,6 @@ jest.mock("fs", () => {
     existsSync: () => true
   };
 });
-
 
 describe("Cli Tools", () => {
 
@@ -345,7 +344,18 @@ describe("Cli Tools", () => {
     expect(loadSpy).toBeCalledWith("tsc");
   });
 
-  test("loadBinary", () => {
-    //
+  test("loadBinary", async () => {
+    const packageName = "./cli-tools";
+    try {
+      await cliTools.loadBinary(packageName);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+      expect(e.message).toContain( `${packageName} could not be found! Please, install "${packageName}" package.`);
+    }
+
+    const bin = await cliTools.loadBinary(packageName, ["src", "commands"]);
+    expect(bin).toMatchObject({
+      CliTools: CliTools
+    });
   });
 });
