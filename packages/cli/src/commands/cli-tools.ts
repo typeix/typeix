@@ -15,6 +15,7 @@ import {
   TpxReport
 } from "./configs";
 import {EventEmitter} from "events";
+
 const nodeExternals = require("webpack-node-externals");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
@@ -63,6 +64,7 @@ export class CliTools {
   getPackageJson() {
     return require(normalize(join("..", "..", "package.json")));
   }
+
   /**
    * Use webpack compiler
    * @param tpxCompilerOptions
@@ -79,7 +81,7 @@ export class CliTools {
       output: {
         filename: entryFile.replace(cliConfig.distRoot + "/", "")
       },
-      externalsPresets: { node: true },
+      externalsPresets: {node: true},
       externals: [nodeExternals()],
       module: {
         rules: [
@@ -413,7 +415,7 @@ export class CliTools {
    * @param key
    * @param compareVal
    */
-  compareOptionValue(options: Array<Option>, key: string, compareVal: string | boolean) {
+  compareOptionValue(options: Array<Option>, key: string, compareVal: string | boolean): boolean {
     return this.getOptionValue(options, key) === compareVal;
   }
 

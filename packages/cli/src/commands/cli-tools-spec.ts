@@ -1,8 +1,9 @@
 import {Injector} from "@typeix/di";
 import {EventEmitter} from "events";
 import {CliTools} from "./cli-tools";
-import {join, normalize} from "path";
-
+import {join} from "path";
+import {CLI_CONFIG} from "./configs";
+import {Question} from "inquirer";
 
 let webpackCfg = {};
 jest.mock("webpack", () => {
@@ -24,9 +25,9 @@ jest.mock("fork-ts-checker-webpack-plugin", () => {
 jest.mock("webpack-node-externals", () => {
   return jest.fn(data => data);
 });
-jest.mock("fs", () => {
+jest.mock("inquirer", () => {
   return {
-    existsSync: () => true
+    createPromptModule: () => async (questions: Array<Question>) => questions
   };
 });
 
@@ -332,12 +333,13 @@ describe("Cli Tools", () => {
     });
     const loadSpy = spyOn(cliTools, "loadBinary").and.returnValue(obj);
     const opts = {};
-    const result = await cliTools.loadTypescriptWithConfig("cfg", "", opts);
+    const result = await cliTools.loadTypescriptWithConfig("./tsconfig.json", "", opts);
     expect(result).toEqual({
       "cliConfig": {
         "compiler": "tsc"
       },
-      "configPath": join(process.cwd(), "cfg"),
+      "configPath": join(process.cwd(), "tsconfig.json"),
+      "tsConfig": undefined,
       "tse": obj
     });
     expect(confSpy).toBeCalledWith("");
@@ -350,12 +352,204 @@ describe("Cli Tools", () => {
       await cliTools.loadBinary(packageName);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
-      expect(e.message).toContain( `${packageName} could not be found! Please, install "${packageName}" package.`);
+      expect(e.message).toContain(`${packageName} could not be found! Please, install "${packageName}" package.`);
     }
 
     const bin = await cliTools.loadBinary(packageName, ["src", "commands"]);
     expect(bin).toMatchObject({
       CliTools: CliTools
     });
+  });
+
+  test("getConfiguration", async () => {
+    const obj = {
+      readDir: () => {
+        //
+      },
+      readFile: () => {
+        //
+      }
+    };
+    const readDirSpy = spyOn(obj, "readDir").and.returnValue(["typeix.json"]);
+    const readFileSpy = spyOn(obj, "readFile").and.returnValue(JSON.stringify({language: "js"}));
+    const config = await cliTools.getConfiguration.call(obj);
+    expect(config).toMatchObject({
+      ...CLI_CONFIG,
+      language: "js"
+    });
+    expect(readDirSpy).toBeCalledWith("");
+    expect(readFileSpy).toBeCalledWith(["", "typeix.json"]);
+  });
+
+  test("getConfiguration compilerOptions", async () => {
+    const obj = {
+      readDir: () => {
+        //
+      },
+      readFile: () => {
+        //
+      }
+    };
+    const readDirSpy = spyOn(obj, "readDir").and.returnValue(["typeix.json"]);
+    const readFileSpy = spyOn(obj, "readFile").and.returnValue(JSON.stringify({
+      language: "js",
+      compilerOptions: {
+        tsConfigPath: "tsconfig.build.json",
+        webpack: true,
+        webpackConfigPath: "webpack.config.js",
+        plugins: [],
+        assets: []
+      }
+    }));
+    const config = await cliTools.getConfiguration.call(obj);
+    expect(config).toMatchObject({
+      ...CLI_CONFIG,
+      language: "js",
+      compilerOptions: {
+        ...CLI_CONFIG.compilerOptions,
+        webpack: true
+      }
+    });
+    expect(readDirSpy).toBeCalledWith("");
+    expect(readFileSpy).toBeCalledWith(["", "typeix.json"]);
+  });
+
+  test("readDir", async () => {
+    const dirList = await cliTools.readDir("./src/commands");
+    expect(dirList).toContain("cli-tools-spec.ts");
+  });
+
+  test("readFile", async () => {
+    const file = await cliTools.readFile("./package.json");
+    const data = JSON.parse(file.toString());
+    expect(data.name).toContain("@typeix/cli");
+  });
+
+  test("readDir list", async () => {
+    const dirList = await cliTools.readDir(["./src/commands"]);
+    expect(dirList).toContain("cli-tools-spec.ts");
+  });
+
+  test("readFile list", async () => {
+    const file = await cliTools.readFile(["./package.json"]);
+    const data = JSON.parse(file.toString());
+    expect(data.name).toContain("@typeix/cli");
+  });
+
+  test("getProjectPackage", async () => {
+    const data = await cliTools.getProjectPackage();
+    expect(data.name).toContain("@typeix/cli");
+  });
+
+  test("filterOptions", async () => {
+    const options = [
+      {
+        name: "debug",
+        value: true
+      },
+      {
+        name: "debug2",
+        value: true
+      }
+    ];
+
+    const data = await cliTools.filterOptions(options, ["debug2"]);
+    expect(data).toEqual([{
+      name: "debug",
+      value: true
+    }]);
+  });
+
+  test("compareOptionValue", async () => {
+    const options = [
+      {
+        name: "debug",
+        value: true
+      }
+    ];
+    expect(await cliTools.compareOptionValue(options, "debug", true)).toBeTruthy();
+    expect(await cliTools.compareOptionValue(options, "debug", false)).toBeFalsy();
+  });
+
+  test("getOptionValue", async () => {
+    const options = [
+      {
+        name: "debug",
+        value: true
+      }
+    ];
+    expect(await cliTools.getOptionValue(options, "debug")).toBeTruthy();
+  });
+
+  test("getOption", async () => {
+    const options = [
+      {
+        name: "debug",
+        value: true
+      }
+    ];
+    expect(await cliTools.getOption(options, "debug")).toEqual({
+      name: "debug",
+      value: true
+    });
+  });
+
+  test("createInput", async () => {
+    expect(await cliTools.createInput("type", "message", "yes")).toEqual({
+      type: "input",
+      name: "type",
+      message: "message",
+      default: "yes"
+    });
+  });
+
+  test("createSelect", async () => {
+    expect(await cliTools.createSelect("type", "message", ["yes", "no"])).toEqual({
+      type: "list",
+      name: "type",
+      message: "message",
+      choices: ["yes", "no"]
+    });
+  });
+
+  test("doPrompt", async () => {
+    const questions = [];
+    expect(await cliTools.doPrompt(questions)).toBe(questions);
+  });
+
+  test("print", async () => {
+    const logs = [
+      "WARN line",
+      "INFO line",
+      "ERROR line"
+    ];
+    const errSpy = spyOn(console, "error");
+    const warnSpy = spyOn(console, "warn");
+    const logSpy = spyOn(console, "log");
+    cliTools.print(Buffer.from(logs.join("\n")));
+    cliTools.print("INFO", true);
+    cliTools.print("INFO");
+    expect(errSpy).toBeCalled();
+    expect(warnSpy).toBeCalled();
+    expect(logSpy).toBeCalled();
+  });
+
+  test("camelCase", () => {
+    expect(cliTools.camelCase("index-name-works")).toEqual("indexNameWorks");
+  });
+
+  test("getRemainingFlags", () => {
+    const context = {
+      camelCase: val => cliTools.camelCase(val),
+      commanderStatic: {
+        args: [
+          "--debug=true",
+          "--watch",
+          "--name=Igor",
+          "--no-cache"
+        ]
+      }
+    };
+    expect(cliTools.getRemainingFlags.call(context)).toEqual("--debug=true --watch --name=Igor --no-cache");
   });
 });
