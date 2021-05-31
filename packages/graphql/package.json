@@ -1,0 +1,37 @@
+{
+  "name": "@typeix/graphql",
+  "version": "8.1.1",
+  "description": "typeix helper functions",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc --project tsconfig.json",
+    "pretest": "tsc",
+    "test": "jest -c jest-runner.json --coverage",
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typeix/typeix.git"
+  },
+  "keywords": [
+    "typeix",
+    "helper",
+    "functions",
+    "typescript"
+  ],
+  "author": "igor.ivanovic@pm.me",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/typeix/typeix/issues"
+  },
+  "homepage": "https://typeix.com",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">= 12.10.0"
+  },
+  "gitHead": "c5fe53d6fc521abe0e1383a5fabc5bc7ecfdd1eb"
+}
