@@ -30,7 +30,7 @@ export class YarnRunner extends AbstractPackageRunner {
     return Buffer.concat([deletedResult, installedResult]);
   }
 
-  public async list(isDevelopment: false): Promise<Array<Dependency>> {
+  public async list(isDevelopment = false): Promise<Array<Dependency>> {
     return await super.pkgList(isDevelopment);
   }
 
