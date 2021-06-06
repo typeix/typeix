@@ -2,7 +2,6 @@ import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
 import {CliTools} from "./cli-tools";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
-import {GitRunner} from "./runners/git.runner";
 import {Option} from "./interfaces";
 import {join, dirname, normalize, isAbsolute} from "path";
 
@@ -12,7 +11,6 @@ export class BuildCommand implements IAfterConstruct {
   @Inject() cli: CliTools;
   @Inject() npm: NpmRunner;
   @Inject() yarn: YarnRunner;
-  @Inject() git: GitRunner;
 
   afterConstruct(): void {
     this.cli.commander()

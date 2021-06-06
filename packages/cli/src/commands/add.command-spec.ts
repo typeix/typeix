@@ -5,6 +5,7 @@ import {NpmRunner} from "./runners/npm.runner";
 import {CliTools} from "./cli-tools";
 
 describe("Add command", () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let action = (...args: Array<any>) => {
     // not defined now
   };

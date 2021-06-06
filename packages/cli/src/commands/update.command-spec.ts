@@ -5,6 +5,7 @@ import {CliTools} from "./cli-tools";
 import {UpdateCommand} from "./update.command";
 
 describe("Remove command", () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let action = (...args: Array<any>) => {
     // not defined now
   };
@@ -93,7 +94,7 @@ describe("Remove command", () => {
   test("Define Remove DryRun", async () => {
     spyOn(process, "exit");
     const programCommandSpy = spyOn(programMock, "command").and.callThrough();
-    const injector = Injector.Sync.createAndResolve(verifyProvider(UpdateCommand), [
+    Injector.Sync.createAndResolve(verifyProvider(UpdateCommand), [
       {
         provide: CliTools,
         useValue: cliMock
