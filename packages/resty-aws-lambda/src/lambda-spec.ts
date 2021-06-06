@@ -28,6 +28,7 @@ describe("fakeHttpServer", () => {
   let identity: APIGatewayEventIdentity = {
     cognitoIdentityPoolId: null,
     accountId: null,
+    clientCert: null,
     cognitoIdentityId: null,
     caller: null,
     sourceIp: "1.1.1.1",
