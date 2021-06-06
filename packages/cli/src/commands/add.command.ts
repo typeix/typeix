@@ -2,7 +2,6 @@ import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
 import {CliTools} from "./cli-tools";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
-import {GitRunner} from "./runners/git.runner";
 import {Option} from "./interfaces";
 import {MESSAGES} from "../ui";
 import * as chalk from "chalk";
@@ -13,7 +12,6 @@ export class AddCommand implements IAfterConstruct {
   @Inject() cli: CliTools;
   @Inject() npm: NpmRunner;
   @Inject() yarn: YarnRunner;
-  @Inject() git: GitRunner;
 
   afterConstruct(): void {
     this.cli.commander()
@@ -29,11 +27,7 @@ export class AddCommand implements IAfterConstruct {
         const options: Array<Option> = [];
         options.push({name: "dry-run", value: !!command.dryRun});
         options.push({name: "package", value: packageName});
-        try {
-          await this.handle(options);
-        } catch (err) {
-          process.exit(0);
-        }
+        await this.handle(options);
       });
   }
 
@@ -63,6 +57,7 @@ export class AddCommand implements IAfterConstruct {
       if (!isDryRunEnabled) {
         this.cli.print(error, true);
       }
+      process.exit(0);
     }
   }
 }

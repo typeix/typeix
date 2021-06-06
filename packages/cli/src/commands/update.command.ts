@@ -13,7 +13,6 @@ export class UpdateCommand implements IAfterConstruct {
   @Inject() cli: CliTools;
   @Inject() npm: NpmRunner;
   @Inject() yarn: YarnRunner;
-  @Inject() git: GitRunner;
 
   afterConstruct(): void {
     this.cli.commander()
@@ -24,9 +23,14 @@ export class UpdateCommand implements IAfterConstruct {
         "-f, --force",
         "Remove and re-install dependencies (instead of update)."
       )
+      .option(
+        "-d, --dry-run",
+        "Report actions that would be performed without writing out results."
+      )
       .action(async (packageName: string, command: any) => {
         const options: Array<Option> = [];
         options.push({name: "force", value: !!command.force});
+        options.push({name: "dry-run", value: !!command.dryRun});
         options.push({name: "tag", value: command.tag});
         options.push({name: "package", value: packageName});
         await this.handle(options);

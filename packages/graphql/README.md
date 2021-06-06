@@ -8,7 +8,7 @@ A progressive <a href="https://nodejs.org" target="_blank">Node.js</a>
 tools for building efficient and scalable applications.
 </p>
 
-# @typeix/utils
+# @typeix/graphql
 
 [![Build Status][travis-img]][travis-url]
 [![Coverage Status][coverage-img]][coverage-url]

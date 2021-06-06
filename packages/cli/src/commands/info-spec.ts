@@ -9,7 +9,7 @@ import osName = require("os-name");
 import {join, normalize} from "path";
 
 
-describe("Should create info command", () => {
+describe("Info command", () => {
   const eventEmitter = new EventEmitter();
   let injector: SyncInjector;
   let action = () => {
@@ -57,7 +57,7 @@ describe("Should create info command", () => {
     ]);
   });
 
-  test("Define init commant", async () => {
+  test("Define Info", async () => {
     const programCommandSpy = spyOn(programMock, "command").and.callThrough();
     const programDescriptionSpy = spyOn(programMock, "description").and.callThrough();
     const infoSpy = spyOn(console, "info").and.callThrough();
