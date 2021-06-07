@@ -6,7 +6,7 @@ export interface Option {
 
 export interface Schematic {
   name: string;
-  value: boolean | string;
+  value: boolean | string | number;
 }
 
 export interface PluginOption {

@@ -47,7 +47,7 @@ export class SchematicRunner extends AbstractRunner {
     return schematic.name;
   }
 
-  static getOption(name: string, value: string | boolean): string {
+  static getOption(name: string, value: string | boolean | number): string {
     if (isString(value) && name === "name") {
       return `--${name}=${SchematicRunner.format(value)}`;
     } else if (isString(value) && (name === "version" || name === "path")) {
