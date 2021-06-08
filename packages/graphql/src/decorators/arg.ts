@@ -1,13 +1,6 @@
 import {createParameterDecorator} from "@typeix/metadata";
-import {ValidatorOptions} from "class-validator";
-import {ReturnType} from "./types";
+import {ArgType} from "./types";
 
-export interface ArgOptions {
-  nullable?: boolean | "items" | "itemsAndList";
-  defaultValue?: any;
-  description?: string;
-  validate?:  boolean | ValidatorOptions;
-}
 /**
  * Arg
  * @decorator
@@ -15,8 +8,21 @@ export interface ArgOptions {
  * @name Arg
  *
  * @description
- * Arg
+ * Inject one argument
  */
-export function Arg(name: string, options?: ReturnType | ArgOptions) {
+export function Arg(name: string, options?: ArgType) {
   return createParameterDecorator(Arg, {name, options});
+}
+
+/**
+ * Args
+ * @decorator
+ * @function
+ * @name Args
+ *
+ * @description
+ * Get all arguments
+ */
+export function Args(options: ArgType) {
+  return createParameterDecorator(Args, {options});
 }

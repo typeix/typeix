@@ -37,7 +37,8 @@
     "@typeix/di": "^8.1.1",
     "@typeix/metadata": "^8.1.1",
     "class-validator": "^0.13.1",
-    "graphql": "^15.5.0"
+    "graphql": "^15.5.0",
+    "graphql-query-complexity": "^0.8.1"
   },
   "devDependencies": {
     "@types/graphql": "^14.5.0"
