@@ -1,7 +1,7 @@
 {
   "name": "@typeix/graphql",
   "version": "8.1.1",
-  "description": "typeix helper functions",
+  "description": "graphql typeix implementation",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -17,8 +17,7 @@
   },
   "keywords": [
     "typeix",
-    "helper",
-    "functions",
+    "graphql",
     "typescript"
   ],
   "author": "igor.ivanovic@pm.me",
@@ -33,5 +32,14 @@
   "engines": {
     "node": ">= 12.10.0"
   },
-  "gitHead": "c5fe53d6fc521abe0e1383a5fabc5bc7ecfdd1eb"
+  "gitHead": "c5fe53d6fc521abe0e1383a5fabc5bc7ecfdd1eb",
+  "dependencies": {
+    "@typeix/di": "^8.1.1",
+    "@typeix/metadata": "^8.1.1",
+    "class-validator": "^0.13.1",
+    "graphql": "^15.5.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "^14.5.0"
+  }
 }
