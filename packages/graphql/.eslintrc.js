@@ -83,6 +83,12 @@ module.exports = {
       "always"
     ],
     "@typescript-eslint/type-annotation-spacing": "error",
+    "@typescript-eslint/no-redeclare": [
+      "error",
+      {
+        "ignoreDeclarationMerge": true
+      }
+    ],
     "array-bracket-spacing": "off",
     "brace-style": [
       "error",
@@ -137,7 +143,7 @@ module.exports = {
     "no-eval": "error",
     "no-fallthrough": "error",
     "no-new-wrappers": "error",
-    "no-redeclare": "error",
+    "no-redeclare": "off",
     "no-shadow": [
       "error",
       {

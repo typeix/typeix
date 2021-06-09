@@ -1,5 +1,5 @@
 import {createParameterDecorator} from "@typeix/metadata";
-import {ArgType} from "./types";
+import {ArgsOptions} from "./types";
 
 /**
  * Arg
@@ -10,7 +10,7 @@ import {ArgType} from "./types";
  * @description
  * Inject one argument
  */
-export function Arg(name: string, options?: ArgType) {
+export function Arg(name: string, options?: ArgsOptions) {
   return createParameterDecorator(Arg, {name, options});
 }
 
@@ -23,6 +23,6 @@ export function Arg(name: string, options?: ArgType) {
  * @description
  * Get all arguments
  */
-export function Args(options: ArgType) {
+export function Args(options?: ArgsOptions) {
   return createParameterDecorator(Args, {options});
 }

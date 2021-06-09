@@ -3,63 +3,72 @@ import {ValidatorOptions} from "class-validator";
 import {ComplexityEstimator} from "graphql-query-complexity";
 
 /**
- * ClassType
+ * Constructor Type
  * @interface
- * @name ClassType
+ * @name Type
  *
  */
-export interface ClassType<T = any> {
+export interface Type<T = any> {
   new(...args: any[]): T;
 }
 
+export type NullableList = "items" | "itemsAndList";
 /**
- * ArgOptions
  * @interface
- * @name ArgOptions
- *
+ * @name BaseTypeOptions
  */
-export interface ArgOptions {
-  nullable?: boolean | "items" | "itemsAndList";
+export interface BaseTypeOptions {
+  nullable?: boolean | NullableList;
   defaultValue?: any;
-  description?: string;
-  validate?: boolean | ValidatorOptions | ValidatorFn<object>;
-  complexity?: Complexity;
-  deprecationReason?: string;
-  name?: string;
-  isAbstract?: boolean;
-  implements?: Function | Array<Function>;
 }
-
-export interface ResolveTypeOptions<TSource = any, TContext = any> {
-  resolveType?: TypeResolver<TSource, TContext>;
-}
-
 /**
- * TypeValue
  * @interface
- * @name TypeValue
- *
+ * @name ArgsOptions
  */
-export type TypeValue = ClassType | GraphQLScalarType | Function | object | symbol;
+export interface ArgsOptions extends BaseTypeOptions {
+  name?: string;
+  description?: string;
+  type?: () => any;
+}
 
-export type ReturnType = TypeValue | Array<TypeValue>;
-
-export type ArgType = ReturnType | ArgOptions;
-
-export type ReturnTypeFn = () => ReturnType;
 
 export type Complexity = ComplexityEstimator | number;
-
-export type TypeResolver<TSource, TContext> = (
-  ...args: Parameters<GraphQLTypeResolver<TSource, TContext>>
-) => Promise<string | ClassType>;
 /**
- * ValidatorFn
  * @interface
- * @name ValidatorFn
- *
+ * @name FieldOptions
  */
-export type ValidatorFn<T extends object> = (
-  argValue: T | undefined,
-  argType: TypeValue,
-) => void | Promise<void>;
+export interface FieldOptions extends BaseTypeOptions {
+  name?: string;
+  description?: string;
+  deprecationReason?: string;
+  complexity?: Complexity;
+}
+
+export type GqlTypeReference =
+  | Type
+  | GraphQLScalarType
+  | Function
+  | object
+  | symbol;
+export type ReturnTypeFnValue = GqlTypeReference | [GqlTypeReference];
+export type ReturnTypeFn = (returns?: void) => ReturnTypeFnValue;
+
+/**
+ * @interface
+ * @name InputTypeOptions
+ */
+export interface InputTypeOptions {
+  description?: string;
+  isAbstract?: boolean;
+}
+
+/**
+ * @interface
+ * @name MutationOptions
+ */
+export interface MutationOptions extends BaseTypeOptions {
+  name?: string;
+  description?: string;
+  deprecationReason?: string;
+  complexity?: Complexity;
+}
