@@ -1,5 +1,4 @@
 import {GraphQLScalarType, GraphQLTypeResolver} from "graphql";
-import {ValidatorOptions} from "class-validator";
 import {ComplexityEstimator} from "graphql-query-complexity";
 
 /**
@@ -31,19 +30,7 @@ export interface ArgsOptions extends BaseTypeOptions {
   type?: () => any;
 }
 
-
 export type Complexity = ComplexityEstimator | number;
-/**
- * @interface
- * @name FieldOptions
- */
-export interface FieldOptions extends BaseTypeOptions {
-  name?: string;
-  description?: string;
-  deprecationReason?: string;
-  complexity?: Complexity;
-}
-
 export type GqlTypeReference =
   | Type
   | GraphQLScalarType
@@ -86,4 +73,25 @@ export interface ObjectTypeOptions {
   isAbstract?: boolean;
   resolveType?: ResolveTypeFn<any, any>;
   implements?: Function | Array<Function> | (() => Function | Array<Function>);
+}
+
+/**
+ * @interface
+ * @name SubscriptionOptions
+ */
+export interface SubscriptionOptions extends BaseTypeOptions {
+  name?: string;
+  description?: string;
+  deprecationReason?: string;
+  filter?: (
+    payload: any,
+    variables: any,
+    context: any,
+  ) => boolean | Promise<boolean>;
+  resolve?: (
+    payload: any,
+    args: any,
+    context: any,
+    info: any,
+  ) => any | Promise<any>;
 }

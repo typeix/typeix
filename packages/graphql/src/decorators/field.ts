@@ -1,5 +1,5 @@
 import {createPropertyDecorator} from "@typeix/metadata";
-import {ReturnTypeFn, FieldOptions} from "./types";
+import {ReturnTypeFn, TypeOptions} from "./types";
 import {isFunction, isObject, isUndefined} from "@typeix/utils";
 /**
  * Field
@@ -11,13 +11,13 @@ import {isFunction, isObject, isUndefined} from "@typeix/utils";
  * Field declaration
  */
 export function Field(): PropertyDecorator;
-export function Field(options: FieldOptions): PropertyDecorator;
-export function Field(fn?: ReturnTypeFn, options?: FieldOptions): PropertyDecorator;
-export function Field(fn?: ReturnTypeFn | FieldOptions, options?: FieldOptions) {
+export function Field(options: TypeOptions): PropertyDecorator;
+export function Field(fn?: ReturnTypeFn, options?: TypeOptions): PropertyDecorator;
+export function Field(fn?: ReturnTypeFn | TypeOptions, options?: TypeOptions) {
   if (isObject(options) && isFunction(fn)) {
-    return createPropertyDecorator(Field, {fn, options});
+    return createPropertyDecorator(Field, {fn, ...options});
   } else if (isUndefined(options) && isObject(fn)) {
-    return createPropertyDecorator(Field, {options: fn});
+    return createPropertyDecorator(Field, {...fn});
   }
   return createPropertyDecorator(Field, {fn});
 }

@@ -11,7 +11,7 @@ import {ArgsOptions} from "./types";
  * Inject one argument
  */
 export function Arg(name: string, options?: ArgsOptions) {
-  return createParameterDecorator(Arg, {name, options});
+  return createParameterDecorator(Arg, {name, ...options});
 }
 
 /**
@@ -24,5 +24,5 @@ export function Arg(name: string, options?: ArgsOptions) {
  * Get all arguments
  */
 export function Args(options?: ArgsOptions) {
-  return createParameterDecorator(Args, {options});
+  return createParameterDecorator(Args, {...options});
 }
