@@ -71,7 +71,7 @@ export type ResolveTypeFn<TSource = any, TContext = any> = (
 export interface ObjectTypeOptions {
   description?: string;
   isAbstract?: boolean;
-  resolveType?: ResolveTypeFn<any, any>;
+  resolveType?: ResolveTypeFn;
   implements?: Function | Array<Function> | (() => Function | Array<Function>);
 }
 

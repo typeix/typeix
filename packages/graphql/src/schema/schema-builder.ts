@@ -1,4 +1,3 @@
-
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -19,4 +18,12 @@ import {
   GraphQLDirective,
   GraphQLFieldResolver,
 } from "graphql";
-import { withFilter, ResolverFn } from "graphql-subscriptions";
+import {withFilter, ResolverFn} from "graphql-subscriptions";
+import {Injectable} from "@typeix/di";
+
+
+@Injectable()
+export class SchemaBuilder {
+
+
+}
