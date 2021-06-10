@@ -64,11 +64,26 @@ export interface InputTypeOptions {
 
 /**
  * @interface
- * @name MutationOptions
+ * @name TypeOptions
  */
-export interface MutationOptions extends BaseTypeOptions {
+export interface TypeOptions extends BaseTypeOptions {
   name?: string;
   description?: string;
   deprecationReason?: string;
   complexity?: Complexity;
+}
+
+
+export type ResolveTypeFn<TSource = any, TContext = any> = (
+  ...args: Parameters<GraphQLTypeResolver<TSource, TContext>>
+) => any;
+/**
+ * @interface
+ * @name ObjectTypeOptions
+ */
+export interface ObjectTypeOptions {
+  description?: string;
+  isAbstract?: boolean;
+  resolveType?: ResolveTypeFn<any, any>;
+  implements?: Function | Array<Function> | (() => Function | Array<Function>);
 }

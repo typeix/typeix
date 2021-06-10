@@ -1,5 +1,6 @@
 import {createClassDecorator} from "@typeix/metadata";
-import {ArgOptions} from "./types";
+import {ObjectTypeOptions} from "./types";
+import {isObject} from "@typeix/utils";
 
 /**
  * ObjectType
@@ -10,6 +11,9 @@ import {ArgOptions} from "./types";
  * @description
  * object type
  */
-export function ObjectType(options: ArgOptions) {
-  return createClassDecorator(ObjectType, {...options});
+export function ObjectType(name: string | ObjectTypeOptions, options?: ObjectTypeOptions) {
+  if (isObject(name)) {
+    return createClassDecorator(ObjectType, {...<object>name});
+  }
+  return createClassDecorator(ObjectType, {name, ...options});
 }

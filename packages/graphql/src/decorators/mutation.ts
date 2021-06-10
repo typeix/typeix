@@ -1,5 +1,5 @@
-import {MutationOptions, ReturnTypeFn} from "./types";
-import {createPropertyDecorator} from "@typeix/metadata";
+import {TypeOptions, ReturnTypeFn} from "./types";
+import {createMethodDecorator} from "@typeix/metadata";
 import {isFunction, isObject, isString, isUndefined} from "@typeix/utils";
 
 /**
@@ -13,12 +13,12 @@ import {isFunction, isObject, isString, isUndefined} from "@typeix/utils";
  */
 export function Mutation(): PropertyDecorator;
 export function Mutation(name: string): MethodDecorator;
-export function Mutation(fn?: ReturnTypeFn, options?: MutationOptions): PropertyDecorator;
-export function Mutation(fn?: ReturnTypeFn | string, options?: MutationOptions) {
+export function Mutation(fn?: ReturnTypeFn, options?: TypeOptions): PropertyDecorator;
+export function Mutation(fn?: ReturnTypeFn | string, options?: TypeOptions) {
   if (isObject(options) && isFunction(fn)) {
-    return createPropertyDecorator(Mutation, {fn, options});
+    return createMethodDecorator(Mutation, {fn, options});
   } else if (isUndefined(options) && isString(fn)) {
-    return createPropertyDecorator(Mutation, {name: fn});
+    return createMethodDecorator(Mutation, {name: fn});
   }
-  return createPropertyDecorator(Mutation, {});
+  return createMethodDecorator(Mutation, {});
 }

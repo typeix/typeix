@@ -1,5 +1,6 @@
 import {createMethodDecorator} from "@typeix/metadata";
-import {ArgOptions, ArgType} from "./types";
+import {ReturnTypeFn, TypeOptions} from "./types";
+import {isFunction, isObject, isString, isUndefined} from "@typeix/utils";
 
 /**
  * Query
@@ -10,6 +11,14 @@ import {ArgOptions, ArgType} from "./types";
  * @description
  * Query
  */
-export function Query(arg: ArgType, options?: ArgOptions) {
-  return createMethodDecorator(Query, {arg, options});
+export function Query(): PropertyDecorator;
+export function Query(name: string): MethodDecorator;
+export function Query(fn?: ReturnTypeFn, options?: TypeOptions): PropertyDecorator;
+export function Query(fn?: ReturnTypeFn | string, options?: TypeOptions) {
+  if (isObject(options) && isFunction(fn)) {
+    return createMethodDecorator(Query, {fn, options});
+  } else if (isUndefined(options) && isString(fn)) {
+    return createMethodDecorator(Query, {name: fn});
+  }
+  return createMethodDecorator(Query, {});
 }
