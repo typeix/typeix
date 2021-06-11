@@ -1,5 +1,5 @@
 import {createMethodDecorator} from "@typeix/metadata";
-import {ReturnTypeFn, SubscriptionOptions} from "./types";
+import {ReturnTypeFn, SubscriptionOptions} from "../types";
 import {isFunction} from "@typeix/utils";
 
 /**

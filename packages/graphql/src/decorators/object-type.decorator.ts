@@ -1,5 +1,5 @@
 import {createClassDecorator} from "@typeix/metadata";
-import {ObjectTypeOptions} from "./types";
+import {ObjectTypeOptions} from "../types";
 import {isObject} from "@typeix/utils";
 
 /**

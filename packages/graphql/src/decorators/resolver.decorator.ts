@@ -1,5 +1,5 @@
 import {createClassDecorator, createMethodDecorator} from "@typeix/metadata";
-import {TypeOptions, ReturnTypeFn, Type} from "./types";
+import {TypeOptions, ReturnTypeFn, Type} from "../types";
 import {isString} from "@typeix/utils";
 
 

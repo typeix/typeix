@@ -1,5 +1,5 @@
 import {createPropertyDecorator} from "@typeix/metadata";
-import {ReturnTypeFn, TypeOptions} from "./types";
+import {ReturnTypeFn, TypeOptions} from "../types";
 import {isFunction, isObject, isUndefined} from "@typeix/utils";
 /**
  * Field

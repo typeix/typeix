@@ -1,5 +1,5 @@
 import {createParameterDecorator} from "@typeix/metadata";
-import {ArgsOptions} from "./types";
+import {ArgsOptions} from "../types";
 
 /**
  * Arg

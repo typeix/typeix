@@ -1,4 +1,4 @@
-import {TypeOptions, ReturnTypeFn} from "./types";
+import {TypeOptions, ReturnTypeFn} from "../types";
 import {createMethodDecorator} from "@typeix/metadata";
 import {isFunction, isObject, isString, isUndefined} from "@typeix/utils";
 

@@ -1,4 +1,4 @@
-import {ReturnTypeFn} from "./types";
+import {ReturnTypeFn} from "../types";
 import {createClassDecorator} from "@typeix/metadata";
 
 /**
