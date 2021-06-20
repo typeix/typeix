@@ -1,4 +1,4 @@
-import {GraphQLDirective, GraphQLFieldConfigMap, GraphQLScalarType, GraphQLTypeResolver} from "graphql";
+import {GraphQLDirective, GraphQLInt, GraphQLFloat, GraphQLID, GraphQLScalarType, GraphQLTypeResolver} from "graphql";
 import {ComplexityEstimator} from "graphql-query-complexity";
 
 /**
@@ -124,48 +124,6 @@ export interface BuildSchemaOptions {
   schemaDirectives?: Record<string, any>;
 }
 
-/**
- * @interface
- * @name ResolverClassMetadata
- */
-export interface ResolverClassMetadata {
-  target: Function;
-  typeFn: (of?: void) => Type<unknown> | Function;
-  isAbstract?: boolean;
-  parent?: ResolverClassMetadata;
-}
-
-/**
- * @interface
- * @name BaseResolverMetadata
- */
-export interface BaseResolverMetadata {
-  target: Function;
-  methodName: string;
-  schemaName: string;
-  description?: string;
-  deprecationReason?: string;
-  methodArgs?: Array<any>;
-  classMetadata?: ResolverClassMetadata;
-  directives?: Array<any>;
-  extensions?: Record<string, unknown>;
-  complexity?: Complexity;
-}
-
-/**
- * @interface
- * @name ResolverTypeMetadata
- */
-export interface ResolverTypeMetadata extends BaseResolverMetadata {
-  typeFn: (type?: void) => GqlTypeReference;
-  options: TypeOptions;
-}
-
-/**
- * @interface
- * @name FieldsFactory
- */
-export type FieldsFactory<T = any, U = any> = (
-  handlers: Array<ResolverTypeMetadata>,
-  options: BuildSchemaOptions
-) => GraphQLFieldConfigMap<T, U>;
+export const Int = GraphQLInt;
+export const Float = GraphQLFloat;
+export const ID = GraphQLID;

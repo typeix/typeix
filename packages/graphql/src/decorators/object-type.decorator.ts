@@ -11,7 +11,10 @@ import {isObject} from "@typeix/utils";
  * @description
  * object type
  */
-export function ObjectType(name: string | ObjectTypeOptions, options?: ObjectTypeOptions) {
+export function ObjectType(): ClassDecorator;
+export function ObjectType(name: string, options: ObjectTypeOptions): ClassDecorator;
+export function ObjectType(name: ObjectTypeOptions): ClassDecorator;
+export function ObjectType(name?: string | ObjectTypeOptions, options?: ObjectTypeOptions) {
   if (isObject(name)) {
     return createClassDecorator(ObjectType, {...<object>name});
   }

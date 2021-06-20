@@ -14,6 +14,8 @@ export type ResolverTypeFn = (of?: void) => Function;
  * resolver type
  */
 export function Resolver(): ClassDecorator;
+export function Resolver(fn: ResolverTypeFn): ClassDecorator;
+export function Resolver(fn: Type): ClassDecorator;
 export function Resolver(fn?: ResolverTypeFn | Type) {
   return createClassDecorator(Resolver, {fn});
 }

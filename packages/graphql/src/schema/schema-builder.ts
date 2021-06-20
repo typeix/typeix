@@ -20,7 +20,7 @@ import {
 } from "graphql";
 import {withFilter, ResolverFn} from "graphql-subscriptions";
 import {Injectable} from "@typeix/di";
-import {BuildSchemaOptions, FieldsFactory, ResolverTypeMetadata} from "../types";
+import {BuildSchemaOptions} from "../types";
 import {RouterError} from "@typeix/router";
 import {isFunction} from "@typeix/utils";
 
@@ -45,9 +45,9 @@ export class SchemaBuilder {
     }
 
     const schema = new GraphQLSchema({
-      mutation: this.createObjectType([], [], "Mutation", options),
-      query: this.createObjectType([], [], "Query", options),
-      subscription: this.createObjectType([], [], "Subscription", options),
+      mutation: this.createObjectType([], "Mutation", options),
+      query: this.createObjectType([], "Query", options),
+      subscription: this.createObjectType([], "Subscription", options),
       types: this.createOrphanType(options.orphanedTypes),
       directives: options.directives
     });
@@ -69,38 +69,31 @@ export class SchemaBuilder {
 
   /**
    * createObjectType
-   * @param typeRefs
-   * @param resolversMetadata
+   * @param handlers
    * @param objectTypeName
    * @param options
-   * @param fieldsFactory
    */
   createObjectType(
-    typeRefs: Array<Function>,
-    resolversMetadata: Array<ResolverTypeMetadata>,
+    handlers: Array<Function>,
     objectTypeName: "Subscription" | "Mutation" | "Query",
-    options: BuildSchemaOptions,
-    fieldsFactory?: FieldsFactory
+    options: BuildSchemaOptions
   ): GraphQLObjectType {
-    const handlers = typeRefs
-      ? resolversMetadata.filter((query) => typeRefs.includes(query.target))
-      : resolversMetadata;
     if (handlers.length > 0) {
       return new GraphQLObjectType({
         name: objectTypeName,
-        fields: isFunction(fieldsFactory) ? fieldsFactory(handlers, options) : this.fieldsFactory(handlers, options)
+        fields: this.fieldsFactory(handlers, options)
       });
     }
   }
 
   /**
    * fieldsFactory
-   * @param handlers Array<ResolverTypeMetadata>
+   * @param handlers Array<Function>
    * @param options BuildSchemaOptions
    * @private
    */
   private fieldsFactory<T = any, U = any>(
-    handlers: Array<ResolverTypeMetadata>,
+    handlers: Array<Function>,
     options: BuildSchemaOptions
   ): GraphQLFieldConfigMap<T, U> {
     const fieldConfigMap: GraphQLFieldConfigMap<T, U> = {};
