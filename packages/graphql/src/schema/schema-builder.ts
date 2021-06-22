@@ -22,7 +22,8 @@ import {withFilter, ResolverFn} from "graphql-subscriptions";
 import {Injectable} from "@typeix/di";
 import {BuildSchemaOptions} from "../types";
 import {RouterError} from "@typeix/router";
-import {isFunction} from "@typeix/utils";
+import {getAllMetadataForTarget} from "@typeix/metadata";
+import {Subscription} from "../decorators/subscription.decorator";
 
 
 @Injectable()
@@ -45,9 +46,9 @@ export class SchemaBuilder {
     }
 
     const schema = new GraphQLSchema({
-      mutation: this.createObjectType([], "Mutation", options),
-      query: this.createObjectType([], "Query", options),
-      subscription: this.createObjectType([], "Subscription", options),
+      mutation: this.createObjectType(resolvers, "Mutation", options),
+      query: this.createObjectType(resolvers, "Query", options),
+      subscription: this.createObjectType(resolvers, "Subscription", options),
       types: this.createOrphanType(options.orphanedTypes),
       directives: options.directives
     });
@@ -69,34 +70,38 @@ export class SchemaBuilder {
 
   /**
    * createObjectType
-   * @param handlers
-   * @param objectTypeName
+   * @param resolvers
+   * @param type
    * @param options
    */
   createObjectType(
-    handlers: Array<Function>,
-    objectTypeName: "Subscription" | "Mutation" | "Query",
+    resolvers: Array<Function>,
+    type: Subscription,
     options: BuildSchemaOptions
   ): GraphQLObjectType {
-    if (handlers.length > 0) {
+    if (resolvers.length > 0) {
       return new GraphQLObjectType({
         name: objectTypeName,
-        fields: this.fieldsFactory(handlers, options)
+        fields: this.fieldsFactory(resolvers, options)
       });
     }
   }
 
   /**
    * fieldsFactory
-   * @param handlers Array<Function>
+   * @param resolvers Array<Function>
    * @param options BuildSchemaOptions
    * @private
    */
   private fieldsFactory<T = any, U = any>(
-    handlers: Array<Function>,
+    resolvers: Array<Function>,
     options: BuildSchemaOptions
   ): GraphQLFieldConfigMap<T, U> {
-    const fieldConfigMap: GraphQLFieldConfigMap<T, U> = {};
-    return fieldConfigMap;
+    const fields: GraphQLFieldConfigMap<T, U> = {};
+    for (const resolver of resolvers) {
+      const metadata = getAllMetadataForTarget(resolver);
+      const handlers = metadata.filter(item => item.type === "method");
+    }
+    return fields;
   }
 }
