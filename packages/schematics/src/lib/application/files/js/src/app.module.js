@@ -1,6 +1,6 @@
 import {AppController} from "./app.controller";
 import {AppService} from "./app.service";
-import {Logger, RootModule} from "@typeix/resty/build";
+import {Logger, RootModule} from "@typeix/resty";
 
 @RootModule({
   imports: [],

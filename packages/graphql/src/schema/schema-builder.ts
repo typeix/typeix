@@ -20,10 +20,10 @@ import {
 } from "graphql";
 import {withFilter, ResolverFn} from "graphql-subscriptions";
 import {Injectable} from "@typeix/di";
-import {BuildSchemaOptions} from "../types";
+import {BuildSchemaOptions, SubscriptionOptions, TypeOptions} from "../types";
 import {RouterError} from "@typeix/router";
-import {getAllMetadataForTarget} from "@typeix/metadata";
-import {Subscription} from "../decorators/subscription.decorator";
+import {getAllMetadataForTarget, IMetadata} from "@typeix/metadata";
+import {Mutation, Query, Subscription} from "../decorators";
 
 
 @Injectable()
@@ -71,18 +71,24 @@ export class SchemaBuilder {
   /**
    * createObjectType
    * @param resolvers
-   * @param type
+   * @param objectTypeName
    * @param options
    */
   createObjectType(
     resolvers: Array<Function>,
-    type: Subscription,
+    objectTypeName: string,
     options: BuildSchemaOptions
   ): GraphQLObjectType {
     if (resolvers.length > 0) {
+      let decorator: Function = Query;
+      if (objectTypeName === "Subscription") {
+        decorator = Subscription;
+      } else if (objectTypeName == "Mutation") {
+        decorator = Mutation;
+      }
       return new GraphQLObjectType({
         name: objectTypeName,
-        fields: this.fieldsFactory(resolvers, options)
+        fields: this.fieldsFactory(resolvers, decorator, options)
       });
     }
   }
@@ -90,17 +96,25 @@ export class SchemaBuilder {
   /**
    * fieldsFactory
    * @param resolvers Array<Function>
+   * @param decorator string
    * @param options BuildSchemaOptions
    * @private
    */
   private fieldsFactory<T = any, U = any>(
     resolvers: Array<Function>,
+    decorator: Function,
     options: BuildSchemaOptions
   ): GraphQLFieldConfigMap<T, U> {
     const fields: GraphQLFieldConfigMap<T, U> = {};
     for (const resolver of resolvers) {
       const metadata = getAllMetadataForTarget(resolver);
-      const handlers = metadata.filter(item => item.type === "method");
+      const handlers: Array<IMetadata> = metadata.filter(
+        item => item.type === "method" && item.decorator === decorator
+      );
+      for (const handler of handlers) {
+        const name = handler.args.name ?? handler.propertyKey;
+        // fields[name] = {};
+      }
     }
     return fields;
   }

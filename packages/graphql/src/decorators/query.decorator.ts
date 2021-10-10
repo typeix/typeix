@@ -16,7 +16,7 @@ export function Query(name: string): MethodDecorator;
 export function Query(fn?: ReturnTypeFn, options?: TypeOptions): PropertyDecorator;
 export function Query(fn?: ReturnTypeFn | string, options?: TypeOptions) {
   if (isObject(options) && isFunction(fn)) {
-    return createMethodDecorator(Query, {fn, options});
+    return createMethodDecorator(Query, {fn, ...options});
   } else if (isUndefined(options) && isString(fn)) {
     return createMethodDecorator(Query, {name: fn});
   }

@@ -1,7 +1,8 @@
 {
   "name": "@typeix/graphql",
-  "version": "8.1.1",
+  "version": "8.1.2-rc.0",
   "description": "graphql typeix implementation",
+  "private": true,
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -34,11 +35,11 @@
   },
   "gitHead": "c5fe53d6fc521abe0e1383a5fabc5bc7ecfdd1eb",
   "dependencies": {
-    "@typeix/di": "^8.1.1",
-    "@typeix/metadata": "^8.1.1",
-    "@typeix/modules": "^8.1.1",
-    "@typeix/router": "^8.1.1",
-    "@typeix/utils": "^8.1.1",
+    "@typeix/di": "^8.1.2-rc.0",
+    "@typeix/metadata": "^8.1.2-rc.0",
+    "@typeix/modules": "^8.1.2-rc.0",
+    "@typeix/router": "^8.1.2-rc.0",
+    "@typeix/utils": "^8.1.2-rc.0",
     "class-validator": "^0.13.1",
     "graphql": "^15.5.0",
     "graphql-query-complexity": "^0.8.1",
