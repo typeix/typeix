@@ -66,7 +66,7 @@ export class FakeServerResponse extends ServerResponse {
    * @description
    * End request.ts
    */
-  end(chunk: any, buffer?: any, cb?: () => void): this {
+  end(chunk?: any, buffer?: any, cb?: () => void): this {
     if (chunk) {
       this.message = asBuffer(chunk, this.message);
       this.emit("finish", chunk);
@@ -78,7 +78,7 @@ export class FakeServerResponse extends ServerResponse {
     } else if (isFunction(buffer)) {
       buffer();
     }
-    super.end(chunk, cb);
+    super.end();
     return this;
   }
 
