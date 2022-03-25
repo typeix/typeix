@@ -1,5 +1,5 @@
 import {SyncInjector, Injector, verifyProviders} from "@typeix/di";
-import {CommanderStatic} from "commander";
+import {Command} from "commander";
 import {CliTools} from "./cli-tools";
 import {InfoCommand} from "./info.command";
 import {NewCommand} from "./new.command";
@@ -16,7 +16,7 @@ import {RemoveCommand} from "./remove.command";
 import {EventEmitter} from "events";
 
 
-export function setup(program: CommanderStatic): SyncInjector {
+export function setup(program: Command): SyncInjector {
   const injector = Injector.Sync.createAndResolve(CliTools, [
     {
       provide: "program",

@@ -1,5 +1,5 @@
 import {setup} from "./index";
-import {CommanderStatic} from "commander";
+import {Command} from "commander";
 import {GitRunner} from "./runners/git.runner";
 import {SchematicRunner} from "./runners/schematic.runner";
 import {NpmRunner} from "./runners/npm.runner";
@@ -46,7 +46,7 @@ describe("Should create instances", () => {
 
   test("load setup", async () => {
 
-    const injector = setup((programMock as any) as CommanderStatic);
+    const injector = setup((programMock as any) as Command);
 
     expect(injector.has(GitRunner)).toBeTruthy();
     expect(injector.has(SchematicRunner)).toBeTruthy();

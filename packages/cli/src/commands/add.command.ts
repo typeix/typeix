@@ -3,8 +3,7 @@ import {CliTools} from "./cli-tools";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
 import {Option} from "./interfaces";
-import {MESSAGES} from "../ui";
-import * as chalk from "chalk";
+import {MESSAGES, chalk} from "../ui";
 
 @Injectable()
 export class AddCommand implements IAfterConstruct {

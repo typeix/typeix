@@ -1,13 +1,12 @@
 import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
 import {Answers} from "inquirer";
 import {CliTools} from "./cli-tools";
-import {MESSAGES} from "../ui";
+import {MESSAGES, chalk} from "../ui";
 import {isEqual, isFalsy, isUndefined} from "@typeix/utils";
 import {SchematicRunner} from "./runners/schematic.runner";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
 import {dasherize} from "@angular-devkit/core/src/utils/strings";
-import * as chalk from "chalk";
 import {GitRunner} from "./runners/git.runner";
 import {Option} from "./interfaces";
 

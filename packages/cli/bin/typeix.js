@@ -4,8 +4,8 @@
 const fs = require("fs");
 const path = require("path");
 const pkgInfo = require(path.join("..", "package.json"));
-const program = require("commander");
-
+const commander = require("commander");
+const program = new commander.Command("typeix-cli")
 const segments = ["dist", "commands"];
 const npm_segments = ["node_modules", "@typeix", "cli"];
 

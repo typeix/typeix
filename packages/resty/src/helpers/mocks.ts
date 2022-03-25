@@ -1,6 +1,6 @@
 import {Server, Socket} from "net";
 import {IncomingMessage, ServerResponse} from "http";
-import {isDefined, isObject} from "@typeix/utils";
+import {isDefined, isObject, isFunction} from "@typeix/utils";
 import {Inject, Injector, IProvider} from "@typeix/di";
 import {ModuleInjector} from "@typeix/modules";
 import {pipeServer} from "../servers";
@@ -66,15 +66,20 @@ export class FakeServerResponse extends ServerResponse {
    * @description
    * End request.ts
    */
-  end(chunk?: any) {
+  end(chunk: any, buffer?: any, cb?: () => void): this {
     if (chunk) {
       this.message = asBuffer(chunk, this.message);
       this.emit("finish", chunk);
     } else {
       this.emit("finish");
     }
-    this.finished = true;
-    super.end();
+    if (isFunction(cb)) {
+      cb();
+    } else if (isFunction(buffer)) {
+      buffer();
+    }
+    super.end(chunk, cb);
+    return this;
   }
 
   /**

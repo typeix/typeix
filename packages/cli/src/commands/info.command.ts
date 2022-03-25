@@ -1,7 +1,6 @@
 import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
-import * as chalk from "chalk";
-import {BANNER} from "../ui";
-import osName = require("os-name");
+import {BANNER, chalk} from "../ui";
+import osName from "os-name";
 import {platform, release} from "os";
 import {CliTools} from "./cli-tools";
 

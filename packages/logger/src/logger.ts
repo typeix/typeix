@@ -1,5 +1,5 @@
 import {Injectable} from "@typeix/di";
-import * as pino from "pino";
+import {pino} from "pino";
 
 export interface LoggerOptions {
   options: pino.LoggerOptions;

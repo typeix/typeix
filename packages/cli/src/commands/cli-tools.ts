@@ -4,7 +4,7 @@ import {MESSAGES} from "../ui";
 import {existsSync, readdir, readFile} from "fs";
 import {join, normalize} from "path";
 import {Question} from "inquirer";
-import {CommanderStatic} from "commander";
+import {Command} from "commander";
 import {Option, TpxCliConfig} from "./interfaces";
 import {
   CompilerPluginExtension,
@@ -20,20 +20,20 @@ const nodeExternals = require("webpack-node-externals");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 import * as webpack from "webpack";
-import * as chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as ts from "typescript";
+import {chalk} from "../ui";
 
 @Injectable()
 export class CliTools {
 
-  @Inject("program") private commanderStatic: CommanderStatic;
+  @Inject("program") private command: Command;
   @Inject() private eventEmitter: EventEmitter;
 
   @AfterConstruct()
   onProgramInit() {
-    this.commanderStatic.on("command:*", () => {
-      console.error(MESSAGES.INVALID_COMMAND, this.commanderStatic.args.join(" "));
+    this.command.on("command:*", () => {
+      console.error(MESSAGES.INVALID_COMMAND, this.command.args.join(" "));
       console.log(MESSAGES.AVAILABLE_COMMANDS);
       process.exit(1);
     });
@@ -42,8 +42,8 @@ export class CliTools {
   /**
    * Return commander
    */
-  commander(): CommanderStatic {
-    return this.commanderStatic;
+  commander(): Command {
+    return this.command;
   }
 
   /**
@@ -506,7 +506,7 @@ export class CliTools {
    * @param cli
    */
   getRemainingFlags(): string {
-    const rawArgs = [...this.commanderStatic.args];
+    const rawArgs = [...this.command.args];
     return rawArgs.splice(Math.max(rawArgs.findIndex((item: string) => item.startsWith("--")), 0))
       .filter((item: string, index: number, array: string[]) => {
         const prevKey = array[index - 1];
@@ -514,7 +514,7 @@ export class CliTools {
           const key = this.camelCase(
             prevKey.replace("--", "").replace("no", "")
           );
-          if (Reflect.get(this.commanderStatic, key) === item) {
+          if (Reflect.get(this.command, key) === item) {
             return false;
           }
         }

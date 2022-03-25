@@ -1,8 +1,7 @@
 import {AbstractRunner} from "./abstract-runner";
 import {Injectable} from "@typeix/di";
 import {join, normalize} from "path";
-import * as chalk from "chalk";
-import {MESSAGES} from "../../ui";
+import {MESSAGES, chalk} from "../../ui";
 import {promisify} from "util";
 import * as fs from "fs";
 

@@ -2,7 +2,6 @@ import {Injector, verifyProvider} from "@typeix/di";
 import {YarnRunner} from "./runners/yarn.runner";
 import {NpmRunner} from "./runners/npm.runner";
 import {CliTools} from "./cli-tools";
-import {BuildCommand} from "./build.command";
 import {join, normalize} from "path";
 import {StartCommand} from "./start.command";
 import {EventEmitter} from "events";

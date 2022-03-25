@@ -1,7 +1,6 @@
 import {Injectable} from "@typeix/di";
 import {ChildProcess, spawn, SpawnOptions} from "child_process";
-import {MESSAGES} from "../../ui";
-import * as chalk from "chalk";
+import {MESSAGES, chalk} from "../../ui";
 
 @Injectable()
 export abstract class AbstractRunner {

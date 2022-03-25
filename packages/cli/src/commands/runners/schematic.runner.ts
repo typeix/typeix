@@ -3,9 +3,9 @@ import {Injectable} from "@typeix/di";
 import * as schematics from "./schematics.json";
 import {isBoolean, isFalsy, isString, isTruthy} from "@typeix/utils";
 import {strings} from "@angular-devkit/core";
-import * as chalk from "chalk";
 import * as Table from "cli-table3";
 import {Schematic} from "../interfaces";
+import {chalk} from "../../ui";
 
 
 @Injectable()

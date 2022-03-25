@@ -2,10 +2,8 @@ import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
 import {CliTools} from "./cli-tools";
 import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
-import {GitRunner} from "./runners/git.runner";
 import {Option} from "./interfaces";
-import * as chalk from "chalk";
-import {MESSAGES} from "../ui";
+import {MESSAGES, chalk} from "../ui";
 
 @Injectable()
 export class UpdateCommand implements IAfterConstruct {

@@ -5,9 +5,8 @@ import {YarnRunner} from "./runners/yarn.runner";
 import {GitRunner} from "./runners/git.runner";
 import {Option, Schematic, TpxCliConfig} from "./interfaces";
 import {SchematicRunner} from "./runners/schematic.runner";
-import {MESSAGES} from "../ui";
+import {MESSAGES, chalk} from "../ui";
 import {isBoolean, isDefined, isObject, isUndefined} from "@typeix/utils";
-import * as chalk from "chalk";
 
 @Injectable()
 export class GenerateCommand implements IAfterConstruct {

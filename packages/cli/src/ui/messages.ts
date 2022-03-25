@@ -1,5 +1,5 @@
-import * as chalk from "chalk";
-import { EMOJIS } from "./emojis";
+import {EMOJIS} from "./emojis";
+import {chalk} from "./index";
 
 /**
  * Prefixes

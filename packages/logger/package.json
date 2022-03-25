@@ -28,16 +28,16 @@
   "homepage": "https://typeix.com",
   "dependencies": {
     "@typeix/di": "^8.1.3",
-    "pino": "^6.11.3"
+    "pino": "^7.9.2"
   },
   "devDependencies": {
-    "pino-pretty": "^4.7.1"
+    "pino-pretty": "^7.6.0"
   },
   "publishConfig": {
     "access": "public"
   },
   "engines": {
-    "node": ">= 12.10.0"
+    "node": ">=16.10.0"
   },
   "gitHead": "c5fe53d6fc521abe0e1383a5fabc5bc7ecfdd1eb"
 }

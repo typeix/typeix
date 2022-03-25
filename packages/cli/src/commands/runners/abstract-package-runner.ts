@@ -1,11 +1,10 @@
 import {AbstractRunner} from "./abstract-runner";
 import {Inject, Injectable} from "@typeix/di";
 import {CliTools} from "../cli-tools";
-import * as ora from "ora";
-import {MESSAGES} from "../../ui";
+import ora from "ora";
+import {MESSAGES, chalk} from "../../ui";
 import {join} from "path";
 import {dasherize} from "@angular-devkit/core/src/utils/strings";
-import * as chalk from "chalk";
 
 const frames = ["▹▹▹▹▹", "▸▹▹▹▹", "▹▸▹▹▹", "▹▹▸▹▹", "▹▹▹▸▹", "▹▹▹▹▸"];
 const interval = 120;
