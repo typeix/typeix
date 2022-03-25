@@ -541,7 +541,7 @@ describe("Cli Tools", () => {
   test("getRemainingFlags", () => {
     const context = {
       camelCase: val => cliTools.camelCase(val),
-      commanderStatic: {
+      command: {
         args: [
           "--debug=true",
           "--watch",

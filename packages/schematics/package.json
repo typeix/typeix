@@ -1,5 +1,6 @@
 {
   "name": "@typeix/schematics",
+  "testRunner": "jest-jasmine2",
   "version": "8.2.0",
   "files": [
     "dist/**/*"
