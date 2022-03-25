@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsTypeixInterceptor",
+  "$id": "SchematicsTypeixInterceptor",
   "title": "Typeix Interceptor Options Schema",
   "type": "object",
   "properties": {

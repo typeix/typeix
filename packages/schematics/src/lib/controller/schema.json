@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsTypeixController",
+  "$id": "SchematicsTypeixController",
   "title": "Typeix Controller Options Schema",
   "type": "object",
   "properties": {
