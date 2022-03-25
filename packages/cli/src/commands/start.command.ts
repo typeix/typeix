@@ -4,7 +4,7 @@ import {EventEmitter} from "events";
 import {BuildCommand} from "./build.command";
 import {isDefined, isNumber, isString} from "@typeix/utils";
 import {ChildProcess, spawn} from "child_process";
-import * as killProcess from "tree-kill";
+import * as treeKill from "tree-kill";
 
 @Injectable()
 export class StartCommand extends BuildCommand implements IAfterConstruct {
@@ -77,7 +77,7 @@ export class StartCommand extends BuildCommand implements IAfterConstruct {
   private async reStartServer(outDir: string, options: Array<Option>, childProcess?: ChildProcess): Promise<ChildProcess> {
     if (isDefined(childProcess) && isNumber(childProcess?.pid)) {
       await new Promise((resolve) => {
-        killProcess(childProcess.pid, error => {
+        treeKill(childProcess.pid, error => {
           if (error) {
             this.cli.print(error, true);
           } else {

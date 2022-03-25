@@ -1,8 +1,7 @@
 import {AbstractRunner} from "./abstract-runner";
 import {Inject, Injectable} from "@typeix/di";
 import {CliTools} from "../cli-tools";
-import ora from "ora";
-import {MESSAGES, chalk} from "../../ui";
+import {MESSAGES, chalk, ora} from "../../ui";
 import {join} from "path";
 import {dasherize} from "@angular-devkit/core/src/utils/strings";
 

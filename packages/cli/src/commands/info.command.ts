@@ -1,6 +1,5 @@
 import {IAfterConstruct, Inject, Injectable} from "@typeix/di";
-import {BANNER, chalk} from "../ui";
-import osName from "os-name";
+import {BANNER, chalk, osName} from "../ui";
 import {platform, release} from "os";
 import {CliTools} from "./cli-tools";
 

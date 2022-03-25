@@ -1,5 +1,5 @@
-import {EMOJIS} from "./emojis";
-import {chalk} from "./index";
+import { EMOJIS } from "./emojis";
+export const chalk = require("chalk");
 
 /**
  * Prefixes

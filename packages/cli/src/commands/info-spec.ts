@@ -2,9 +2,8 @@ import {CliTools} from "./cli-tools";
 import {EventEmitter} from "events";
 import {Injector, SyncInjector, verifyProvider} from "@typeix/di";
 import {InfoCommand} from "./info.command";
-import {BANNER, chalk} from "../ui";
+import {BANNER, chalk, osName} from "../ui";
 import {platform, release} from "os";
-import osName from "os-name";
 import {join, normalize} from "path";
 
 

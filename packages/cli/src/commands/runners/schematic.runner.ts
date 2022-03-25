@@ -5,7 +5,7 @@ import {isBoolean, isFalsy, isString, isTruthy} from "@typeix/utils";
 import {strings} from "@angular-devkit/core";
 import * as Table from "cli-table3";
 import {Schematic} from "../interfaces";
-import {chalk} from "../../ui";
+import * as chalk from "chalk";
 
 
 @Injectable()

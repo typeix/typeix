@@ -22,7 +22,7 @@ const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 import * as webpack from "webpack";
 import * as inquirer from "inquirer";
 import * as ts from "typescript";
-import {chalk} from "../ui";
+import * as chalk from "chalk";
 
 @Injectable()
 export class CliTools {
