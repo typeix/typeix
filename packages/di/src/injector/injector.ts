@@ -145,7 +145,7 @@ export class Injector extends AbstractInjector<Injector> {
     // invoke after construct
     let key = metadata.find(item => item.decorator === AfterConstruct)?.propertyKey ?? "afterConstruct";
     if (isFunction(instance[key])) {
-      instance[key].call(instance);
+      await instance[key].call(instance);
     }
     return instance;
   }
