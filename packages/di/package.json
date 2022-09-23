@@ -1,6 +1,6 @@
 {
   "name": "@typeix/di",
-  "version": "8.2.4-rc.2",
+  "version": "8.2.4",
   "description": "Typescript dependency injection",
   "main": "dist/index.js",
   "scripts": {
@@ -29,8 +29,8 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/metadata": "^8.2.4-rc.2",
-    "@typeix/utils": "^8.2.4-rc.2"
+    "@typeix/metadata": "^8.2.4",
+    "@typeix/utils": "^8.2.4"
   },
   "publishConfig": {
     "access": "public"
