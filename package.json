@@ -1,7 +1,7 @@
 {
   "name": "typeix-srcs",
   "private": true,
-  "version": "8.2.4",
+  "version": "8.3.0",
   "description": "typeix helper functions",
   "scripts": {
     "coveralls-merge": "npm run test && node coveralls-merge.js",

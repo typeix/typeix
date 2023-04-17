@@ -42,7 +42,7 @@ export class AddCommand implements IAfterConstruct {
       throw new Error("No library found in command input");
     }
     try {
-      const pkgManager: YarnRunner | NpmRunner = Reflect.get(this, await this.cli.getPackageManagerName());
+      const pkgManager: YarnRunner | NpmRunner = <YarnRunner | NpmRunner>Reflect.get(this, await this.cli.getPackageManagerName());
       const result = await pkgManager.add(libraryName, this.cli.getRemainingFlags());
       if (!isDryRunEnabled) {
         this.cli.print(result);

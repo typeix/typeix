@@ -12,8 +12,12 @@ import {AppService} from "./app.service";
       useFactory: () => {
         return new Logger({
           options: {
-            prettyPrint: true,
-            level: "info"
+            transport: {
+              target: "pino-pretty",
+              options: {
+                colorize: true
+              }
+            }
           }
         });
       }

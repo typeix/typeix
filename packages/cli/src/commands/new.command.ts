@@ -154,7 +154,7 @@ export class NewCommand implements IAfterConstruct {
         ]);
         inputPackageManager = Reflect.get(answers, "package-manager");
       }
-      const pkgManager: YarnRunner | NpmRunner = Reflect.get(this, inputPackageManager);
+      const pkgManager: YarnRunner | NpmRunner = <YarnRunner | NpmRunner>Reflect.get(this, inputPackageManager);
       this.cli.print(await pkgManager.install(installDirectory));
     } catch (error) {
       this.cli.print(error, true);

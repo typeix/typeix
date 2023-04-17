@@ -36,7 +36,7 @@ export class RemoveCommand implements IAfterConstruct {
     }
     try {
       const args = this.cli.getRemainingFlags();
-      const pkgManager: YarnRunner | NpmRunner = Reflect.get(this, await this.cli.getPackageManagerName());
+      const pkgManager: YarnRunner | NpmRunner = <YarnRunner | NpmRunner>Reflect.get(this, await this.cli.getPackageManagerName());
       const result = await pkgManager.delete(libraryName, args);
       if (!isDryRunEnabled) {
         this.cli.print(result);

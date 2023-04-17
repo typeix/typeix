@@ -39,8 +39,11 @@ export class Logger {
   static developmentConfig(): pino.LoggerOptions {
     return {
       level: "debug",
-      prettyPrint: {
-        colorize: true
+      transport: {
+        target: "pino-pretty",
+        options: {
+          colorize: true
+        }
       }
     };
   }

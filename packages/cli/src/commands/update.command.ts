@@ -4,7 +4,6 @@ import {NpmRunner} from "./runners/npm.runner";
 import {YarnRunner} from "./runners/yarn.runner";
 import {Option} from "./interfaces";
 import {MESSAGES, chalk} from "../ui";
-
 @Injectable()
 export class UpdateCommand implements IAfterConstruct {
 
@@ -44,7 +43,7 @@ export class UpdateCommand implements IAfterConstruct {
     }
     try {
       const args = this.cli.getRemainingFlags();
-      const pkgManager: YarnRunner | NpmRunner = Reflect.get(this, await this.cli.getPackageManagerName());
+      const pkgManager: YarnRunner | NpmRunner = <YarnRunner | NpmRunner>Reflect.get(this, await this.cli.getPackageManagerName());
       const result = isForced ? await pkgManager.upgrade(libraryName, args): await pkgManager.update(libraryName, args);
       if (!isDryRunEnabled) {
         this.cli.print(result);

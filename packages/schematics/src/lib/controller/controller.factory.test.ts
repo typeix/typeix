@@ -192,8 +192,12 @@ describe("Controller Factory", () => {
         "      useFactory: () => {\n" +
         "        return new Logger({\n" +
         "          options: {\n" +
-        "            prettyPrint: true,\n" +
-        "            level: \"info\"\n" +
+        "            transport: {\n" +
+        "              target: \"pino-pretty\",\n" +
+        "              options: {\n" +
+        "                colorize: true\n" +
+        "              }\n" +
+        "            }\n"   +
         "          }\n" +
         "        });\n" +
         "      }\n" +

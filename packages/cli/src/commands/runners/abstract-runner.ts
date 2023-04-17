@@ -31,7 +31,7 @@ export abstract class AbstractRunner {
         } else {
           console.error(
             chalk.red(
-              MESSAGES.RUNNER_EXECUTION_ERROR(`${this.binary} ${command}`)
+              MESSAGES.RUNNER_EXECUTION_ERROR(`${this.binary} ${command} ${Buffer.concat(error).toJSON()}`)
             )
           );
           reject(Buffer.concat(error));

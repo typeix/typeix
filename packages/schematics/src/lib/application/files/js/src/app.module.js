@@ -12,8 +12,12 @@ import {Logger, RootModule} from "@typeix/resty";
       useFactory: () => {
         return new Logger({
           options: {
-            prettyPrint: true,
-            level: "info"
+            transport: {
+              target: "pino-pretty",
+              options: {
+                colorize: true
+              }
+            }
           }
         });
       }
