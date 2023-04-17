@@ -1,7 +1,7 @@
 {
   "name": "@typeix/schematics",
   "testRunner": "jest-jasmine2",
-  "version": "8.2.4",
+  "version": "8.3.0-rc.1",
   "files": [
     "dist/**/*"
   ],
@@ -20,25 +20,25 @@
     "test:dev": "npm run -s test -- --watchAll"
   },
   "devDependencies": {
-    "@commitlint/cli": "^16.2.3",
-    "@commitlint/config-angular": "^16.2.3",
-    "@typeix/resty": "^8.2.4",
-    "@types/fs-extra": "^9.0.13",
-    "@types/jest": "^27.4.1",
+    "@commitlint/cli": "^17.6.1",
+    "@commitlint/config-angular": "^17.6.1",
+    "@typeix/resty": "^8.3.0-rc.1",
+    "@types/fs-extra": "^11.0.1",
+    "@types/jest": "^29.5.0",
     "cpx": "^1.5.0",
-    "ts-jest": "^27.1.4",
-    "ttypescript": "^1.5.13",
-    "typescript-transform-paths": "^3.3.1"
+    "ts-jest": "^29.1.0",
+    "ttypescript": "^1.5.15",
+    "typescript-transform-paths": "^3.4.6"
   },
   "dependencies": {
-    "@angular-devkit/core": "^13.3.0",
-    "@angular-devkit/schematics": "^13.3.0",
-    "fs-extra": "^10.0.1",
-    "jsonc-parser": "^3.0.0",
+    "@angular-devkit/core": "^15.2.6",
+    "@angular-devkit/schematics": "^15.2.6",
+    "fs-extra": "^11.1.1",
+    "jsonc-parser": "^3.2.0",
     "pluralize": "^8.0.0"
   },
   "engines": {
-    "node": ">=16.10.0"
+    "node": ">=18.0.0"
   },
   "schematics": "./dist/collection.json",
   "repository": {

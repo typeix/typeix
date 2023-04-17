@@ -1,6 +1,6 @@
 {
   "name": "@typeix/metadata",
-  "version": "8.2.4",
+  "version": "8.3.0-rc.1",
   "description": "@typeix metadata apis::::",
   "main": "dist/index.js",
   "scripts": {
@@ -29,14 +29,14 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/utils": "^8.2.4",
+    "@typeix/utils": "^8.3.0-rc.1",
     "reflect-metadata": "^0.1.13"
   },
   "publishConfig": {
     "access": "public"
   },
   "engines": {
-    "node": ">=16.10.0"
+    "node": ">=18.0.0"
   },
   "gitHead": "c5fe53d6fc521abe0e1383a5fabc5bc7ecfdd1eb"
 }
