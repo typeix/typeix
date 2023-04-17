@@ -64,9 +64,12 @@ workflows:
   build-and-test:
     jobs:
       - build
-      - test_node_16:
+      - test_node_18:
           requires:
             - build
       - test_node_lts:
+          requires:
+            - build
+      - test_node_latest:
           requires:
             - build
