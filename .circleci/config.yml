@@ -28,7 +28,7 @@ unit-tests-template: &unit-tests-template
 jobs:
   build:
     docker:
-      - image: circleci/node:18
+      - image: cimg/node:lts
     steps:
       - checkout
       - run:
@@ -44,15 +44,20 @@ jobs:
           paths:
             - ./node_modules
 
+  test_node_18:
+    <<: *unit-tests-template
+    docker:
+      - image: cimg/node:18.16
+
   test_node_lts:
     <<: *unit-tests-template
     docker:
-      - image: circleci/node:18
+      - image: cimg/node:lts
 
-  test_node_16:
+  test_node_latest:
     <<: *unit-tests-template
     docker:
-      - image: circleci/node:16
+      - image: cimg/node:current
 
 workflows:
   version: 2
