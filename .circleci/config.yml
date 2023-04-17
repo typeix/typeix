@@ -27,7 +27,6 @@ unit-tests-template: &unit-tests-template
 
 jobs:
   build:
-    working_directory: ~/dist
     docker:
       - image: cimg/node:lts
     steps:
