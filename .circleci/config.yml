@@ -18,7 +18,7 @@ aliases:
       command: npm run test
 
 unit-tests-template: &unit-tests-template
-  working_directory: ~/
+  working_directory: ~/tpx
   steps:
     - checkout
     - *restore-cache
@@ -28,7 +28,7 @@ unit-tests-template: &unit-tests-template
 
 jobs:
   build:
-    working_directory: ~/
+    working_directory: ~/tpx
     docker:
       - image: cimg/node:lts
     steps:
