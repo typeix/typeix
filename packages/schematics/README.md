@@ -38,8 +38,8 @@ If you'd like to join them, please [read more here](https://docs.typeix.com/supp
 
 Typeix is [MIT licensed](LICENSE).
 
-[travis-url]: https://travis-ci.com/typeix/schematics
-[travis-img]: https://travis-ci.com/typeix/schematics.svg?branch=master
+[travis-url]: https://circleci.com/gh/typeix/typeix
+[travis-img]: https://img.shields.io/circleci/build/github/typeix/typeix/main
 [npm-version-img]: https://img.shields.io/npm/v/@typeix/schematics
 [coverage-img]: https://coveralls.io/repos/github/typeix/schematics/badge.svg?branch=master
 [coverage-url]: https://coveralls.io/github/typeix/schematics?branch=master

@@ -16,8 +16,8 @@ tools for building efficient and scalable applications.
 
 Utility package for typeix mainly helper functions.
 
-[travis-url]: https://travis-ci.com/typeix/typeix
-[travis-img]: https://travis-ci.com/typeix/typeix.svg?branch=main
+[travis-url]: https://circleci.com/gh/typeix/typeix
+[travis-img]: https://img.shields.io/circleci/build/github/typeix/typeix/main
 [npm-version-img]: https://img.shields.io/npm/v/@typeix/resty
 [coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=main
 [coverage-url]: https://coveralls.io/github/typeix/typeix?branch=main
