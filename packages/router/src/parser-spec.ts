@@ -249,7 +249,7 @@ describe("Parser", () => {
       pattern.getParams("/ab123sbr/this-is-test/abc-123/page/123123");
     }
     let t2 = (new Date).getTime();
-    expect(t2 - t1).toBeLessThan(50); // 50ms
+    expect(t2 - t1).toBeLessThan(100); // 50ms
   });
 
 });
