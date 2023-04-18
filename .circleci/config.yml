@@ -11,7 +11,7 @@ aliases:
   - &build-packages
     run:
       name: Build
-      command: npm run build && npm run bootstrap
+      command: npm run bootstrap && npm run build
   - &run-unit-tests
     run:
       name: Test
