@@ -8,6 +8,7 @@
     "bootstrap:clean:lock": "npm run clean:lock && npm run bootstrap",
     "bootstrap": "lerna exec npm i",
     "prebuild": "npm run clean:coverage",
+    "link": "lerna link",
     "build": "lerna exec npm run build",
     "build:clean:dist": "npm run clean && npm run build && lerna link",
     "build:clean:all": "npm run clean:all && npm run bootstrap && npm run build && lerna link",

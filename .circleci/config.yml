@@ -7,7 +7,7 @@ aliases:
   - &install-deps
     run:
       name: Install dependencies
-      command: npm ci && npm run bootstrap
+      command: npm ci && npm run bootstrap && npm run link
   - &build-packages
     run:
       name: Build
