@@ -1,15 +1,15 @@
 {
-  "name": "@typeix/di",
+  "name": "@typeix/resty-ws",
   "version": "8.3.0",
-  "description": "Typescript dependency injection",
+  "description": "typeix websockets support for resty framework",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc --project tsconfig.json",
     "pretest": "tsc",
     "test": "jest -c jest-runner.json --coverage",
-    "lint": "eslint src/**/*.ts src/*.ts",
-    "format": "eslint src/**/*.ts src/*.ts --fix"
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix"
   },
   "repository": {
     "type": "git",
@@ -17,9 +17,8 @@
   },
   "keywords": [
     "typeix",
-    "dependency",
-    "injection",
-    "di",
+    "resty",
+    "websocket",
     "typescript"
   ],
   "author": "developer@typeix.com",
@@ -28,15 +27,18 @@
     "url": "https://github.com/typeix/typeix/issues"
   },
   "homepage": "https://typeix.com",
-  "dependencies": {
-    "@typeix/metadata": "^8.3.0",
-    "@typeix/utils": "^8.3.0"
-  },
   "publishConfig": {
     "access": "public"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "gitHead": "c5fe53d6fc521abe0e1383a5fabc5bc7ecfdd1eb"
+  "dependencies": {
+    "ws": "^8.13.0",
+    "@typeix/resty": "^8.3.0",
+    "@typeix/modules": "^8.3.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.4"
+  }
 }

@@ -1,9 +1,9 @@
 import {ModuleInjector, Module, SyncModuleInjector} from "@typeix/modules";
 import {isArray} from "@typeix/utils";
-import {Router, RouterError} from "@typeix/router";
+import {Router} from "@typeix/router";
 import {getClassMetadata} from "@typeix/metadata";
-import {Logger} from "@typeix/logger";
-import {RootModuleMetadata} from "../decorators/module";
+import {Logger, verifyLoggerInProviders} from "@typeix/logger";
+import {RootModuleMetadata} from "../decorators";
 import {OnError} from "../decorators";
 import {Server} from "net";
 import {IProvider, verifyProvider, verifyProviders} from "@typeix/di";
@@ -30,24 +30,16 @@ export interface ServerConfig {
 export async function pipeServer(server: Server, Class: Function, config?: ServerConfig): Promise<SyncModuleInjector | ModuleInjector> {
   let metadata: RootModuleMetadata = getClassMetadata(Module, Class)?.args;
   if (!isArray(metadata.shared_providers)) {
-    throw new RouterError("Server must be initialized on @RootModule", 500);
+    throw new Error("Server must be initialized on @RootModule");
   }
   if (!verifyProviders(metadata.shared_providers).find(item => item.provide === Router)) {
     metadata.shared_providers.push(verifyProvider(Router));
   }
-  if (!verifyProviders(metadata.shared_providers).find(item => item.provide === Logger)) {
-    metadata.shared_providers.push(verifyProvider({
-      provide: Logger,
-      useFactory: () => new Logger({
-        options: {
-          level: "info"
-        }
-      })
-    }));
-  }
+  verifyLoggerInProviders(metadata.shared_providers);
+  const MODULE_INJECTOR = "@typeix:moduleInjector";
   const sharedProviders = verifyProviders(metadata.shared_providers);
-  const moduleInjector = config?.useSyncInjector ? ModuleInjector.Sync.createAndResolve(Class, sharedProviders) :
-    await ModuleInjector.createAndResolve(Class, sharedProviders);
+  const moduleInjector = Reflect.has(Class, MODULE_INJECTOR) ? Reflect.get(Class, MODULE_INJECTOR) : config?.useSyncInjector ?
+    ModuleInjector.Sync.createAndResolve(Class, sharedProviders) : await ModuleInjector.createAndResolve(Class, sharedProviders);
   const routeDefinitions = getRouteDefinitions(moduleInjector);
   const injector = moduleInjector.getInjector(Class);
   const router = injector.get(Router);
@@ -63,6 +55,10 @@ export async function pipeServer(server: Server, Class: Function, config?: Serve
     ).apply(router, [path, createRouteHandler(def, config), routeInjector]);
   }
   router.pipe(server);
+  if (!Reflect.has(Class, MODULE_INJECTOR)) {
+    Reflect.set(Class, MODULE_INJECTOR, moduleInjector);
+    Object.seal(Class);
+  }
   return moduleInjector;
 }
 

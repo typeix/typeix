@@ -45,7 +45,7 @@
     "type": "git",
     "url": "git+https://github.com/typeix/schematics.git"
   },
-  "author": "Igor Ivanovic",
+  "author": "developer@typeix.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/typeix/schematics/issues"
