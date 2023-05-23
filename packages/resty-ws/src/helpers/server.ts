@@ -6,7 +6,7 @@ import {
   IProvider,
   SyncInjector,
   verifyProvider,
-  verifyProviders, getMethodParams
+  verifyProviders, getMethodParams, Logger, isFalsy, isTruthy
 } from "@typeix/resty";
 import {IModuleMetadata, SocketDefinition} from "../interfaces";
 import {ISocketControllerOptions, WebSocketController, Event} from "../decorators";
@@ -54,7 +54,7 @@ export function getSocketDefinitions(moduleInjector: SyncModuleInjector | Module
  * @since 8.4.0
  * @function
  * @name createSocketHandler
- * @param {HTTPServer | HTTPSServer} httpOrHttpsServer HTTPServer | HTTPSServer
+ * @param {HTTPServer | HTTPSServer} httpServer HTTPServer | HTTPSServer
  * @param {Injector} socketInjector Injector
  * @param {SocketDefinition} socketDefinition SocketDefinition
  * @param {ServerConfig} config ServerConfig
@@ -64,16 +64,20 @@ export function getSocketDefinitions(moduleInjector: SyncModuleInjector | Module
  * Use httpServer function to httpServer an Module.
  */
 export async function createSocketHandler(
-  httpOrHttpsServer: HTTPServer | HTTPSServer,
+  httpServer: HTTPServer | HTTPSServer,
   socketInjector: SyncInjector | Injector,
   socketDefinition: SocketDefinition,
   config: ServerConfig
 ): Promise<Server> {
+  const KEEP_ALIVE = "@typeix:isAlive";
+  const SOCKET_KEY = "@typeix:sec-websocket-key";
   const server: Server = new Server({
     ...socketDefinition?.controller?.metadata?.socketOptions,
-    server: httpOrHttpsServer
+    server: httpServer
   });
   server.on("connection", async (socket: WebSocket, request: IncomingMessage) => {
+    Reflect.set(socket, KEEP_ALIVE, true);
+    Reflect.set(socket, SOCKET_KEY, request.headers["sec-websocket-key"]);
     const providers = [
       {
         provide: IncomingMessage,
@@ -88,9 +92,14 @@ export async function createSocketHandler(
       Injector.Sync.createAndResolveChild(<SyncInjector>socketInjector, socketDefinition.controller.provider, providers) :
       await Injector.createAndResolveChild(<Injector>socketInjector, socketDefinition.controller.provider, providers);
     const controllerRef = injector.get(socketDefinition.controller.provider.provide);
+    const logger = injector.get(Logger);
+    socket.on("error", err => logger.error({message: "websocket error occurred", error: err}));
+    socket.on("pong", () => Reflect.set(socket, KEEP_ALIVE, true));
     socket.on("close", () => {
+      logger.debug({message: "close websocket", SOCKET_KEY: Reflect.get(socket, SOCKET_KEY)});
       socket.removeAllListeners();
       injector.destroy();
+      Reflect.set(socket, KEEP_ALIVE, false);
     });
     for (const event of socketDefinition.events) {
       socket.on(event.args.name, async (...args: any[]) => {
@@ -101,6 +110,23 @@ export async function createSocketHandler(
         );
       });
     }
+  });
+  const interval = setInterval(function ping() {
+    server.clients.forEach((socket: WebSocket) => {
+      if (isFalsy(Reflect.get(socket, KEEP_ALIVE))) {
+        return socket.terminate();
+      }
+      Reflect.set(socket, KEEP_ALIVE, false);
+      socket.ping(JSON.stringify({
+        "sec-websocket-key": Reflect.get(socket, SOCKET_KEY)
+      }));
+    });
+  }, config?.hartBeatTimeout ?? 30000);
+  httpServer.on("close", () => {
+    server.clients.forEach(
+      (socket: WebSocket) => isTruthy(Reflect.get(socket, KEEP_ALIVE)) ? socket.terminate() : false
+    );
+    clearInterval(interval);
   });
   return server;
 }

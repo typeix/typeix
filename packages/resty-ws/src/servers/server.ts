@@ -22,6 +22,7 @@ import {Module} from "@typeix/modules";
  * Socket Server Config
  */
 export interface ServerConfig {
+  hartBeatTimeout?: number;
   useSyncInjector?: boolean;
 }
 
