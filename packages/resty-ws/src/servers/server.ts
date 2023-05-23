@@ -6,7 +6,7 @@ import {
   isArray,
   verifyProviders,
   Logger,
-  verifyLoggerInProviders
+  verifyLoggerInProviders, Router, verifyProvider
 } from "@typeix/resty";
 import {Server as HTTPServer} from "http";
 import {Server as HTTPSServer} from "https";
@@ -46,6 +46,9 @@ export async function pipeWebSocket(
   let metadata: RootModuleMetadata = getClassMetadata(Module, Class)?.args;
   if (!isArray(metadata.shared_providers)) {
     throw new Error("Server must be initialized on @RootModule");
+  }
+  if (!verifyProviders(metadata.shared_providers).find(item => item.provide === Router)) {
+    metadata.shared_providers.push(verifyProvider(Router));
   }
   verifyLoggerInProviders(metadata.shared_providers);
   const MODULE_INJECTOR = "@typeix:moduleInjector";

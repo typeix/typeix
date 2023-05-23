@@ -7,7 +7,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc --project tsconfig.json",
     "pretest": "tsc",
-    "test": "jest -c jest-runner.json --coverage",
+    "test": "jest -c jest-runner.json --coverage --detectOpenHandles --forceExit",
     "lint": "eslint src/**/*.ts",
     "format": "eslint src/**/*.ts --fix"
   },

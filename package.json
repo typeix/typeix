@@ -16,7 +16,7 @@
     "clean:lock": "lerna exec rimraf package-lock.json",
     "clean:node_modules": "lerna exec rimraf node_modules",
     "clean:all": "npm run clean && npm run clean:lock && npm run clean:node_modules",
-    "test": "lerna exec npm test",
+    "test": "lerna exec npm test --parallel",
     "publish:all": "npm run build && lerna publish --force-publish --loglevel=verbose",
     "publish:beta": "npm run build && lerna publish --force-publish --dist-tag=beta --loglevel=verbose",
     "publish:next": "npm run build && lerna publish --force-publish --dist-tag=next --loglevel=verbose",

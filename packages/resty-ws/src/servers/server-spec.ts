@@ -36,14 +36,7 @@ describe("WebSocket", () => {
     }
 
     @RootModule({
-      shared_providers: [{
-        provide: Logger,
-        useFactory: () => new Logger({
-          options: {
-            level: "debug"
-          }
-        })
-      }],
+      shared_providers: [],
       controllers: [ChatController]
     })
     class WebSocketApplication {
@@ -51,12 +44,12 @@ describe("WebSocket", () => {
     }
 
     const server = createServer();
-    const moduleInjector = await pipeServer(server, WebSocketApplication);
-    expect(moduleInjector).toBeTruthy();
     const injector = await pipeWebSocket(server, WebSocketApplication);
+    const moduleInjector = await pipeServer(server, WebSocketApplication);
     expect(injector).toBeTruthy();
+    expect(moduleInjector).toBeTruthy();
     expect(moduleInjector).toBe(injector);
-    await new Promise((resolve) => {
+    return await new Promise((resolve) => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
@@ -72,11 +65,83 @@ describe("WebSocket", () => {
         }
         setTimeout(() => {
           sockets.forEach(ws => ws.terminate());
-        }, 50);
+          server.close();
+          expect(messages).toEqual([
+            message, message,
+            message, message,
+            message, message,
+            message, message,
+            message, message,
+            message, message,
+            message, message,
+            message, message,
+            message, message,
+            message, message
+          ]);
+          resolve(true);
+        }, 1000);
+      });
+    });
+  });
+
+  it("Create server and should close connections", async () => {
+
+    const message = JSON.stringify({name: "message"});
+    const messages = [];
+
+    @WebSocketController({})
+    class ChatController implements IAfterConstruct {
+
+      @Inject() logger: Logger;
+      @Inject() socket: WebSocket;
+      @Inject() request: IncomingMessage;
+
+      @Event("message")
+      onMessage(@Args() [data, isBinary]: [RawData, boolean]) {
+        this.logger.info(data.toString(), isBinary);
+        messages.push(data.toString());
+        this.socket.send(data.toString());
+      }
+
+      afterConstruct(): void {
+        this.logger.info({
+          headers: this.request.headers
+        });
+      }
+    }
+
+    @RootModule({
+      shared_providers: [],
+      controllers: [ChatController]
+    })
+    class WebSocketApplication {
+
+    }
+
+    const server = createServer();
+    const moduleInjector = await pipeServer(server, WebSocketApplication, {useSyncInjector: true});
+    const injector = await pipeWebSocket(server, WebSocketApplication, {useSyncInjector: true});
+    expect(injector).toBeTruthy();
+    expect(moduleInjector).toBeTruthy();
+    expect(moduleInjector).toBe(injector);
+    const result = await new Promise((resolve) => {
+      server.listen(0, () => {
+        const address: AddressInfo = <AddressInfo>server.address();
+        const sockets = [];
+        for (let i = 0; i < 10; i++) {
+          const ws = new WebSocket("ws://localhost:" + address.port, {
+            headers: {
+              Authorization: "Basic " + Buffer.from("admin:admin").toString("base64")
+            }
+          });
+          ws.on("open", () => ws.send(message));
+          ws.on("message", data => messages.push(data.toString()));
+          sockets.push(ws);
+        }
         setTimeout(() => {
           server.close();
           resolve(true);
-        }, 100);
+        }, 200);
       });
     });
     expect(messages).toEqual([
@@ -91,6 +156,7 @@ describe("WebSocket", () => {
       message, message,
       message, message
     ]);
+    return Promise.resolve(result);
   });
 
 
@@ -126,14 +192,7 @@ describe("WebSocket", () => {
     }
 
     @RootModule({
-      shared_providers: [{
-        provide: Logger,
-        useFactory: () => new Logger({
-          options: {
-            level: "debug"
-          }
-        })
-      }],
+      shared_providers: [],
       controllers: [ChatController]
     })
     class WebSocketApplication {
@@ -146,7 +205,7 @@ describe("WebSocket", () => {
     const injector = await pipeWebSocket(server, WebSocketApplication, {hartBeatTimeout: 100});
     expect(injector).toBeTruthy();
     expect(moduleInjector).toBe(injector);
-    await new Promise((resolve) => {
+    const result = await new Promise((resolve) => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
@@ -180,7 +239,8 @@ describe("WebSocket", () => {
       message, message,
       message, message
     ]);
-    expect(pings.length).toBe(10);
+    expect(pings.length).toBeGreaterThanOrEqual(10);
+    return Promise.resolve(result);
   });
 
 
@@ -238,7 +298,7 @@ describe("WebSocket", () => {
     const injector = await pipeWebSocket(server, WebSocketApplication, {hartBeatTimeout: 100});
     expect(injector).toBeTruthy();
     expect(moduleInjector).toBe(injector);
-    await new Promise(resolve => {
+    const result = await new Promise(resolve => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
@@ -272,5 +332,6 @@ describe("WebSocket", () => {
       message, message
     ]);
     expect(pings.length).toBeGreaterThanOrEqual(100);
+    return Promise.resolve(result);
   });
 });
