@@ -43,6 +43,7 @@ aws lambda adapter, (gcp & azure will be added).
 * [@typeix/modules](packages/modules)
 * [@typeix/router](packages/router)
 * [@typeix/resty](packages/resty)
+* [@typeix/resty-ws](packages/resty-ws) websocket support for resty
 * [@typeix/resty-aws-lambda](packages/resty-aws-lambda)  
 * [@typeix/utils](packages/utils)
 * [@typeix/logger](packages/logger)
