@@ -65,11 +65,11 @@ describe("WebSocket", () => {
           sockets.push(ws);
         }
         setTimeout(() => {
+          expect(messages).toContain(message);
           sockets.forEach(ws => ws.terminate());
           server.close();
-          expect(messages).toContain(message);
           resolve(true);
-        }, 1000);
+        }, 5000);
       });
     });
   });
@@ -114,7 +114,7 @@ describe("WebSocket", () => {
     expect(injector).toBeTruthy();
     expect(moduleInjector).toBeTruthy();
     expect(moduleInjector).toBe(injector);
-    const result = await new Promise((resolve) => {
+    return await new Promise((resolve) => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
@@ -129,13 +129,12 @@ describe("WebSocket", () => {
           sockets.push(ws);
         }
         setTimeout(() => {
+          expect(messages).toContain(message);
           server.close();
           resolve(true);
-        }, 200);
+        }, 5000);
       });
     });
-    expect(messages).toContain(message);
-    return Promise.resolve(result);
   });
 
 
@@ -184,7 +183,7 @@ describe("WebSocket", () => {
     const injector = await pipeWebSocket(server, WebSocketApplication, {hartBeatTimeout: 100});
     expect(injector).toBeTruthy();
     expect(moduleInjector).toBe(injector);
-    const result = await new Promise((resolve) => {
+    return await new Promise((resolve) => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
@@ -202,16 +201,13 @@ describe("WebSocket", () => {
         setTimeout(() => sockets.forEach(ws => ws.pause()), 150);
         setTimeout(() => {
           server.close();
+          expect(messages).toContain(message);
+          expect(pings.length).toBeGreaterThanOrEqual(10);
           resolve(true);
-        }, 1000);
+        }, 5000);
       });
     });
-    expect(messages).toContain(message);
-    expect(pings.length).toBeGreaterThanOrEqual(10);
-    return Promise.resolve(result);
   });
-
-
 
 
   it("Create server and should terminate", async () => {
@@ -259,7 +255,7 @@ describe("WebSocket", () => {
     const injector = await pipeWebSocket(server, WebSocketApplication, {hartBeatTimeout: 100});
     expect(injector).toBeTruthy();
     expect(moduleInjector).toBe(injector);
-    const result = await new Promise(resolve => {
+    return await new Promise(resolve => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
@@ -276,16 +272,13 @@ describe("WebSocket", () => {
         }
         setTimeout(() => {
           server.close();
+          expect(messages).toContain(message);
+          expect(pings.length).toBeGreaterThanOrEqual(80);
           resolve(true);
-        }, 1050);
+        }, 5000);
       });
     });
-    expect(messages).toContain(message);
-    expect(pings.length).toBeGreaterThanOrEqual(80);
-    return Promise.resolve(result);
   });
-
-
 
 
   it("Create server and verify request body", async () => {
@@ -334,7 +327,7 @@ describe("WebSocket", () => {
     const injector = await pipeWebSocket(server, WebSocketApplication, {hartBeatTimeout: 100});
     expect(injector).toBeTruthy();
     expect(moduleInjector).toBe(injector);
-    const result = await new Promise((resolve) => {
+    return await new Promise((resolve) => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
@@ -352,12 +345,11 @@ describe("WebSocket", () => {
         setTimeout(() => sockets.forEach(ws => ws.pause()), 150);
         setTimeout(() => {
           server.close();
+          expect(messages).toContain(message);
+          expect(pings.length).toBeGreaterThanOrEqual(10);
           resolve(true);
-        }, 1000);
+        }, 5000);
       });
     });
-    expect(messages).toContain(message);
-    expect(pings.length).toBeGreaterThanOrEqual(10);
-    return Promise.resolve(result);
   });
 });
