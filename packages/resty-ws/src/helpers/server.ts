@@ -6,7 +6,12 @@ import {
   IProvider,
   SyncInjector,
   verifyProvider,
-  verifyProviders, getMethodParams, Logger, isFalsy, isTruthy, isObject
+  verifyProviders,
+  getMethodParams,
+  Logger,
+  isFalsy,
+  isTruthy,
+  isObject
 } from "@typeix/resty";
 import {IModuleMetadata, SocketDefinition} from "../interfaces";
 import {ISocketControllerOptions, WebSocketController, Subscribe} from "../decorators";
@@ -88,7 +93,8 @@ export async function createSocketHandler(
       {
         provide: WebSocket,
         useValue: socket
-      }
+      },
+      ...verifyProviders(socketDefinition.controller.metadata.providers)
     ];
     const injector = config?.useSyncInjector ?
       Injector.Sync.createAndResolveChild(<SyncInjector>socketInjector, socketDefinition.controller.provider, providers) :
