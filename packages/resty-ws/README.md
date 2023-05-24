@@ -30,7 +30,7 @@ class ChatController implements IAfterConstruct {
   @Inject() socket: WebSocket;
   @Inject() request: IncomingMessage;
 
-  @Event("message")
+  @Subscribe("message")
   onMessage(@Arg() buffer: Buffer, @Arg() isBinary: boolean, @Args() args: [RawData, boolean]) {
     this.logger.info(data.toString(), isBinary);
     this.socket.send(data.toString());

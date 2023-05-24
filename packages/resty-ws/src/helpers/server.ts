@@ -6,10 +6,10 @@ import {
   IProvider,
   SyncInjector,
   verifyProvider,
-  verifyProviders, getMethodParams, Logger, isFalsy, isTruthy
+  verifyProviders, getMethodParams, Logger, isFalsy, isTruthy, isObject
 } from "@typeix/resty";
 import {IModuleMetadata, SocketDefinition} from "../interfaces";
-import {ISocketControllerOptions, WebSocketController, Event} from "../decorators";
+import {ISocketControllerOptions, WebSocketController, Subscribe} from "../decorators";
 import {ServerConfig} from "../servers/server";
 import {WebSocket, Server} from "ws";
 import {IncomingMessage, Server as HTTPServer} from "http";
@@ -45,7 +45,7 @@ export function getSocketDefinitions(moduleInjector: SyncModuleInjector | Module
             metadata: controllerMetadata
           },
           allControllerMetadata,
-          events: allControllerMetadata.filter(item => inArray([Event], item.decorator))
+          events: allControllerMetadata.filter(item => inArray([Subscribe], item.decorator))
         });
       });
   });
@@ -117,10 +117,15 @@ export async function createSocketHandler(
             }
             return injector.get(token);
           });
-        await Reflect.get(controllerRef, event.propertyKey).apply(
+        const result = await Reflect.get(controllerRef, event.propertyKey).apply(
           controllerRef,
           actionParams
         );
+        if (isTruthy(result) && Buffer.isBuffer(result)) {
+          socket.send(result);
+        } else if (isTruthy(result) && isObject(result)) {
+          socket.send(JSON.stringify(result));
+        }
       });
     }
   });

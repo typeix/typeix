@@ -1,6 +1,6 @@
 import {Controller, IAfterConstruct, Inject, Logger, pipeServer, RootModule} from "@typeix/resty";
 import {createServer, IncomingMessage} from "http";
-import {Args, Event, WebSocketController} from "../decorators";
+import {Args, Subscribe, WebSocketController} from "../decorators";
 import {pipeWebSocket} from "./server";
 import {AddressInfo, RawData, WebSocket} from "ws";
 import {Arg} from "../decorators/events";
@@ -22,7 +22,7 @@ describe("WebSocket", () => {
       @Inject() socket: WebSocket;
       @Inject() request: IncomingMessage;
 
-      @Event("message")
+      @Subscribe("message")
       onMessage(@Args() [data, isBinary]: [RawData, boolean]) {
         this.logger.info(data.toString(), isBinary);
         messages.push(data.toString());
@@ -91,7 +91,7 @@ describe("WebSocket", () => {
       @Inject() socket: WebSocket;
       @Inject() request: IncomingMessage;
 
-      @Event("message")
+      @Subscribe("message")
       onMessage(@Args() [data, isBinary]: [RawData, boolean]) {
         this.logger.info(data.toString(), isBinary);
         messages.push(data.toString());
@@ -160,7 +160,7 @@ describe("WebSocket", () => {
       @Inject() socket: WebSocket;
       @Inject() request: IncomingMessage;
 
-      @Event("message")
+      @Subscribe("message")
       onMessage(@Args() [data, isBinary]: [RawData, boolean]) {
         this.logger.info(data.toString(), isBinary);
         messages.push(data.toString());
@@ -232,7 +232,7 @@ describe("WebSocket", () => {
       @Inject() socket: WebSocket;
       @Inject() request: IncomingMessage;
 
-      @Event("message")
+      @Subscribe("message")
       onMessage(@Args() [data, isBinary]: [RawData, boolean]) {
         this.logger.info(data.toString(), isBinary);
         messages.push(data.toString());
@@ -303,7 +303,7 @@ describe("WebSocket", () => {
       @Inject() socket: WebSocket;
       @Inject() request: IncomingMessage;
 
-      @Event("message")
+      @Subscribe("message")
       onMessage(@Arg() buffer: Buffer, @Arg() isBinary: boolean, @Args() args: [RawData, boolean]) {
         this.logger.info(buffer.toString(), isBinary);
         messages.push(buffer.toString());

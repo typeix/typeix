@@ -17,6 +17,7 @@ describe("Application Factory", () => {
     const tree: UnitTestTree = await runner.runSchematicAsync("application", options).toPromise();
     const files: string[] = tree.files;
     expect(files).toEqual([
+      "/project/.editorconfig",
       "/project/.eslintrc.js",
       "/project/.gitignore",
       "/project/.prettierrc",
@@ -42,6 +43,7 @@ describe("Application Factory", () => {
     const tree: UnitTestTree = await runner.runSchematicAsync("application", options).toPromise();
     const files: string[] = tree.files;
     expect(files).toEqual([
+      "/awesome-project/.editorconfig",
       "/awesome-project/.eslintrc.js",
       "/awesome-project/.gitignore",
       "/awesome-project/.prettierrc",
@@ -69,6 +71,7 @@ describe("Application Factory", () => {
     const files: string[] = tree.files;
     expect(files).toEqual([
       "/project/.babelrc",
+      "/project/.editorconfig",
       "/project/.gitignore",
       "/project/.prettierrc",
       "/project/README.md",
@@ -95,6 +98,7 @@ describe("Application Factory", () => {
     const tree: UnitTestTree = await runner.runSchematicAsync("application", options).toPromise();
     const files: string[] = tree.files;
     expect(files).toEqual([
+      "/scope-package/.editorconfig",
       "/scope-package/.eslintrc.js",
       "/scope-package/.gitignore",
       "/scope-package/.prettierrc",

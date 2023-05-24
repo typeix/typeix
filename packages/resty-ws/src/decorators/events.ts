@@ -7,7 +7,7 @@ export const EVENT_ARG = "@typeix:webSocketEventArg";
  * Event
  * @decorator
  * @function
- * @name Event
+ * @name Subscribe
  *
  * @param {string} name
  * @returns {function(any): any}
@@ -15,8 +15,8 @@ export const EVENT_ARG = "@typeix:webSocketEventArg";
  * @description
  * Define controller of application
  */
-export function Event(name: SocketEvent) {
-  return createMethodDecorator(Event, {name});
+export function Subscribe(name: SocketEvent) {
+  return createMethodDecorator(Subscribe, {name});
 }
 
 /**
