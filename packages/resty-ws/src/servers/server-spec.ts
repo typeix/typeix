@@ -4,6 +4,7 @@ import {Args, Subscribe, WebSocketController} from "../decorators";
 import {pipeWebSocket} from "./server";
 import {AddressInfo, RawData, WebSocket} from "ws";
 import {Arg} from "../decorators/events";
+
 const asyncTimeout = 2500;
 describe("WebSocket", () => {
   it("Create server and multiple connections and transfer data", async () => {
@@ -39,7 +40,8 @@ describe("WebSocket", () => {
     @Controller({
       path: "/other"
     })
-    class OtherController {}
+    class OtherController {
+    }
 
     @RootModule({
       shared_providers: [],
@@ -304,11 +306,24 @@ describe("WebSocket", () => {
       @Inject() request: IncomingMessage;
 
       @Subscribe("message")
-      onMessage(@Arg() buffer: Buffer, @Arg() isBinary: boolean, @Args() args: [RawData, boolean]) {
-        this.logger.info(buffer.toString(), isBinary);
+      onMessage(
+        @Inject() logger: Logger,
+        @Arg() isBinary2: boolean,
+        @Arg() buffer2: Buffer,
+        @Args() args2: [RawData, boolean],
+        @Inject() logger2: Logger,
+        @Arg() isBinary: boolean,
+        @Arg() buffer: Buffer,
+        @Args() args
+      ) {
+        logger.info(buffer.toString(), isBinary);
         messages.push(buffer.toString());
         this.socket.send(buffer.toString());
         expect(args).toEqual([buffer, isBinary]);
+        expect(args2).toEqual([buffer2, isBinary2]);
+        expect(args).toEqual([buffer2, isBinary2]);
+        expect(args2).toEqual([buffer, isBinary]);
+        expect(logger).toEqual(logger2);
       }
 
       afterConstruct(): void {

@@ -35,7 +35,16 @@ module.exports = {
     ],
     "@typescript-eslint/indent": [
       "error",
-      2
+      2,
+      {
+        "SwitchCase": 1,
+        "flatTernaryExpressions": false,
+        "ignoredNodes": [
+          "PropertyDefinition[decorators]",
+          "TSUnionType",
+          "FunctionExpression[params]:has(Identifier[decorators])"
+        ]
+      }
     ],
     "@typescript-eslint/member-delimiter-style": [
       "error",
