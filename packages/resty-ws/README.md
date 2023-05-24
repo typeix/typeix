@@ -54,11 +54,10 @@ class Application {
 // START SERVER
 async function bootstrap() {
   const server = createServer();
-  const injector = await pipeServer(server, Application);
+  await pipeServer(server, Application);
   await pipeWebSocket(server, Application);
   server.on("error", e => console.error(e));
   server.listen(8080);
-  return injector;
 }
 
 export default bootstrap();
