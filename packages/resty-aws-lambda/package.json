@@ -1,6 +1,6 @@
 {
   "name": "@typeix/resty-aws-lambda",
-  "version": "8.4.3",
+  "version": "8.4.4",
   "description": "REST nodejs framework for typescript",
   "main": "dist/index.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "@types/aws-lambda": "^8.10.114"
   },
   "dependencies": {
-    "@typeix/resty": "^8.4.3"
+    "@typeix/resty": "^8.4.4"
   },
   "publishConfig": {
     "access": "public"
@@ -38,5 +38,5 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "gitHead": "c5fe53d6fc521abe0e1383a5fabc5bc7ecfdd1eb"
+  "gitHead": "9123f9a1c0bae30788f5a2e6e2c914167f083530"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@typeix/resty-ws",
-  "version": "8.4.3",
+  "version": "8.4.4",
   "description": "typeix websockets support for resty framework",
   "main": "dist/index.js",
   "scripts": {
@@ -34,11 +34,12 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@typeix/modules": "^8.4.3",
-    "@typeix/resty": "^8.4.3",
+    "@typeix/modules": "^8.4.4",
+    "@typeix/resty": "^8.4.4",
     "ws": "^8.13.0"
   },
   "devDependencies": {
     "@types/ws": "^8.5.4"
-  }
+  },
+  "gitHead": "9123f9a1c0bae30788f5a2e6e2c914167f083530"
 }
