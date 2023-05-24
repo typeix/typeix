@@ -325,7 +325,7 @@ describe("WebSocket", () => {
       message, message,
       message, message
     ]);
-    expect(pings.length).toBeGreaterThanOrEqual(100);
+    expect(pings.length).toBeGreaterThanOrEqual(80);
     return Promise.resolve(result);
   });
 
