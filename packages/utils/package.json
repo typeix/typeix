@@ -1,6 +1,6 @@
 {
   "name": "@typeix/utils",
-  "version": "8.4.4",
+  "version": "8.4.5",
   "description": "typeix helper functions",
   "main": "dist/index.js",
   "scripts": {
