@@ -16,7 +16,7 @@
     "copy:lib": "cpx 'src/lib/**/{files,workspace}/**/*.*' dist/lib && cpx 'src/lib/**/{files,workspace}/**/.!(gitignore)' dist/lib",
     "lint": "eslint '{src,test}/**/*.ts' --fix",
     "pretest": "rimraf dist && tsc --project tsconfig.json",
-    "test": "jest --config jest-runner.json --coverage",
+    "test": "jest --config jest-runner.json --coverage --detectOpenHandles --forceExit",
     "test:dev": "npm run -s test -- --watchAll"
   },
   "devDependencies": {

@@ -14,7 +14,7 @@ import {ServerConfig} from "../servers/server";
 import {WebSocket, Server} from "ws";
 import {IncomingMessage, Server as HTTPServer} from "http";
 import {Server as HTTPSServer} from "https";
-import {EVENT_ARGS} from "../decorators/events";
+import {EVENT_ARG, EVENT_ARGS} from "../decorators/events";
 
 
 /**
@@ -102,11 +102,22 @@ export async function createSocketHandler(
       Reflect.set(socket, KEEP_ALIVE, false);
     });
     for (const event of socketDefinition.events) {
-      socket.on(event.args.name, async (...args: any[]) => {
-        const actionParams = getMethodParams(socketDefinition.allControllerMetadata, event.propertyKey);
+      const eventName = event.args.name;
+      socket.on(eventName, async (...args: any[]) => {
+        const eventArgs = [...args];
+        const actionParams = getMethodParams(socketDefinition.allControllerMetadata, event.propertyKey)
+          .map(token => {
+            switch (token) {
+              case EVENT_ARGS:
+                return [...args];
+              case EVENT_ARG:
+                return eventArgs.shift();
+            }
+            return injector.get(token);
+          });
         await Reflect.get(controllerRef, event.propertyKey).apply(
           controllerRef,
-          actionParams.map(token => token === EVENT_ARGS ? args : injector.get(token))
+          actionParams
         );
       });
     }
@@ -118,15 +129,17 @@ export async function createSocketHandler(
       }
       Reflect.set(socket, KEEP_ALIVE, false);
       socket.ping(JSON.stringify({
-        "sec-websocket-key": Reflect.get(socket, SOCKET_KEY)
+        "sec-websocket-key": Reflect.get(socket, SOCKET_KEY),
+        "time": Date.now()
       }));
     });
   }, config?.hartBeatTimeout ?? 30000);
   httpServer.on("close", () => {
+    clearInterval(interval);
     server.clients.forEach(
       (socket: WebSocket) => isTruthy(Reflect.get(socket, KEEP_ALIVE)) ? socket.terminate() : false
     );
-    clearInterval(interval);
+    server.close();
   });
   return server;
 }

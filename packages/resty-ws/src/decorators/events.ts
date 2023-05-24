@@ -2,6 +2,7 @@ import {createMethodDecorator, Inject} from "@typeix/resty";
 
 declare type SocketEvent = "close" | "error" | "message" | "open" | "ping" | "pong" | "redirect" | "upgrade" | "unexpected-response";
 export const EVENT_ARGS = "@typeix:webSocketEventArgs";
+export const EVENT_ARG = "@typeix:webSocketEventArg";
 /**
  * Event
  * @decorator
@@ -29,4 +30,17 @@ export function Event(name: SocketEvent) {
  */
 export function Args() {
   return Inject(EVENT_ARGS);
+}
+
+/**
+ * EventBody
+ * @decorator
+ * @function
+ * @name Args
+ *
+ * @description
+ * Event argument body
+ */
+export function Arg() {
+  return Inject(EVENT_ARG);
 }

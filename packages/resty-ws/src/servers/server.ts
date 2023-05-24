@@ -6,7 +6,9 @@ import {
   isArray,
   verifyProviders,
   Logger,
-  verifyLoggerInProviders, Router, verifyProvider
+  verifyLoggerInProviders,
+  Router,
+  verifyProvider
 } from "@typeix/resty";
 import {Server as HTTPServer} from "http";
 import {Server as HTTPSServer} from "https";
