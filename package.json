@@ -1,15 +1,15 @@
 {
   "name": "typeix-sources",
   "private": true,
-  "version": "8.3.0",
+  "version": "8.4.0",
   "description": "typeix helper functions",
   "scripts": {
     "coveralls-merge": "npm run test && node coveralls-merge.js",
     "bootstrap:clean:lock": "npm run clean:lock && npm run bootstrap",
-    "bootstrap": "lerna exec npm i",
+    "bootstrap": "lerna exec npm i --parallel",
     "prebuild": "npm run clean:coverage",
     "link": "lerna link",
-    "build": "lerna exec npm run build",
+    "build": "lerna exec npm run build --parallel",
     "build:clean:dist": "npm run clean && npm run build && lerna link",
     "build:clean:all": "npm run clean:all && npm run bootstrap && npm run build && lerna link",
     "clean": "lerna exec rimraf dist",
