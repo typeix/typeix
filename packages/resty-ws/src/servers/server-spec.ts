@@ -1,4 +1,4 @@
-import {IAfterConstruct, Inject, Logger, pipeServer, RootModule} from "@typeix/resty";
+import {Controller, IAfterConstruct, Inject, Logger, pipeServer, RootModule} from "@typeix/resty";
 import {createServer, IncomingMessage} from "http";
 import {Args, Event, WebSocketController} from "../decorators";
 import {pipeWebSocket} from "./server";
@@ -36,9 +36,14 @@ describe("WebSocket", () => {
       }
     }
 
+    @Controller({
+      path: "/other"
+    })
+    class OtherController {}
+
     @RootModule({
       shared_providers: [],
-      controllers: [ChatController]
+      controllers: [ChatController, OtherController]
     })
     class WebSocketApplication {
 

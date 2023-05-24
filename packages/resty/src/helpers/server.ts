@@ -121,26 +121,28 @@ export function createRouteDefinition(
 export function getRouteDefinitions(moduleInjector: SyncModuleInjector | ModuleInjector): Array<RouteDefinition> {
   let routeDefinitions: Array<RouteDefinition> = [];
   moduleInjector.getAllMetadata().forEach((moduleMetadata: IModuleMetadata, module: Function) => {
-    verifyProviders(moduleMetadata.controllers).forEach((provider: IProvider) => {
-      let allControllerMetadata = Injector.Sync.getAllMetadataForTarget(provider);
-      let controllerMetadata: IControllerMetadata = allControllerMetadata.find(item => item.decorator === Controller)?.args;
-      allControllerMetadata
-        .filter(item => inArray(REST_DECORATORS, item.decorator))
-        .forEach(method => {
-          routeDefinitions.push({
-            module: {
-              provider: verifyProvider(module),
-              metadata: moduleMetadata
-            },
-            controller: {
-              provider,
-              metadata: controllerMetadata
-            },
-            allControllerMetadata,
-            method
+    verifyProviders(moduleMetadata.controllers)
+      .filter((provider: IProvider) => Injector.Sync.getAllMetadataForTarget(provider).find(item => item.decorator === Controller))
+      .forEach((provider: IProvider) => {
+        let allControllerMetadata = Injector.Sync.getAllMetadataForTarget(provider);
+        let controllerMetadata: IControllerMetadata = allControllerMetadata.find(item => item.decorator === Controller)?.args;
+        allControllerMetadata
+          .filter(item => inArray(REST_DECORATORS, item.decorator))
+          .forEach(method => {
+            routeDefinitions.push({
+              module: {
+                provider: verifyProvider(module),
+                metadata: moduleMetadata
+              },
+              controller: {
+                provider,
+                metadata: controllerMetadata
+              },
+              allControllerMetadata,
+              method
+            });
           });
-        });
-    });
+      });
   });
   return routeDefinitions;
 }

@@ -30,22 +30,24 @@ import {EVENT_ARG, EVENT_ARGS} from "../decorators/events";
 export function getSocketDefinitions(moduleInjector: SyncModuleInjector | ModuleInjector): Array<SocketDefinition> {
   let routeDefinitions: Array<SocketDefinition> = [];
   moduleInjector.getAllMetadata().forEach((moduleMetadata: IModuleMetadata, module: Function) => {
-    verifyProviders(moduleMetadata.controllers).forEach((provider: IProvider) => {
-      let allControllerMetadata = Injector.Sync.getAllMetadataForTarget(provider);
-      let controllerMetadata: ISocketControllerOptions = allControllerMetadata.find(item => item.decorator === WebSocketController)?.args;
-      routeDefinitions.push({
-        module: {
-          provider: verifyProvider(module),
-          metadata: moduleMetadata
-        },
-        controller: {
-          provider,
-          metadata: controllerMetadata
-        },
-        allControllerMetadata,
-        events: allControllerMetadata.filter(item => inArray([Event], item.decorator))
+    verifyProviders(moduleMetadata.controllers)
+      .filter((provider: IProvider) => Injector.Sync.getAllMetadataForTarget(provider).find(item => item.decorator === WebSocketController))
+      .forEach((provider: IProvider) => {
+        let allControllerMetadata = Injector.Sync.getAllMetadataForTarget(provider);
+        let controllerMetadata: ISocketControllerOptions = allControllerMetadata.find(item => item.decorator === WebSocketController)?.args;
+        routeDefinitions.push({
+          module: {
+            provider: verifyProvider(module),
+            metadata: moduleMetadata
+          },
+          controller: {
+            provider,
+            metadata: controllerMetadata
+          },
+          allControllerMetadata,
+          events: allControllerMetadata.filter(item => inArray([Event], item.decorator))
+        });
       });
-    });
   });
   return routeDefinitions;
 }
