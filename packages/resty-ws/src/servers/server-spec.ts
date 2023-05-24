@@ -4,7 +4,7 @@ import {Args, Event, WebSocketController} from "../decorators";
 import {pipeWebSocket} from "./server";
 import {AddressInfo, RawData, WebSocket} from "ws";
 import {Arg} from "../decorators/events";
-
+const asyncTimeout = 2500;
 describe("WebSocket", () => {
   it("Create server and multiple connections and transfer data", async () => {
 
@@ -69,7 +69,7 @@ describe("WebSocket", () => {
           sockets.forEach(ws => ws.terminate());
           server.close();
           resolve(true);
-        }, 5000);
+        }, asyncTimeout);
       });
     });
   });
@@ -132,7 +132,7 @@ describe("WebSocket", () => {
           expect(messages).toContain(message);
           server.close();
           resolve(true);
-        }, 5000);
+        }, asyncTimeout);
       });
     });
   });
@@ -204,7 +204,7 @@ describe("WebSocket", () => {
           expect(messages).toContain(message);
           expect(pings.length).toBeGreaterThanOrEqual(10);
           resolve(true);
-        }, 5000);
+        }, asyncTimeout);
       });
     });
   });
@@ -275,7 +275,7 @@ describe("WebSocket", () => {
           expect(messages).toContain(message);
           expect(pings.length).toBeGreaterThanOrEqual(80);
           resolve(true);
-        }, 5000);
+        }, asyncTimeout);
       });
     });
   });
@@ -348,7 +348,7 @@ describe("WebSocket", () => {
           expect(messages).toContain(message);
           expect(pings.length).toBeGreaterThanOrEqual(10);
           resolve(true);
-        }, 5000);
+        }, asyncTimeout);
       });
     });
   });
