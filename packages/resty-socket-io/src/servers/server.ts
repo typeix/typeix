@@ -1,7 +1,10 @@
 import {ModuleInjector, SyncModuleInjector, Logger} from "@typeix/resty";
 import {Server as HTTPServer} from "http";
 import {Server as HTTPSServer} from "https";
+import {Http2SecureServer} from "http2";
 import {createSocketHandler, getSocketDefinitions} from "../helpers";
+import {ServerOptions} from "socket.io";
+
 
 /**
  * @since 8.4.0
@@ -11,6 +14,7 @@ import {createSocketHandler, getSocketDefinitions} from "../helpers";
  * Socket Server Config
  */
 export interface ServerConfig {
+  socketOptions?: Partial<ServerOptions>;
   hartBeatTimeout?: number;
   useSyncInjector?: boolean;
 }
@@ -28,7 +32,7 @@ export interface ServerConfig {
  * Use httpServer function to httpServer an Module.
  */
 export async function pipeWebSocket(
-  server: HTTPServer | HTTPSServer,
+  server: HTTPServer | HTTPSServer | Http2SecureServer,
   Class: Function,
   config?: ServerConfig
 ): Promise<SyncModuleInjector | ModuleInjector> {

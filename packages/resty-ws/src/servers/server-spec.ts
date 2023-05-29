@@ -52,8 +52,8 @@ describe("WebSocket", () => {
     }
 
     const server = createServer();
-    const injector = await pipeWebSocket(server, WebSocketApplication);
     const moduleInjector = await pipeServer(server, WebSocketApplication);
+    const injector = await pipeWebSocket(server, WebSocketApplication);
     expect(injector).toBeTruthy();
     expect(moduleInjector).toBeTruthy();
     expect(moduleInjector).toBe(injector);
