@@ -1,6 +1,6 @@
 {
   "name": "@typeix/resty",
-  "version": "8.5.0",
+  "version": "8.5.1",
   "description": "Fast, unopinionated, minimalist framework for building efficient and scalable applications",
   "main": "dist/index.js",
   "scripts": {
@@ -27,12 +27,12 @@
   },
   "homepage": "https://typeix.com",
   "dependencies": {
-    "@typeix/di": "^8.5.0",
-    "@typeix/logger": "^8.5.0",
-    "@typeix/metadata": "^8.5.0",
-    "@typeix/modules": "^8.5.0",
-    "@typeix/router": "^8.5.0",
-    "@typeix/utils": "^8.5.0"
+    "@typeix/di": "^8.5.1",
+    "@typeix/logger": "^8.5.1",
+    "@typeix/metadata": "^8.5.1",
+    "@typeix/modules": "^8.5.1",
+    "@typeix/router": "^8.5.1",
+    "@typeix/utils": "^8.5.1"
   },
   "publishConfig": {
     "access": "public"
