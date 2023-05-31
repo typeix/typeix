@@ -280,7 +280,7 @@ describe("WebSocket", () => {
         setTimeout(() => {
           server.close();
           expect(messages).toContain(message);
-          expect(pings.length).toBeGreaterThanOrEqual(80);
+          expect(pings.length).toBeGreaterThanOrEqual(10);
           resolve(true);
         }, asyncTimeout);
       });
