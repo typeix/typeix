@@ -6,8 +6,8 @@ import {AddressInfo, RawData, WebSocket} from "ws";
 import {Arg} from "../decorators/events";
 
 jest.useRealTimers();
-const envTimeout = parseInt(process.env.TEST_TIMEOUT, 10);
-const asyncTimeout = envTimeout || 3000;
+// const envTimeout = parseInt(process.env.TEST_TIMEOUT, 10);
+const asyncTimeout = 3000;
 describe("WebSocket", () => {
   it("Create server and multiple connections and transfer data", async () => {
 
