@@ -8,7 +8,6 @@ import {AddressInfo} from "net";
 
 const envTimeout = parseInt(process.env.TEST_TIMEOUT, 10);
 const asyncTimeout = envTimeout || 3000;
-console.log("asyncTimeout", asyncTimeout);
 describe("WebSocket", () => {
 
   it("Create server and apply middleware", async () => {
