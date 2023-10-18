@@ -27,7 +27,7 @@
   },
   "homepage": "https://typeix.com",
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.114"
+    "@types/aws-lambda": "^8.10.125"
   },
   "dependencies": {
     "@typeix/resty": "^8.5.1"

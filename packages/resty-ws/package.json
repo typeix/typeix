@@ -36,10 +36,10 @@
   "dependencies": {
     "@typeix/modules": "^8.5.1",
     "@typeix/resty": "^8.5.1",
-    "ws": "^8.13.0"
+    "ws": "^8.14.2"
   },
   "devDependencies": {
-    "@types/ws": "^8.5.4"
+    "@types/ws": "^8.5.8"
   },
   "gitHead": "9123f9a1c0bae30788f5a2e6e2c914167f083530"
 }

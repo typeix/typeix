@@ -28,10 +28,10 @@
   "homepage": "https://typeix.com",
   "dependencies": {
     "@typeix/di": "^8.5.1",
-    "pino": "^8.11.0"
+    "pino": "^8.16.0"
   },
   "devDependencies": {
-    "pino-pretty": "^10.0.0"
+    "pino-pretty": "^10.2.3"
   },
   "publishConfig": {
     "access": "public"
