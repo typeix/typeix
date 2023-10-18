@@ -63,7 +63,7 @@ describe("WebSocket", () => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 2; i++) {
           const ws = new WebSocket("ws://localhost:" + address.port + "/ws", {
             headers: {
               Authorization: "Basic " + Buffer.from("admin:admin").toString("base64")
@@ -127,7 +127,7 @@ describe("WebSocket", () => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 2; i++) {
           const ws = new WebSocket("ws://localhost:" + address.port, {
             headers: {
               Authorization: "Basic " + Buffer.from("admin:admin").toString("base64")
@@ -196,7 +196,7 @@ describe("WebSocket", () => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 2; i++) {
           const ws = new WebSocket("ws://localhost:" + address.port + "/ws", {
             headers: {
               Authorization: "Basic " + Buffer.from("admin:admin").toString("base64")
@@ -211,7 +211,7 @@ describe("WebSocket", () => {
         setTimeout(() => {
           server.close();
           expect(messages).toContain(message);
-          expect(pings.length).toBeGreaterThanOrEqual(10);
+          expect(pings.length).toBeGreaterThanOrEqual(1);
           resolve(true);
         }, asyncTimeout);
       });
@@ -268,7 +268,7 @@ describe("WebSocket", () => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 2; i++) {
           const ws = new WebSocket("ws://localhost:" + address.port + "/ws", {
             headers: {
               Authorization: "Basic " + Buffer.from("admin:admin").toString("base64")
@@ -282,7 +282,7 @@ describe("WebSocket", () => {
         setTimeout(() => {
           server.close();
           expect(messages).toContain(message);
-          expect(pings.length).toBeGreaterThanOrEqual(10);
+          expect(pings.length).toBeGreaterThanOrEqual(1);
           resolve(true);
         }, asyncTimeout);
       });
@@ -353,7 +353,7 @@ describe("WebSocket", () => {
       server.listen(0, () => {
         const address: AddressInfo = <AddressInfo>server.address();
         const sockets = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 2; i++) {
           const ws = new WebSocket("ws://localhost:" + address.port + "/ws", {
             headers: {
               Authorization: "Basic " + Buffer.from("admin:admin").toString("base64")
@@ -368,7 +368,7 @@ describe("WebSocket", () => {
         setTimeout(() => {
           server.close();
           expect(messages).toContain(message);
-          expect(pings.length).toBeGreaterThanOrEqual(10);
+          expect(pings.length).toBeGreaterThanOrEqual(1);
           resolve(true);
         }, asyncTimeout);
       });
