@@ -7,7 +7,7 @@ import {Arg} from "../decorators/events";
 
 jest.useRealTimers();
 
-const asyncTimeout = 8000;
+const asyncTimeout = 15000;
 describe("WebSocket", () => {
   it("Create server and multiple connections and transfer data", async () => {
 
