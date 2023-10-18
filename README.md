@@ -73,8 +73,8 @@ If you'd like to join them, please [read more here](https://docs.typeix.com/supp
 
 Typeix is [MIT licensed](LICENSE).
 
-[travis-url]: https://circleci.com/gh/typeix/typeix
-[travis-img]: https://img.shields.io/circleci/build/github/typeix/typeix/main
+[travis-url]: https://github.com/typeix/typeix/actions
+[travis-img]: https://github.com/typeix/typeix/actions/workflows/ci.yml/badge.svg
 [npm-version-img]: https://img.shields.io/npm/v/@typeix/resty
 [coverage-img]: https://coveralls.io/repos/github/typeix/typeix/badge.svg?branch=main
 [coverage-url]: https://coveralls.io/github/typeix/typeix?branch=main

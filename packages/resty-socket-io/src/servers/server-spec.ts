@@ -7,7 +7,7 @@ import {Socket} from "socket.io";
 import {AddressInfo} from "net";
 
 
-const asyncTimeout = 3000;
+const asyncTimeout = 4900;
 describe("WebSocket", () => {
 
   it("Create server and apply middleware", async () => {
