@@ -6,8 +6,9 @@ import {Socket as ClientSocket, Manager} from "socket.io-client";
 import {Socket} from "socket.io";
 import {AddressInfo} from "net";
 
-
-const asyncTimeout = 15000;
+const envTimeout = parseInt(process.env.TEST_TIMEOUT, 10);
+const asyncTimeout = envTimeout || 3000;
+console.log("asyncTimeout", asyncTimeout);
 describe("WebSocket", () => {
 
   it("Create server and apply middleware", async () => {

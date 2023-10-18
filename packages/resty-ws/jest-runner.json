@@ -31,7 +31,7 @@
     "html",
     ["lcov", {"projectRoot": "./../../"}]
   ],
-  "testTimeout": 20000,
+  "testTimeout": 20500,
   "coverageThreshold": {
     "global": {
       "branches": 70,
