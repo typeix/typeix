@@ -45,7 +45,7 @@ export const CLI_CONFIG: TpxCliConfig = {
   distRoot: "dist",
   collection: "@typeix/schematics",
   entryFile: "dist/bootstrap.js",
-  compiler: "ttypescript",
+  compiler: "ts-patch/compiler",
   projects: {},
   monorepo: false,
   compilerOptions: {

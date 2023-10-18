@@ -41,7 +41,7 @@
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "ttypescript": "^1.5.15",
+    "ts-patch": "^3.0.2",
     "typescript": "^5.2.2",
     "typescript-transform-paths": "^3.4.6"
   },
