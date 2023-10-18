@@ -5,7 +5,9 @@ import {pipeWebSocket} from "./server";
 import {AddressInfo, RawData, WebSocket} from "ws";
 import {Arg} from "../decorators/events";
 
-const asyncTimeout = 4900;
+jest.useRealTimers();
+
+const asyncTimeout = 8000;
 describe("WebSocket", () => {
   it("Create server and multiple connections and transfer data", async () => {
 

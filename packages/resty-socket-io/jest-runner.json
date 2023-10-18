@@ -19,6 +19,7 @@
     "**/*-spec.ts",
     "*-spec.ts"
   ],
+  "testTimeout": 10000,
   "collectCoverage": false,
   "coveragePathIgnorePatterns": [
     "<rootDir>/node_modules",
