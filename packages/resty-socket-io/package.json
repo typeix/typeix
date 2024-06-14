@@ -1,6 +1,6 @@
 {
   "name": "@typeix/resty-socket-io",
-  "version": "8.6.1-rc.1",
+  "version": "8.7.0",
   "description": "typeix websockets support for resty framework",
   "main": "dist/index.js",
   "scripts": {
@@ -34,8 +34,8 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@typeix/modules": "^8.6.1-rc.1",
-    "@typeix/resty": "^8.6.1-rc.1",
+    "@typeix/modules": "^8.7.0",
+    "@typeix/resty": "^8.7.0",
     "socket.io": "^4.7.2"
   },
   "devDependencies": {
