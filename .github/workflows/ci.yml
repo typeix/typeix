@@ -21,4 +21,5 @@ jobs:
         run: npm run coveralls-merge
       - name: Publish Typeix Coverage
         uses: coverallsapp/github-action@v2
+        file: lcov.info
 
