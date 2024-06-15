@@ -5,13 +5,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Typeix Build
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - run: npm ci
-      - run: npm run bootstrap
-      - run: npm run build
-      - run: npm run test:ci
-      - run: npm run coveralls-merge
-      - run: cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js
+      - name: Clean Install
+        run: npm ci
+      - name: Install Packages
+        run: npm run bootstrap
+      - name: Typeix Build
+        run: npm run build
+      - name: Typeix Test
+        run: npm run test:ci
+      - name: Typeix Coverage
+        run: npm run coveralls-merge
+      - name: Publish Typeix Coverage
+        uses: coverallsapp/github-action@v2
+

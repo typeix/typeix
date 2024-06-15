@@ -4,7 +4,7 @@
   "version": "8.5.x",
   "description": "typeix helper functions",
   "scripts": {
-    "coveralls-merge": "npm run test && node coveralls-merge.js",
+    "coveralls-merge": "node coveralls-merge.js",
     "bootstrap:clean:lock": "npm run clean:lock && npm run bootstrap",
     "bootstrap": "lerna exec npm i --parallel",
     "prebuild": "npm run clean:coverage",
