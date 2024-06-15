@@ -13,3 +13,5 @@ jobs:
       - run: npm run bootstrap
       - run: npm run build
       - run: npm run test:ci
+      - run: npm run coveralls-merge
+      - run: cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js
