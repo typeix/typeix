@@ -20,7 +20,7 @@ describe("Controller Factory", () => {
       spec: false,
       flat: false,
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("controller", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("controller", options);
     const files: string[] = tree.files;
 
     expect(
@@ -45,7 +45,7 @@ describe("Controller Factory", () => {
       name: "bar/foo",
       skipImport: true,
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("controller", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("controller", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/bar/foo/foo.controller.ts"),
@@ -70,7 +70,7 @@ describe("Controller Factory", () => {
       path: "bar",
       skipImport: true,
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("controller", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("controller", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/bar/foo/foo.controller.ts"),
@@ -94,7 +94,7 @@ describe("Controller Factory", () => {
       name: "fooBar",
       skipImport: true,
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("controller", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("controller", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/foo-bar/foo-bar.controller.ts"),
@@ -120,7 +120,7 @@ describe("Controller Factory", () => {
       name: "barBaz/foo",
       skipImport: true,
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("controller", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("controller", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/bar-baz/foo/foo.controller.ts"),
@@ -147,7 +147,7 @@ describe("Controller Factory", () => {
       language: "js",
       skipImport: true,
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("controller", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("controller", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/foo/foo.controller.js"),
@@ -170,17 +170,17 @@ describe("Controller Factory", () => {
     const app: ApplicationOptions = {
       name: "",
     };
-    let tree: UnitTestTree = await runner.runSchematicAsync("application", app).toPromise();
+    let tree: UnitTestTree = await runner.runSchematic("application", app);
     const options: ControllerOptions = {
       name: "foo",
     };
-    tree = await runner.runSchematicAsync("controller", options, tree).toPromise();
+    tree = await runner.runSchematic("controller", options, tree);
     expect(tree.readContent(normalize("/src/app.module.ts"))).toEqual(
       [
         "import {Logger, RootModule} from \"@typeix/resty\";\n" +
         "import {AppController} from \"./app.controller\";\n" +
         "import {AppService} from \"./app.service\";\n" +
-        "import { FooController } from './foo/foo.controller';\n" +
+        "import {FooController} from \"./foo/foo.controller\";\n" +
         "\n" +
         "@RootModule({\n" +
         "  imports: [],\n" +
@@ -213,20 +213,20 @@ describe("Controller Factory", () => {
     const app: ApplicationOptions = {
       name: "",
     };
-    let tree: UnitTestTree = await runner.runSchematicAsync("application", app).toPromise();
+    let tree: UnitTestTree = await runner.runSchematic("application", app);
     const module: ModuleOptions = {
       name: "foo",
     };
-    tree = await runner.runSchematicAsync("module", module, tree).toPromise();
+    tree = await runner.runSchematic("module", module, tree);
     ;
     const options: ControllerOptions = {
       name: "foo",
     };
-    tree = await runner.runSchematicAsync("controller", options, tree).toPromise();
+    tree = await runner.runSchematic("controller", options, tree);
     expect(tree.readContent(normalize("/src/foo/foo.module.ts"))).toEqual(
       [
         "import {Module} from \"@typeix/resty\";\n" +
-        "import { FooController } from './foo.controller';\n" +
+        "import {FooController} from \"./foo.controller\";\n" +
         "\n" +
         "@Module({\n" +
         "  providers: [],\n" +

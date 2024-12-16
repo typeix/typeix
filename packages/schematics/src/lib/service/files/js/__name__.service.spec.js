@@ -1,7 +1,7 @@
 import {Injector} from "@typeix/resty";
-import {<%= classify(name) %>Service} from './<%= name %>.service';
+import {<%= classify(name) %>Service} from "./<%= name %>.service";
 
-describe('<%= classify(name) %>Service', () => {
+describe("<%= classify(name) %>Service", () => {
   let service;
 
   beforeEach(async () => {
@@ -9,7 +9,7 @@ describe('<%= classify(name) %>Service', () => {
     service = injector.get(<%= classify(name) %>Service);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

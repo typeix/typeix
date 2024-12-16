@@ -33,9 +33,9 @@ export class ModuleImportDeclarator {
   }
 
   private buildLineToInsert(options: DeclarationOptions): string {
-    return `import { ${options.symbol} } from '${this.computeRelativePath(
+    return `import {${options.symbol}} from "${this.computeRelativePath(
       options
-    )}';`;
+    )}";`;
   }
 
   private computeRelativePath(options: DeclarationOptions): string {

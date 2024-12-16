@@ -16,7 +16,7 @@ describe("Interceptor Factory", () => {
       name: "foo",
       type: "method"
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("interceptor", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("interceptor", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/foo.interceptor.ts"),
@@ -56,7 +56,7 @@ describe("Interceptor Factory", () => {
       name: "bar/foo",
       type: "method"
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("interceptor", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("interceptor", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/bar/foo.interceptor.ts"),
@@ -97,7 +97,7 @@ describe("Interceptor Factory", () => {
       path: "baz",
       type: "method"
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("interceptor", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("interceptor", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/baz/foo.interceptor.ts"),
@@ -137,7 +137,7 @@ describe("Interceptor Factory", () => {
       name: "fooBar",
       type: "method"
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("interceptor", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("interceptor", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/foo-bar.interceptor.ts"),
@@ -177,7 +177,7 @@ describe("Interceptor Factory", () => {
       name: "barBaz/foo",
       type: "method"
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("interceptor", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("interceptor", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/bar-baz/foo.interceptor.ts"),
@@ -218,7 +218,7 @@ describe("Interceptor Factory", () => {
       language: "js",
       type: "method"
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync("interceptor", options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic("interceptor", options);
     const files: string[] = tree.files;
     expect(
       files.find(filename => filename === "/foo.interceptor.js"),

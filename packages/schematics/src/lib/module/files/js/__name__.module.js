@@ -1,4 +1,4 @@
-import {Module} from '@typeix/resty';
+import {Module} from "@typeix/resty";
 
 @Module({
   providers: []

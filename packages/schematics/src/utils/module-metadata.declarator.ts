@@ -17,6 +17,6 @@ export class ModuleMetadataDeclarator {
       options.symbol,
       options.staticOptions
     );
-    return inserted;
+    return inserted ?? content;
   }
 }
