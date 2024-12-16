@@ -1,7 +1,7 @@
 {
   "name": "typeix-sources",
   "private": true,
-  "version": "8.5.x",
+  "version": "8.8.x",
   "description": "typeix helper functions",
   "scripts": {
     "coveralls-merge": "node coveralls-merge.js",
