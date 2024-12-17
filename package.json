@@ -16,7 +16,7 @@
     "clean:coverage": "lerna exec rimraf coverage --parallel",
     "clean:lock": "lerna exec rimraf package-lock.json --parallel",
     "clean:node_modules": "lerna exec rimraf node_modules --parallel",
-    "clean:all": "npm run clean && npm run clean:lock && npm run clean:node_modules",
+    "clean:all": "npm run clean && npm run clean:lock && npm run clean:node_modules && npm run clean:coverage",
     "test": "lerna exec npm test --parallel",
     "test:ci": "TEST_TIMEOUT=10000 lerna exec npm test --parallel",
     "publish:all": "npm run build && lerna publish --force-publish --loglevel=verbose",
@@ -45,7 +45,7 @@
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "jest-jasmine2": "^29.7.0",
-    "lerna": "^6.6.2",
+    "lerna": "^8.1.9",
     "rimraf": "^5.0.0",
     "ts-jest": "^29.1.4",
     "typescript": "^5.6.3"
