@@ -1,6 +1,6 @@
 {
   "name": "@typeix/resty-socket-io",
-  "version": "8.9.0",
+  "version": "8.9.1",
   "description": "typeix websockets support for resty framework",
   "main": "dist/index.js",
   "scripts": {
@@ -34,12 +34,12 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@typeix/modules": "^8.9.0",
-    "@typeix/resty": "^8.9.0",
+    "@typeix/modules": "^8.9.1",
+    "@typeix/resty": "^8.9.1",
     "socket.io": "~4.7.2"
   },
   "devDependencies": {
     "socket.io-client": "~4.7.2"
   },
-  "gitHead": "c8153034defb267651ce2f68065be1bd2fee23f5"
+  "gitHead": "b6d5a43b5e12422de34771f64556937ef774416b"
 }

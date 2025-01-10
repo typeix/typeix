@@ -1,7 +1,7 @@
 {
   "name": "@typeix/schematics",
   "testRunner": "jest-jasmine2",
-  "version": "8.9.0",
+  "version": "8.9.1",
   "files": [
     "dist/**/*"
   ],
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@commitlint/cli": "~17.8.1",
     "@commitlint/config-angular": "~17.8.1",
-    "@typeix/resty": "^8.9.0",
+    "@typeix/resty": "^8.9.1",
     "@types/fs-extra": "~11.0.4",
     "@types/jest": "~29.5.14",
     "cpx": "~1.5.0",
@@ -50,5 +50,5 @@
   "bugs": {
     "url": "https://github.com/typeix/schematics/issues"
   },
-  "gitHead": "c8153034defb267651ce2f68065be1bd2fee23f5"
+  "gitHead": "b6d5a43b5e12422de34771f64556937ef774416b"
 }
