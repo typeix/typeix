@@ -27,7 +27,7 @@
     "@typeix/cli": "^<%= version %>",
     "@typeix/schematics": "^<%= version %>",
     "@types/jest": "~29.5.12",
-    "@types/node": "~18.19.34",
+    "@types/node": "~18.19.70",
     "@typescript-eslint/eslint-plugin": "~7.13.0",
     "@typescript-eslint/eslint-plugin-tslint": "~7.0.2",
     "eslint": "~8.57.0",

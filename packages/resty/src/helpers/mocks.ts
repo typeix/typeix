@@ -56,7 +56,7 @@ export class FakeIncomingMessage extends IncomingMessage {
  */
 export class FakeServerResponse extends ServerResponse {
   headers: any = {};
-  message = Buffer.alloc(0);
+  message: Buffer = Buffer.alloc(0);
 
   /**
    * @since 1.0.0
